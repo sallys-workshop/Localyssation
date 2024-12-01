@@ -168,8 +168,9 @@ namespace Localyssation.Patches
                     if (playerClass) className = Localyssation.GetString($"{KeyUtil.GetForAsset(playerClass)}_NAME");
                 }
 
-                __instance._characterInfoText.text = string.Format(
-                    Localyssation.GetString("FORMAT_CHARACTER_SELECT_DATA_ENTRY_INFO"),
+                __instance._characterInfoText.text = Localyssation.GetFormattedString(
+                    "FORMAT_CHARACTER_SELECT_DATA_ENTRY_INFO",
+                    __instance._characterInfoText.fontSize,
                     __instance._characterFileData._statsProfile._currentLevel,
                     raceName,
                     className);
@@ -312,7 +313,7 @@ namespace Localyssation.Patches
                 var dropdown = textParent.GetComponentInChildren<Dropdown>();
                 if (dropdown)
                 {
-                    var dropdownOptionsTextFuncs = new List<Func<string>>();
+                    var dropdownOptionsTextFuncs = new List<Func<int, string>>();
                     for (var i = 0; i < dropdown.options.Count; i++)
                     {
                         var option = dropdown.options[i];
@@ -339,20 +340,24 @@ namespace Localyssation.Patches
 
                 if (!string.IsNullOrEmpty(_scriptEquip._itemName))
                     __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME"));
-                __instance._toolTipSubName.text = string.Format(Localyssation.GetString("FORMAT_EQUIP_ITEM_RARITY"), Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquip._itemRarity)));
+                __instance._toolTipSubName.text = Localyssation.GetFormattedString(
+                    "FORMAT_EQUIP_ITEM_RARITY",
+                    __instance._toolTipSubName.fontSize,
+                    Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquip._itemRarity)));
+
                 if (!string.IsNullOrEmpty(_scriptEquip._itemDescription))
                     __instance._toolTipDescription.text = __instance._toolTipDescription.text.Replace(_scriptEquip._itemDescription, Localyssation.GetString($"{key}_DESCRIPTION"));
 
                 if (_scriptEquip._classRequirement)
-                    __instance._equipClassRequirement.text = string.Format(Localyssation.GetString("FORMAT_EQUIP_CLASS_REQUIREMENT"), Localyssation.GetString($"PLAYER_CLASS_{_scriptEquip._classRequirement._className}_NAME"));
+                    __instance._equipClassRequirement.text = Localyssation.GetFormattedString(
+                        "FORMAT_EQUIP_CLASS_REQUIREMENT",
+                        __instance._equipClassRequirement.fontSize,
+                        Localyssation.GetString($"{KeyUtil.GetForAsset(_scriptEquip._classRequirement)}_NAME"));
 
                 if (_scriptEquip.GetType() == typeof(ScriptableWeapon))
                 {
                     var weapon = (ScriptableWeapon)_scriptEquip;
 
-                    if (_scriptEquip._classRequirement)
-                        __instance._equipToolTipType.text = string.Format(Localyssation.GetString("FORMAT_EQUIP_TOOLTIP_TYPE_WEAPON"), Localyssation.GetString($"PLAYER_CLASS_{_scriptEquip._classRequirement._className}_NAME"));
-                    
                     if (Enum.TryParse<DamageType>(__instance._equipWeaponDamageType.text, out var damageType))
                         __instance._equipWeaponDamageType.text = __instance._equipWeaponDamageType.text.Replace(damageType.ToString(), Localyssation.GetString(KeyUtil.GetForAsset(damageType)));
 
@@ -407,7 +412,10 @@ namespace Localyssation.Patches
                 void ReplaceTrackElementText(string newText, int progressCurrent, int progressMax)
                 {
                     var styleTag = trackElementText[c].Substring(0, trackElementText[c].IndexOf(">") + 1);
-                    var formattedQuestString = string.Format(Localyssation.GetString("FORMAT_QUEST_TRACK_ELEMENT"), newText, progressCurrent, progressMax);
+                    var formattedQuestString = Localyssation.GetFormattedString(
+                        "FORMAT_QUEST_TRACK_ELEMENT",
+                        __instance._trackElementText.fontSize,
+                        newText, progressCurrent, progressMax);
                     trackElementText[c] = styleTag + formattedQuestString + "</color>";
                     c++;
                 }

@@ -23,12 +23,12 @@ namespace Localyssation
         }
 
         // handy function to slot into the newTextFunc param when you need a simple key->string replacement
-        public static System.Func<string> GetStringFunc(string key)
+        public static System.Func<int, string> GetStringFunc(string key)
         {
-            return () => Localyssation.GetString(key);
+            return (fontSize) => Localyssation.GetString(key, fontSize);
         }
 
-        public static void RegisterText(UnityEngine.UI.Text text, System.Func<string> newTextFunc)
+        public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc)
         {
             if (text.GetComponent<LangAdjustableUIText>()) return;
 
@@ -36,7 +36,7 @@ namespace Localyssation
             replaceable.newTextFunc = newTextFunc;
         }
 
-        public static void RegisterDropdown(UnityEngine.UI.Dropdown dropdown, List<System.Func<string>> newTextFuncs)
+        public static void RegisterDropdown(UnityEngine.UI.Dropdown dropdown, List<System.Func<int, string>> newTextFuncs)
         {
             if (dropdown.GetComponent<LangAdjustableUIDropdown>()) return;
 
@@ -59,16 +59,17 @@ namespace Localyssation
         public class LangAdjustableUIText : MonoBehaviour, ILangAdjustable
         {
             public UnityEngine.UI.Text text;
-            public System.Func<string> newTextFunc;
+            public System.Func<int, string> newTextFunc;
 
+            public bool textAutoShrinkable = true;
+            public bool textAutoShrunk = false;
             public bool orig_resizeTextForBestFit = false;
             public int orig_resizeTextMaxSize;
+            public int orig_resizeTextMinSize;
 
             public void Awake()
             {
                 text = GetComponent<UnityEngine.UI.Text>();
-                orig_resizeTextForBestFit = text.resizeTextForBestFit;
-                orig_resizeTextMaxSize = text.resizeTextMaxSize;
                 Localyssation.instance.onLanguageChanged += onLanguageChanged;
             }
 
@@ -86,20 +87,33 @@ namespace Localyssation
             {
                 if (newTextFunc != null)
                 {
-                    text.text = newTextFunc();
+                    text.text = newTextFunc(text.fontSize);
                 }
 
-                if (newLanguage.shrinkOverflowingText != text.resizeTextForBestFit)
+                if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
                 {
-                    if (newLanguage.shrinkOverflowingText)
+                    if (newLanguage.info.autoShrinkOverflowingText)
                     {
-                        text.resizeTextMaxSize = text.fontSize;
-                        text.resizeTextForBestFit = true;
+                        if (textAutoShrinkable)
+                        {
+                            orig_resizeTextForBestFit = text.resizeTextForBestFit;
+                            orig_resizeTextMaxSize = text.resizeTextMaxSize;
+                            orig_resizeTextMinSize = text.resizeTextMinSize;
+
+                            text.resizeTextMaxSize = text.fontSize;
+                            text.resizeTextMinSize = System.Math.Min(2, text.resizeTextMinSize);
+                            text.resizeTextForBestFit = true;
+
+                            textAutoShrunk = true;
+                        }
                     }
                     else
                     {
                         text.resizeTextForBestFit = orig_resizeTextForBestFit;
                         text.resizeTextMaxSize = orig_resizeTextMaxSize;
+                        text.resizeTextMinSize = orig_resizeTextMinSize;
+
+                        textAutoShrunk = false;
                     }
                 }
             }
@@ -113,7 +127,7 @@ namespace Localyssation
         public class LangAdjustableUIDropdown : MonoBehaviour, ILangAdjustable
         {
             public UnityEngine.UI.Dropdown dropdown;
-            public List<System.Func<string>> newTextFuncs;
+            public List<System.Func<int, string>> newTextFuncs;
 
             public void Awake()
             {
@@ -148,7 +162,7 @@ namespace Localyssation
                     for (var i = 0; i < dropdown.options.Count; i++)
                     {
                         var option = dropdown.options[i];
-                        option.text = newTextFuncs[i]();
+                        option.text = newTextFuncs[i](-1);
                     }
                     dropdown.RefreshShownValue();
                 }

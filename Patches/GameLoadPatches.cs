@@ -1,5 +1,6 @@
 using HarmonyLib;
 using System;
+using UnityEngine;
 
 namespace Localyssation.Patches
 {
@@ -89,6 +90,9 @@ namespace Localyssation.Patches
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", statAttribute._attributeName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTOR", statAttribute._attributeDescriptor);
             }
+
+            if (Localyssation.configCreateDefaultLanguageFiles.Value)
+                Localyssation.defaultLanguage.WriteToFileSystem();
         }
     }
 }

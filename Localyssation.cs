@@ -24,6 +24,9 @@ namespace Localyssation
 
         public static Localyssation instance;
 
+        internal static System.Reflection.Assembly assembly;
+        internal static string dllPath;
+
         public static Language defaultLanguage;
         public static Language currentLanguage;
         public static Dictionary<string, Language> languages = new Dictionary<string, Language>();
@@ -36,7 +39,8 @@ namespace Localyssation
         internal static BepInEx.Configuration.ConfigFile config;
 
         internal static BepInEx.Configuration.ConfigEntry<string> configLanguage;
-        internal static BepInEx.Configuration.ConfigEntry<bool> configWriteDefaultLangToFile;
+        internal static BepInEx.Configuration.ConfigEntry<bool> configCreateDefaultLanguageFiles;
+        internal static BepInEx.Configuration.ConfigEntry<KeyCode> configReloadLanguageKeybind;
 
         private void Awake()
         {
@@ -44,16 +48,20 @@ namespace Localyssation
             logger = Logger;
             config = Config;
 
+            assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            dllPath = new System.Uri(assembly.CodeBase).LocalPath;
+
             defaultLanguage = CreateDefaultLanguage();
             RegisterLanguage(defaultLanguage);
             ChangeLanguage(defaultLanguage);
-            LoadInstalledLanguageFiles();
+            LoadLanguagesFromFileSystem();
 
-            configLanguage = config.Bind("General", "Language", defaultLanguage.code, "Currently selected language's code");
+            configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
                 ChangeLanguage(previouslySelectedLanguage);
 
-            configWriteDefaultLangToFile = config.Bind("Developers", "Write Default Language File", false, "If true, the default game language's strings will be written to a file in LocalLow\\KisSoft\\ATLYSS\\Localyssation");
+            configCreateDefaultLanguageFiles = config.Bind("Developers", "Create Default Language Files", false, "If enabled, files for the default game language will be created in the mod's directory on game load");
+            configReloadLanguageKeybind = config.Bind("Developers", "Reload Language Keybind", KeyCode.None, "When you press this button, your current language's files will be reloaded mid-game");
 
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
@@ -63,26 +71,38 @@ namespace Localyssation
             LangAdjustables.Init();
         }
 
-        public static void LoadInstalledLanguageFiles()
+        private void Update()
         {
-            var filePaths = Directory.GetFiles(Paths.PluginPath, "*.language", SearchOption.AllDirectories);
+            if (UnityInput.Current.GetKeyDown(configReloadLanguageKeybind.Value))
+            {
+                currentLanguage.LoadFromFileSystem(true);
+                CallOnLanguageChanged(currentLanguage);
+            }
+        }
+
+        public static void LoadLanguagesFromFileSystem()
+        {
+            var filePaths = Directory.GetFiles(Paths.PluginPath, "localyssationLanguage.json", SearchOption.AllDirectories);
             foreach (var filePath in filePaths)
             {
-                var fileText = File.ReadAllText(filePath);
-                var language = JsonConvert.DeserializeObject<Language>(fileText);
-                RegisterLanguage(language);
+                var langPath = Path.GetDirectoryName(filePath);
+
+                var loadedLanguage = new Language();
+                loadedLanguage.fileSystemPath = langPath;
+                if (loadedLanguage.LoadFromFileSystem())
+                    RegisterLanguage(loadedLanguage);
             }
         }
 
         public static void RegisterLanguage(Language language)
         {
-            if (languages.TryGetValue(language.code, out var existingLanguage))
+            if (languages.TryGetValue(language.info.code, out var existingLanguage))
             {
-                existingLanguage.name = language.name;
+                existingLanguage.info = language.info;
                 existingLanguage.strings = language.strings;
                 return;
             }
-            languages[language.code] = language;
+            languages[language.info.code] = language;
             languagesList.Add(language);
         }
 
@@ -97,8 +117,9 @@ namespace Localyssation
         internal static Language CreateDefaultLanguage()
         {
             var language = new Language();
-            language.code = "en-US";
-            language.name = "English (US)";
+            language.info.code = "en-US";
+            language.info.name = "English (US)";
+            language.fileSystemPath = Path.Combine(Path.GetDirectoryName(dllPath), "defaultLanguage");
 
             language.strings = new Dictionary<string, string>()
             {
@@ -344,33 +365,287 @@ namespace Localyssation
             return language;
         }
 
-        internal static void WriteLanguageToFile(Language language)
-        {
-            var filePath = Path.Combine(Application.persistentDataPath, "Localyssation", $"{language.code}.language");
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(language, Formatting.Indented));
-        }
-
-        public static string GetString(string key)
+        public static string GetStringRaw(string key)
         {
             string result;
             if (currentLanguage.strings.TryGetValue(key, out result)) return result;
             if (defaultLanguage.strings.TryGetValue(key, out result)) return result;
             return key;
         }
+
+        private delegate string TextEditTagFunc(string str, string arg, int fontSize);
+        private static Dictionary<string, TextEditTagFunc> textEditTags = new Dictionary<string, TextEditTagFunc>()
+        {
+            {
+                "firstupper",
+                (str, arg, fontSize) =>
+                {
+                    if (str.Length > 0)
+                    {
+                        var letter = str[0].ToString();
+                        str = str.Remove(0, 1);
+                        str = str.Insert(0, letter.ToUpper());
+                    }
+                    return str;
+                }
+            },
+            {
+                "firstlower",
+                (str, arg, fontSize) =>
+                {
+                    if (str.Length > 0)
+                    {
+                        var letter = str[0].ToString();
+                        str = str.Remove(0, 1);
+                        str = str.Insert(0, letter.ToLower());
+                    }
+                    return str;
+                }
+            },
+            {
+                "scale",
+                (str, arg, fontSize) =>
+                {
+                    if (fontSize > 0) {
+                        try {
+                            var scale = float.Parse(arg, System.Globalization.CultureInfo.InvariantCulture);
+                            logger.LogMessage(scale);
+                            str = $"<size={System.Math.Round(fontSize * scale)}>{str}</size>";
+                        }
+                        catch { }
+                    }
+                    return str;
+                }
+            }
+        };
+        public static string ApplyTextEditTags(string str, int fontSize = -1)
+        {
+            var result = str;
+
+            foreach (var tag in textEditTags)
+            {
+                while (true)
+                {
+                    // find bounds of the tagged text
+                    var openingTagBeginning = $"<{tag.Key}";
+                    var openingTagIndex = result.IndexOf(openingTagBeginning);
+                    if (openingTagIndex == -1) break;
+
+                    var openingTagEndIndex = result.IndexOf(">", openingTagIndex + openingTagBeginning.Length);
+                    if (openingTagEndIndex == -1) break;
+
+                    var closingTag = $"</{tag.Key}>";
+                    var closingTagIndex = result.IndexOf(closingTag, openingTagEndIndex + 1);
+                    if (closingTagIndex == -1) break;
+
+                    // get the full opening tag string and get arguments (if they exist)
+                    var openingTag = result.Substring(openingTagIndex + 1, openingTagEndIndex - 1);
+                    var arg = "";
+                    if (openingTag.Contains("="))
+                    {
+                        var split = openingTag.Split('=');
+                        if (split.Length == 2) arg = split[1];
+                    }
+
+                    // get tagged text
+                    var stringInTag = "";
+                    if ((openingTagEndIndex + 1) <= (closingTagIndex - 1))
+                        stringInTag = result.Substring(openingTagEndIndex + 1, closingTagIndex - openingTagEndIndex - 1);
+
+                    // edit tagged text
+                    var editedString = tag.Value(stringInTag, arg, fontSize);
+
+                    // remove tags from the displayed string, and replace tagged text with newly edited text
+                    result = result
+                        .Remove(closingTagIndex, closingTag.Length)
+                        .Remove(openingTagIndex, openingTagEndIndex - openingTagIndex + 1);
+
+                    // replace tagged text
+                    result = result
+                        .Remove(openingTagIndex, stringInTag.Length)
+                        .Insert(openingTagIndex, editedString);
+                }
+            }
+
+            return result;
+        }
+
+        public static string GetString(string key, int fontSize = -1)
+        {
+            return ApplyTextEditTags(GetStringRaw(key), fontSize);
+        }
+
+        public static string GetFormattedString(string formatKey, int fontSize = -1, params object[] formatArgs)
+        {
+            return ApplyTextEditTags(string.Format(GetStringRaw(formatKey), formatArgs), fontSize);
+        }
     }
 
     public class Language
     {
-        public string code = "";
-        public string name = "";
-        public bool shrinkOverflowingText = false;
+        public class LanguageInfo
+        {
+            public string code = "";
+            public string name = "";
+            public bool autoShrinkOverflowingText = false;
+        }
+
+        public LanguageInfo info = new LanguageInfo();
+        public string fileSystemPath;
         public Dictionary<string, string> strings = new Dictionary<string, string>();
 
         public void RegisterKey(string key, string defaultValue)
         {
             if (strings.ContainsKey(key)) return;
             strings[key] = defaultValue;
+        }
+
+        public bool LoadFromFileSystem(bool forceOverwrite = false)
+        {
+            if (string.IsNullOrEmpty(fileSystemPath)) return false;
+
+            var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
+            var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
+            var stringScaleFactorsFilePath = Path.Combine(fileSystemPath, "stringScaleFactors.tsv");
+            try
+            {
+                info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
+
+                foreach (var tsvRow in TSVUtil.parseTsv(File.ReadAllText(stringsFilePath)))
+                {
+                    if (!forceOverwrite) RegisterKey(tsvRow[0], tsvRow[1]);
+                    else strings[tsvRow[0]] = tsvRow[1];
+                }
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Localyssation.logger.LogError(e);
+                return false;
+            }
+        }
+
+        public bool WriteToFileSystem()
+        {
+            if (string.IsNullOrEmpty(fileSystemPath)) return false;
+
+            try
+            {
+                Directory.CreateDirectory(fileSystemPath);
+
+                var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
+                File.WriteAllText(infoFilePath, JsonConvert.SerializeObject(info, Formatting.Indented));
+
+                var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
+                var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
+                tsvRows.Insert(0, new List<string>() { "key", "value" });
+                File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Localyssation.logger.LogError(e);
+                return false;
+            }
+        }
+    }
+
+    public static class TSVUtil
+    {
+        public static string makeTsv(List<List<string>> rows, string delimeter = "\t")
+        {
+            var rowStrs = new List<string>();
+            List<string> headerRow = null;
+            for (var i = 0; i < rows.Count; i++)
+            {
+                var row = rows[i];
+                for (var j = 0; j < row.Count; j++)
+                {
+                    row[j] = row[j].Replace("\n", "\\n").Replace("\t", "\\t");
+                }
+
+                var rowStr = string.Join(delimeter, row);
+
+                if (headerRow == null)
+                {
+                    headerRow = row;
+                }
+                else if (headerRow.Count != row.Count)
+                {
+                    Localyssation.logger.LogError($"Row {i} has {row.Count} columns, which does not match header column count (${headerRow.Count})");
+                    Localyssation.logger.LogError($"Row content: {rowStr}");
+                    return string.Join(delimeter, headerRow);
+                }
+                rowStrs.Add(rowStr);
+            }
+            return string.Join("\n", rowStrs);
+        }
+
+        public static List<List<string>> parseTsv(string tsv, string delimeter = "\t")
+        {
+            var parsedTsv = new List<List<string>>();
+            List<string> headerRow = null;
+            var splitTsv = tsv.Split(new[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < splitTsv.Length; i++)
+            {
+                var rowStr = splitTsv[i];
+                if (rowStr.EndsWith("\r")) rowStr = rowStr.Substring(0, rowStr.Length - 2); // convert CRLF to LF
+                
+                var row = new List<string>(Split(rowStr, delimeter));
+                for (var j = 0; j < row.Count; j++)
+                {
+                    row[j] = row[j].Replace("\\n", "\n").Replace("\\t", "\t");
+                }
+
+                if (headerRow == null)
+                {
+                    headerRow = row;
+                }
+                else if (headerRow.Count != row.Count)
+                {
+                    Localyssation.logger.LogError($"Row {i} has {row.Count} columns, which does not match header column count (${headerRow.Count})");
+                    Localyssation.logger.LogError($"Row content: {rowStr}");
+                    return new List<List<string>>() { headerRow };
+                }
+                parsedTsv.Add(row);
+            }
+            return parsedTsv;
+        }
+
+        public static List<string> Split(string str, string delimeter)
+        {
+            var result = new List<string>();
+
+            var delimeterIsEscape = delimeter.StartsWith("\\");
+
+            var splitStartIndex = 0;
+            var searchIndex = 0;
+            while (true)
+            {
+                var delimIndex = str.IndexOf(delimeter, searchIndex);
+                if (delimIndex == -1)
+                {
+                    result.Add(str.Substring(splitStartIndex, str.Length - splitStartIndex));
+                    break;
+                }
+
+                searchIndex = delimIndex + delimeter.Length;
+                if (!delimeterIsEscape || (delimIndex > 0 && str[delimIndex - 1] != '\\'))
+                {
+                    result.Add(str.Substring(splitStartIndex, delimIndex - splitStartIndex));
+                    splitStartIndex = searchIndex;
+                }
+
+                if (searchIndex >= str.Length)
+                {
+                    result.Add(str.Substring(splitStartIndex, str.Length - splitStartIndex));
+                    break;
+                }
+            }
+
+            return result;
         }
     }
 

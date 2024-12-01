@@ -38,7 +38,7 @@ namespace Localyssation.Patches
                 var currentLanguageIndex = 0;
                 foreach (var language in Localyssation.languagesList)
                 {
-                    dropdownOptions.Add(new Dropdown.OptionData(language.name));
+                    dropdownOptions.Add(new Dropdown.OptionData(language.info.name));
                     if (language == Localyssation.currentLanguage) currentLanguageIndex = languageIndex;
                     languageIndex++;
                 }
@@ -61,7 +61,7 @@ namespace Localyssation.Patches
             {
                 var language = Localyssation.languagesList[languageDropdown.value];
                 Localyssation.ChangeLanguage(language);
-                Localyssation.configLanguage.Value = language.code;
+                Localyssation.configLanguage.Value = language.info.code;
             }
         }
 
