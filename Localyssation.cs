@@ -409,7 +409,6 @@ namespace Localyssation
                     if (fontSize > 0) {
                         try {
                             var scale = float.Parse(arg, System.Globalization.CultureInfo.InvariantCulture);
-                            logger.LogMessage(scale);
                             str = $"<size={System.Math.Round(fontSize * scale)}>{str}</size>";
                         }
                         catch { }
