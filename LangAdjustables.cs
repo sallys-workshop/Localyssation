@@ -44,13 +44,6 @@ namespace Localyssation
             replaceable.newTextFuncs = newTextFuncs;
         }
 
-        public static void RegisterTextSetterEventTrigger(UnityEngine.EventSystems.EventTrigger.TriggerEvent triggerEvent, UnityEngine.Events.ArgumentCache argumentCache, System.Func<string> newTextFunc)
-        {
-            var replaceable = new LangAdjustableTextSetterEventTrigger { triggerEvent = triggerEvent, argumentCache = argumentCache, newTextFunc = newTextFunc };
-            replaceable.AdjustToLanguage(Localyssation.currentLanguage);
-            nonMonoBehaviourAdjustables.Add(replaceable);
-        }
-
         public interface ILangAdjustable
         {
             void AdjustToLanguage(Language newLanguage);
@@ -171,22 +164,6 @@ namespace Localyssation
             public void OnDestroy()
             {
                 Localyssation.instance.onLanguageChanged -= onLanguageChanged;
-            }
-        }
-
-        public class LangAdjustableTextSetterEventTrigger : ILangAdjustable
-        {
-            public UnityEngine.EventSystems.EventTrigger.TriggerEvent triggerEvent;
-            public UnityEngine.Events.ArgumentCache argumentCache;
-            public System.Func<string> newTextFunc;
-
-            public void AdjustToLanguage(Language newLanguage)
-            {
-                if (newTextFunc != null)
-                {
-                    argumentCache.stringArgument = newTextFunc();
-                    triggerEvent.DirtyPersistentCalls();
-                }
             }
         }
     }

@@ -94,13 +94,20 @@ namespace Localyssation.Patches
                             var eventTrigger = textParent.GetComponent<EventTrigger>();
                             if (eventTrigger)
                             {
-                                foreach (var trigger in eventTrigger.triggers)
+                                for (var i = 0; i < eventTrigger.triggers.Count; i++)
                                 {
+                                    var trigger = eventTrigger.triggers[i];
                                     foreach (var call in trigger.callback.m_PersistentCalls.m_Calls)
                                     {
                                         if (call.methodName == "set_text" && call.arguments.stringArgument != "" && call.target == tooltipText)
                                         {
-                                            LangAdjustables.RegisterTextSetterEventTrigger(trigger.callback, call.arguments, LangAdjustables.GetStringFunc($"{key}_TOOLTIP"));
+                                            var newTrigger = new EventTrigger.Entry();
+                                            newTrigger.eventID = trigger.eventID;
+                                            newTrigger.callback.AddListener((_) =>
+                                            {
+                                                tooltipText.text = Localyssation.GetString($"{key}_TOOLTIP", tooltipText.fontSize);
+                                            });
+                                            eventTrigger.triggers.Add(newTrigger);
                                             return;
                                         }
                                     }
