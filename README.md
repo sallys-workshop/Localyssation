@@ -6,9 +6,17 @@ This mod is not finished yet! As such, no public releases are available for now.
 
 ## Current features
 * New "Language" option in the "Interface" settings tab
-* Loading `.language` files found in the BepInEx plugins folder
-* Generating a file with some of the default game strings in `%userprofile%\AppData\LocalLow\KisSoft\ATLYSS\Localyssation` (Windows) if the BepInEx config option for that is enabled
+* Loading all custom languages found in the BepInEx plugins folder
+  * A language consists of the following files:
+    * `localyssationLanguage.json` with information about the language
+    * `strings.tsv` with text keys and corresponding translated text
+* Config options:
+  * `Create Default Language Files` - creates the game's default language as files in the mod directory on game load. These files can be copied in a different folder for your own translation.
+  * `Reload Language Keybind` - hot-reloads the currently selected language. Useful for seeing immediate changes while writing your own translation.
 * Some in-game text gets translated according to the selected language:
   * Main menu
-  * Settings menu
-  * Character Select menu (excluding character creation)
+  * Settings
+  * Character select menu
+  * Character creation menu
+  * Equipment tooltips
+  * Top-right quest tracker
