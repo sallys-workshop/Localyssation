@@ -193,9 +193,9 @@ namespace Localyssation.Patches
                 { "Button_videoTab", "SETTINGS_TAB_BUTTON_VIDEO" },
 
                 { "_header_GameEffectSettings", "SETTINGS_VIDEO_HEADER_GAME_EFFECT_SETTINGS" },
-                { "_cell_proportionsToggle", "Limit Player Character Proportions" },
-                { "_cell_jiggleBonesToggle", "Disable Suggestive Jiggle Bones" },
-                { "_cell_clearUnderclothesToggle", "Enable Clear Clothing" },
+                { "_cell_proportionsToggle", "SETTINGS_VIDEO_CELL_PROPORTIONS_TOGGLE" },
+                { "_cell_jiggleBonesToggle", "SETTINGS_VIDEO_CELL_JIGGLE_BONES_TOGGLE" },
+                { "_cell_clearUnderclothesToggle", "SETTINGS_VIDEO_CELL_CLEAR_UNDERCLOTHES_TOGGLE" },
 
                 { "_header_videoSettings", "SETTINGS_VIDEO_HEADER_VIDEO_SETTINGS" },
                 { "_cell_fullscreenToggle", "SETTINGS_VIDEO_CELL_FULLSCREEN_TOGGLE" },
