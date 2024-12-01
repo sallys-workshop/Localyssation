@@ -83,8 +83,12 @@ namespace Localyssation.Patches
             foreach (DamageType damageType in Enum.GetValues(typeof(DamageType)))
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(damageType), damageType.ToString());
 
-            if (Localyssation.configWriteDefaultLangToFile.Value)
-                Localyssation.WriteLanguageToFile(Localyssation.defaultLanguage);
+            foreach (var statAttribute in GameManager._current._statLogics._statAttributes)
+            {
+                var key = KeyUtil.GetForAsset(statAttribute);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", statAttribute._attributeName);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTOR", statAttribute._attributeDescriptor);
+            }
         }
     }
 }

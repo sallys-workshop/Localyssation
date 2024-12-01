@@ -398,6 +398,11 @@ namespace Localyssation
             return $"SKILL_{Normalize(asset._skillName)}";
         }
 
+        public static string GetForAsset(ScriptableStatAttribute asset)
+        {
+            return $"STAT_ATTRIBUTE_{Normalize(asset._attributeName)}";
+        }
+
         public static string GetForAsset(ItemRarity asset)
         {
             return $"ITEM_RARITY_{Normalize(asset.ToString())}";
