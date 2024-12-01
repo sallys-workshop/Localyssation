@@ -141,6 +141,47 @@ namespace Localyssation
                 { "CHARACTER_SELECT_CHARACTER_DELETE_BUTTON_CONFIRM", "Delete Character" },
                 { "CHARACTER_SELECT_CHARACTER_DELETE_BUTTON_RETURN", "Return" },
 
+                // character creation
+                { "CHARACTER_CREATION_HEADER", "Character Creation" },
+                { "CHARACTER_CREATION_HEADER_RACE_NAME", "Race Select" },
+                { "CHARACTER_CREATION_RACE_DESCRIPTOR_HEADER_INITIAL_SKILL", "Initial Skill" },
+                { "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS", "Defaults" },
+                { "CHARACTER_CREATION_CHARACTER_NAME_PLACEHOLDER_TEXT", "Enter Name..." },
+                { "CHARACTER_CREATION_BUTTON_CREATE_CHARACTER", "Create Character" },
+                { "CHARACTER_CREATION_BUTTON_RETURN", "Return" },
+
+                { "CHARACTER_CREATION_CUSTOMIZER_HEADER_COLOR", "Color" },
+                { "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_HEADER", "Body" },
+                { "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_TEXTURE", "Texture" },
+                { "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_HEADER", "Hair" },
+                { "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_LOCK_COLOR", "Lock Color" },
+
+                { "CHARACTER_CREATION_CUSTOMIZER_HEADER_HEAD", "Head" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_HEAD_WIDTH", "Head Width" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_HEAD_MOD", "Modify" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_VOICE_PITCH", "Voice Pitch" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_HAIR_STYLE", "Hair" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_EARS", "Ears" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_EYES", "Eyes" },
+                { "CHARACTER_CREATION_CUSTOMIZER_HEAD_MOUTH", "Mouth" },
+
+                { "CHARACTER_CREATION_CUSTOMIZER_HEADER_BODY", "Body" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_HEIGHT", "Height" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_WIDTH", "Width" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_CHEST", "Chest" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_ARMS", "Arms" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_BELLY", "Belly" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_BOTTOM", "Bottom" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_TAIL", "Tail" },
+                { "CHARACTER_CREATION_CUSTOMIZER_BODY_TOGGLE_LEFT_HANDED", "Mirror Body" },
+
+                { "CHARACTER_CREATION_CUSTOMIZER_HEADER_TRAIT", "Trait" },
+                { "CHARACTER_CREATION_CUSTOMIZER_TRAIT_EQUIPMENT", "Equipment" },
+                { "CHARACTER_CREATION_CUSTOMIZER_TRAIT_WEAPON_LOADOUT", "Weapon" },
+                { "CHARACTER_CREATION_CUSTOMIZER_TRAIT_GEAR_DYE", "Dye" },
+                { "CHARACTER_CREATION_CUSTOMIZER_TRAIT_ATTRIBUTES", "Attributes" },
+                { "CHARACTER_CREATION_CUSTOMIZER_TRAIT_RESET_ATTRIBUTE_POINTS", "Reset Points" },
+
                 // settings
                 { "SETTINGS_TAB_BUTTON_VIDEO", "Display" },
                 { "SETTINGS_TAB_BUTTON_AUDIO", "Audio" },
