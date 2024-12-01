@@ -116,6 +116,7 @@ namespace Localyssation.Patches
                         });
                     }
                 }
+
                 var obj_Canvas_characterSelect = parent.Find("_characterSelectMenu/Canvas_characterSelect");
                 if (obj_Canvas_characterSelect)
                 {
@@ -135,6 +136,79 @@ namespace Localyssation.Patches
                     {
                         { "_input_characterDeleteConfirm", "CHARACTER_SELECT_CHARACTER_DELETE_PROMPT_PLACEHOLDER_TEXT" }
                     });
+                }
+
+                var obj_Canvas_characterCreation = parent.Find("_characterSelectMenu/Canvas_characterCreation");
+                if (obj_Canvas_characterCreation)
+                {
+                    RemapAllTextUnderObject(obj_Canvas_characterCreation.gameObject, new Dictionary<string, string>()
+                    {
+                        { "_text_header", "CHARACTER_CREATION_HEADER" },
+                        { "_header_raceName_01", "CHARACTER_CREATION_HEADER" },
+                        { "_header_initialSkill", "CHARACTER_CREATION_RACE_DESCRIPTOR_HEADER_INITIAL_SKILL" },
+                        { "_button_createCharacter", "CHARACTER_CREATION_BUTTON_CREATE_CHARACTER" },
+                        { "_button_return", "CHARACTER_CREATION_BUTTON_RETURN" },
+                    });
+
+                    RemapAllInputPlaceholderTextUnderObject(obj_Canvas_characterSelect.gameObject, new Dictionary<string, string>()
+                    {
+                        { "_input_characterName", "CHARACTER_CREATION_CHARACTER_NAME_PLACEHOLDER_TEXT" }
+                    });
+
+                    var customizer_color = obj_Canvas_characterCreation.transform.Find("_dolly_customizer/_customizer_color");
+                    var customizer_head = obj_Canvas_characterCreation.transform.Find("_dolly_customizer/_customizer_head");
+                    var customizer_body = obj_Canvas_characterCreation.transform.Find("_dolly_customizer/_customizer_body");
+                    var customizer_trait = obj_Canvas_characterCreation.transform.Find("_dolly_customizer/_customizer_trait");
+                    if (customizer_color)
+                        RemapAllTextUnderObject(customizer_color.gameObject, new Dictionary<string, string>()
+                        {
+                            { "_customizer_header", "CHARACTER_CREATION_CUSTOMIZER_HEADER_COLOR" },
+                            { "Image_01", "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_HEADER" },
+                            { "_characterButtonSelector", "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_TEXTURE" },
+                            { "Image", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_HEADER" },
+                            { "Toggle_lockColor", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_LOCK_COLOR" },
+                            { "_button_defaultColor", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
+                        });
+                    if (customizer_head)
+                        RemapAllTextUnderObject(customizer_head.gameObject, new Dictionary<string, string>()
+                        {
+                            { "_customizer_header", "CHARACTER_CREATION_CUSTOMIZER_HEADER_HEAD" },
+                            { "_characterSlider_headWidth", "CHARACTER_CREATION_CUSTOMIZER_HEAD_HEAD_WIDTH" },
+                            { "_characterSlider_headMod", "CHARACTER_CREATION_CUSTOMIZER_HEAD_HEAD_MOD" },
+                            { "_characterSlider_voicePitch", "CHARACTER_CREATION_CUSTOMIZER_HEAD_VOICE_PITCH" },
+                            { "_characterButtons_hairStyle", "CHARACTER_CREATION_CUSTOMIZER_HEAD_HAIR_STYLE" },
+                            { "_characterButtons_ears", "CHARACTER_CREATION_CUSTOMIZER_HEAD_EARS" },
+                            { "_characterButtons_eyes", "CHARACTER_CREATION_CUSTOMIZER_HEAD_EYES" },
+                            { "_characterButtons_mouth", "CHARACTER_CREATION_CUSTOMIZER_HEAD_MOUTH" },
+                        });
+                    if (customizer_body)
+                        RemapAllTextUnderObject(customizer_body.gameObject, new Dictionary<string, string>()
+                        {
+                            { "_customizer_header", "CHARACTER_CREATION_CUSTOMIZER_HEADER_BODY" },
+                            { "_characterSlider_height", "CHARACTER_CREATION_CUSTOMIZER_BODY_HEIGHT" },
+                            { "_characterSlider_width", "CHARACTER_CREATION_CUSTOMIZER_BODY_WIDTH" },
+                            { "_characterSlider_chest", "CHARACTER_CREATION_CUSTOMIZER_BODY_CHEST" },
+                            { "_characterSlider_arms", "CHARACTER_CREATION_CUSTOMIZER_BODY_ARMS" },
+                            { "_characterSlider_belly", "CHARACTER_CREATION_CUSTOMIZER_BODY_BELLY" },
+                            { "_characterSlider_bottom", "CHARACTER_CREATION_CUSTOMIZER_BODY_BOTTOM" },
+                            { "_characterButtonSelector_tail", "CHARACTER_CREATION_CUSTOMIZER_BODY_TAIL" },
+                            { "_toggle_leftHanded", "CHARACTER_CREATION_CUSTOMIZER_BODY_TOGGLE_LEFT_HANDED" },
+                            { "_button_defaultBody", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
+                        });
+                    if (customizer_trait)
+                        RemapAllTextUnderObject(customizer_trait.gameObject, new Dictionary<string, string>()
+                        {
+                            { "_customizer_header", "CHARACTER_CREATION_CUSTOMIZER_HEADER_TRAIT" },
+                            { "_header_equipment", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_EQUIPMENT" },
+                            { "_selector_weaponLoadout", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_WEAPON_LOADOUT" },
+                            { "_selector_gearDye", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_GEAR_DYE" },
+                            { "_header_attributes", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_ATTRIBUTES" },
+                            { "_text_strengthAttribute", "STAT_ATTRIBUTE_STRENGTH_NAME" },
+                            { "_text_mindAttribute", "STAT_ATTRIBUTE_MIND_NAME" },
+                            { "_text_dexterityAttribute", "STAT_ATTRIBUTE_DEXTERITY_NAME" },
+                            { "_text_vitalityAttribute", "STAT_ATTRIBUTE_VITALITY_NAME" },
+                            { "_button_resetAtbPoints", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_RESET_ATTRIBUTE_POINTS" },
+                        });
                 }
             }
         }
@@ -181,6 +255,28 @@ namespace Localyssation.Patches
                     __instance._characterFileData._statsProfile._currentLevel,
                     raceName,
                     className);
+            }
+        }
+
+        [HarmonyPatch(typeof(CharacterCreationManager), nameof(CharacterCreationManager.Handle_InterfaceParameters))]
+        [HarmonyPostfix]
+        public static void CharacterCreationManager_Handle_InterfaceParameters(CharacterCreationManager __instance)
+        {
+            var race = __instance._scriptablePlayerRaces[__instance._currentRaceSelected];
+            if (race)
+            {
+                var key = KeyUtil.GetForAsset(race);
+
+                __instance._raceDescriptionHeader.text = (Localyssation.GetString($"{key}_NAME") ?? "");
+                __instance._raceDescriptorField.text = (Localyssation.GetString($"{key}_DESCRIPTION") ?? "");
+                __instance._colorMiscTag.text = (Localyssation.GetString($"{key}_MISC") ?? "");
+                __instance._miscTag.text = (Localyssation.GetString($"{key}_MISC") ?? "");
+                if (race._racialSkills.Length >= 1)
+                {
+                    var skillKey = KeyUtil.GetForAsset(race._racialSkills[0]);
+                    __instance._raceInitialSkillTag.text = (Localyssation.GetString($"{skillKey}_NAME") ?? "");
+                    __instance._raceInitialSkillDescriptor.text = (Localyssation.GetString($"{skillKey}_DESCRIPTION") ?? "");
+                }
             }
         }
 
