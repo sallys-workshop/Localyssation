@@ -19,4 +19,11 @@ This mod is not finished yet! As such, no public releases are available for now.
   * Character select menu
   * Character creation menu
   * Equipment tooltips
-  * Top-right quest tracker
+  * Quests (excluding a few quest menu strings)
+* Translated text can have special text edit tags:
+  * `<firstupper>` - the first letter of the string inside this tag will be changed to the uppercase variant
+    * Example: `slime <firstupper>diva</firstupper>` will be changed into `slime Diva`
+  * `<firstlower>` - the first letter of the string inside this tag will be changed to the lowercase variant
+    * Example: `Slime <firstlower>Diva</firstlower>` will be changed into `Slime diva`
+  * `<scale=1.0>` - text in this tag will have its scale multiplied by the amount provided in the argument
+    * Example: `Slime <scale=0.8>Diva</scale>` will resize the word "Diva" to 80% of its original size
