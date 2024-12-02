@@ -66,6 +66,20 @@ namespace Localyssation.Patches
             }
         }
 
+        private static List<string> fallbackTextEditTags = new List<string>()
+        {
+            "scalefallback"
+        };
+        [HarmonyPatch(typeof(Text), nameof(Text.text), MethodType.Setter)]
+        [HarmonyPrefix]
+        public static void Text_set_text(Text __instance, ref string value)
+        {
+            if (__instance != null && value != null && value.Contains("scalefallback"))
+            {
+                value = Localyssation.ApplyTextEditTags(value, __instance.fontSize, fallbackTextEditTags);
+            }
+        }
+
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Awake))]
         [HarmonyPostfix]
         public static void MainMenuManager_Awake(MainMenuManager __instance)

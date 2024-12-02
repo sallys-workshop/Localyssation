@@ -413,16 +413,41 @@ namespace Localyssation
                         }
                         catch { }
                     }
+                    else
+                    {
+                        str = $"<scalefallback={arg}>{str}</scalefallback>";
+                    }
+                    return str;
+                }
+            },
+            {
+                "scalefallback",
+                (str, arg, fontSize) =>
+                {
+                    if (fontSize > 0) {
+                        try {
+                            var scale = float.Parse(arg, System.Globalization.CultureInfo.InvariantCulture);
+                            str = $"<size={System.Math.Round(fontSize * scale)}>{str}</size>";
+                        }
+                        catch { }
+                    }
                     return str;
                 }
             }
         };
-        public static string ApplyTextEditTags(string str, int fontSize = -1)
+        private static List<string> defaultAppliedTextEditTags = new List<string>() {
+            "firstupper", "firstlower", "scale"
+        };
+        public static string ApplyTextEditTags(string str, int fontSize = -1, List<string> appliedTextEditTags = null)
         {
+            if (appliedTextEditTags == null) appliedTextEditTags = defaultAppliedTextEditTags;
+
             var result = str;
 
             foreach (var tag in textEditTags)
             {
+                if (!appliedTextEditTags.Contains(tag.Key)) continue;
+
                 while (true)
                 {
                     // find bounds of the tagged text
