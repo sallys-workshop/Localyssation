@@ -21,8 +21,7 @@ namespace Localyssation.Patches
             {
                 var key = KeyUtil.GetForAsset(creep);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", creep._creepName);
-                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME_IN_QUEST_TRACK_SLAIN", creep._creepName + " slain");
-                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME_IN_QUEST_TRACK_SLAIN_MULTIPLE", creep._creepName + "s slain");
+                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME_VARIANT_MANY", creep._creepName + "s");
             }
             foreach (var quest in __instance._cachedScriptableQuests.Values)
             {
@@ -38,9 +37,9 @@ namespace Localyssation.Patches
             }
             foreach (var condition in __instance._cachedScriptableConditions.Values)
             {
-                var key = $"{KeyUtil.GetForAsset(condition)}_{condition._conditionRank}";
+                var key = $"{KeyUtil.GetForAsset(condition)}";
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", condition._conditionName);
-                Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", condition._conditionDescription);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_{condition._conditionRank}_DESCRIPTION", condition._conditionDescription);
             }
             foreach (var statModifier in __instance._cachedScriptableStatModifiers.Values)
             {

@@ -64,6 +64,7 @@ namespace Localyssation
             configReloadLanguageKeybind = config.Bind("Developers", "Reload Language Keybind", KeyCode.None, "When you press this button, your current language's files will be reloaded mid-game");
 
             Harmony harmony = new Harmony(PLUGIN_GUID);
+            harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
             harmony.PatchAll(typeof(Patches.ReplaceTextPatches));
             harmony.PatchAll(typeof(Patches.CreateUIPatches));
@@ -99,7 +100,7 @@ namespace Localyssation
             if (languages.TryGetValue(language.info.code, out var existingLanguage))
             {
                 existingLanguage.info = language.info;
-                existingLanguage.strings = language.strings;
+                foreach (var kvp in language.strings) existingLanguage.strings[kvp.Key] = kvp.Value;
                 return;
             }
             languages[language.info.code] = language;
@@ -125,6 +126,7 @@ namespace Localyssation
             {
                 // general
                 { "GAME_LOADING", "Loading..." },
+                { "EXP_COUNTER_MAX", "MAX" },
 
                 // main menu
                 { "MAIN_MENU_BUTTON_SINGLEPLAY", "Singleplayer" },
@@ -348,7 +350,6 @@ namespace Localyssation
                 { "FORMAT_EQUIP_LEVEL_REQUIREMENT", "Lv-{0}" },
                 { "FORMAT_EQUIP_CLASS_REQUIREMENT", "Class: {0}" },
                 { "FORMAT_EQUIP_WEAPON_CONDITION", "\n<color=lime>- <color=yellow>{0}%</color> chance to apply {1}.</color>" },
-                { "FORMAT_QUEST_TRACK_ELEMENT", "{0}: ({1} / {2})" },
                 { "EQUIP_TOOLTIP_TYPE_HELM", "Helm (Armor)" },
                 { "EQUIP_TOOLTIP_TYPE_CHESTPIECE", "Chestpiece (Armor)" },
                 { "EQUIP_TOOLTIP_TYPE_LEGGINGS", "Leggings (Armor)" },
@@ -360,7 +361,26 @@ namespace Localyssation
                 { "FORMAT_EQUIP_STATS_DAMAGE_SCALED_POWERFUL", "<color=#efcc00>({0} - {1})</color> Damage" },
                 { "FORMAT_EQUIP_STATS_DAMAGE_COMPARE_BASE", "\n<color=grey>(Base Damage: {0} - {1})</color>" },
                 { "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED", "({0} - {1}) Damage" },
-                { "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD", "Block threshold: {0} damage" }
+                { "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD", "Block threshold: {0} damage" },
+
+                // quests
+                { "FORMAT_QUEST_REQUIRED_LEVEL", "(lv-{0})" },
+                { "QUEST_TYPE_CLASS", "(Class Tome)" },
+                { "QUEST_TYPE_MASTERY", "(Mastery Scroll)" },
+                { "QUEST_MENU_SUMMARY_NO_QUESTS", "No Quests in Quest Log." },
+                { "QUEST_MENU_HEADER_UNSELECTED", "Select a Quest." },
+                { "FORMAT_QUEST_MENU_CELL_QUEST_LOG_COUNTER", "Quest Log: ({0} / {1})" },
+                { "FORMAT_QUEST_MENU_CELL_FINISHED_QUEST_COUNTER", "Completed Quests: {0}" },
+                { "FORMAT_QUEST_MENU_CELL_REWARD_EXP", "{0} exp" },
+                { "FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY", "{0} Crowns" },
+                { "QUEST_MENU_CELL_SLOT_EMPTY", "Empty Slot" },
+                { "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_ACCEPT", "Accept Quest" },
+                { "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_LOCKED", "Quest Locked" },
+                { "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_INCOMPLETE", "Quest Incomplete" },
+                { "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_TURN_IN", "Complete Quest" },
+                { "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_UNSELECTED", "Select a Quest" },
+                { "FORMAT_QUEST_PROGRESS", "{0}: ({1} / {2})" },
+                { "FORMAT_QUEST_PROGRESS_CREEPS_KILLED", "{0} slain" },
             };
             return language;
         }
@@ -535,10 +555,10 @@ namespace Localyssation
             {
                 info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
 
-                foreach (var tsvRow in TSVUtil.parseTsv(File.ReadAllText(stringsFilePath)))
+                foreach (var tsvRow in TSVUtil.parseTsvWithHeaders(File.ReadAllText(stringsFilePath)))
                 {
-                    if (!forceOverwrite) RegisterKey(tsvRow[0], tsvRow[1]);
-                    else strings[tsvRow[0]] = tsvRow[1];
+                    if (!forceOverwrite) RegisterKey(tsvRow["key"], tsvRow["value"]);
+                    else strings[tsvRow["key"]] = tsvRow["value"];
                 }
 
                 return true;
@@ -636,6 +656,23 @@ namespace Localyssation
                 parsedTsv.Add(row);
             }
             return parsedTsv;
+        }
+
+        public static List<Dictionary<string, string>> parseTsvWithHeaders(string tsv, string delimeter = "\t")
+        {
+            var parsedTsv = parseTsv(tsv, delimeter);
+            var withHeaders = new List<Dictionary<string, string>>();
+            if (parsedTsv.Count <= 0) return withHeaders;
+
+            var headerRow = parsedTsv[0];
+            for (var i = 1; i < parsedTsv.Count; i++)
+            {
+                var dict = parsedTsv[i]
+                    .Select((x, y) => new KeyValuePair<string, string>(headerRow[y], x))
+                    .ToDictionary(x => x.Key, x => x.Value);
+                withHeaders.Add(dict);
+            }
+            return withHeaders;
         }
 
         public static List<string> Split(string str, string delimeter)
