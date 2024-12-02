@@ -10,18 +10,12 @@ namespace Localyssation.Patches
         [HarmonyPostfix]
         public static void GameManager_Cache_ScriptableAssets(GameManager __instance)
         {
+            // cached scriptables
             foreach (var item in __instance._cachedScriptableItems.Values)
             {
                 var key = KeyUtil.GetForAsset(item);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", item._itemName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", item._itemDescription);
-
-                var weapon = item as ScriptableWeapon;
-                if (weapon != null)
-                {
-                    var key2 = KeyUtil.GetForAsset(weapon.weaponType);
-                    Localyssation.defaultLanguage.RegisterKey($"{key2}_NAME", weapon.weaponType._weaponTypeName);
-                }
             }
             foreach (var creep in __instance._cachedScriptableCreeps.Values)
             {
@@ -77,19 +71,29 @@ namespace Localyssation.Patches
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", skill._skillName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", skill._skillDescription);
             }
-
-            foreach (ItemRarity itemRarity in Enum.GetValues(typeof(ItemRarity)))
-                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(itemRarity), itemRarity.ToString());
-
-            foreach (DamageType damageType in Enum.GetValues(typeof(DamageType)))
-                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(damageType), damageType.ToString());
-
             foreach (var statAttribute in GameManager._current._statLogics._statAttributes)
             {
                 var key = KeyUtil.GetForAsset(statAttribute);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", statAttribute._attributeName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTOR", statAttribute._attributeDescriptor);
             }
+
+            // uncached scriptables
+            foreach (var weaponType in Resources.LoadAll<ScriptableWeaponType>(""))
+            {
+                var key2 = KeyUtil.GetForAsset(weaponType);
+                Localyssation.defaultLanguage.RegisterKey($"{key2}_NAME", weaponType._weaponTypeName);
+            }
+
+            // enums
+            foreach (ItemRarity itemRarity in Enum.GetValues(typeof(ItemRarity)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(itemRarity), itemRarity.ToString());
+
+            foreach (DamageType damageType in Enum.GetValues(typeof(DamageType)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(damageType), damageType.ToString());
+
+            // misc
+            Localyssation.defaultLanguage.strings["FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY"] = $"{{0}} {GameManager._current._statLogics._currencyName}";
 
             if (Localyssation.configCreateDefaultLanguageFiles.Value)
                 Localyssation.defaultLanguage.WriteToFileSystem();
