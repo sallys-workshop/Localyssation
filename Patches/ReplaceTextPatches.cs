@@ -10,7 +10,15 @@ namespace Localyssation.Patches
 {
     internal static class ReplaceTextPatches
     {
-        private static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, Dictionary<string, string> stringReplacements)
+        // general utils
+
+        /// <summary>
+        /// Creates a CodeMatcher that remaps strings found in the game with localised versions found in the current language.
+        /// </summary>
+        /// <param name="instructions">IEnumerable provided by the Harmony transpiler.</param>
+        /// <param name="stringReplacements">Key-value pairs of in-game strings to replace and language keys to replace with.</param>
+        /// <returns>The generated CodeMatcher.</returns>
+        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, Dictionary<string, string> stringReplacements)
         {
             var replacedStrings = new List<string>();
             return new CodeMatcher(instructions).MatchForward(false,
@@ -27,6 +35,25 @@ namespace Localyssation.Patches
                 }).InstructionEnumeration();
         }
 
+        /// <summary>
+        /// Gets the operand from the current CodeMatcher instruction. If none found, tries to parse the last symbol of the instruction's OpCode name as an integer.
+        /// </summary>
+        /// <param name="matcher">The CodeMatcher to get the instruction operand from.</param>
+        /// <returns>The int operand.</returns>
+        internal static int GetIntOperand(CodeMatcher matcher)
+        {
+            var result = matcher.Operand;
+            if (result == null)
+                result = int.Parse(matcher.Opcode.Name.Substring(matcher.Opcode.Name.Length - 1));
+            return (int)result;
+        }
+
+        /// <summary>
+        /// Remaps all UnityEngine.UI.Text instances found in this object, and under all of its children, with localised variants if the in-game strings match remap keys.
+        /// </summary>
+        /// <param name="gameObject">The GameObject to find Text instances in.</param>
+        /// <param name="textRemaps">Key-value pairs of in-game strings to replace and language keys to replace with.</param>
+        /// <param name="onRemap">A method called on a successful remap.</param>
         public static void RemapAllTextUnderObject(GameObject gameObject, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
         {
             bool TryRemapSingle(Transform lookupNameTransform, Text text)
@@ -50,6 +77,12 @@ namespace Localyssation.Patches
             }
         }
 
+        /// <summary>
+        /// Remaps all UnityEngine.UI.InputField instances' placeholder texts found in this object, and under all of its children, with localised variants if the in-game strings match remap keys.
+        /// </summary>
+        /// <param name="gameObject">The GameObject to find InputField instances in.</param>
+        /// <param name="textRemaps">Key-value pairs of in-game strings to replace and language keys to replace with.</param>
+        /// <param name="onRemap">A method called on a successful remap.</param>
         public static void RemapAllInputPlaceholderTextUnderObject(GameObject gameObject, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
         {
             foreach (var inputField in gameObject.GetComponentsInChildren<InputField>())
@@ -70,16 +103,20 @@ namespace Localyssation.Patches
         {
             "scalefallback"
         };
+
         [HarmonyPatch(typeof(Text), nameof(Text.text), MethodType.Setter)]
         [HarmonyPrefix]
         public static void Text_set_text(Text __instance, ref string value)
         {
+            // if fontSize is not provided for a <scale> tag,
+            // it gets auto-replaced with a <scalefallback> tag that gets parsed here instead
             if (__instance != null && value != null && value.Contains("scalefallback"))
             {
                 value = Localyssation.ApplyTextEditTags(value, __instance.fontSize, fallbackTextEditTags);
             }
         }
 
+        // main menu & character select
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Awake))]
         [HarmonyPostfix]
         public static void MainMenuManager_Awake(MainMenuManager __instance)
@@ -296,6 +333,7 @@ namespace Localyssation.Patches
             }
         }
 
+        // settings
         [HarmonyPatch(typeof(SettingsManager), nameof(SettingsManager.Start))]
         [HarmonyPostfix]
         public static void SettingsManager_Start(SettingsManager __instance)
@@ -449,6 +487,7 @@ namespace Localyssation.Patches
             });
         }
 
+        // equipment
         [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
         [HarmonyPostfix]
         public static void EquipToolTip_Apply_EquipStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
