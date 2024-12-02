@@ -465,7 +465,7 @@ namespace Localyssation.Patches
                     Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquip._itemRarity)));
 
                 if (!string.IsNullOrEmpty(_scriptEquip._itemDescription))
-                    __instance._toolTipDescription.text = __instance._toolTipDescription.text.Replace(_scriptEquip._itemDescription, Localyssation.GetString($"{key}_DESCRIPTION", __instance._toolTipDescription.fontSize));
+                    __instance._toolTipDescription.text = Localyssation.GetString($"{key}_DESCRIPTION", __instance._toolTipDescription.fontSize);
 
                 if (_scriptEquip._classRequirement)
                     __instance._equipClassRequirement.text = Localyssation.GetFormattedString(
