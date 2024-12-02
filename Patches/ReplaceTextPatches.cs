@@ -461,6 +461,15 @@ namespace Localyssation.Patches
                 {
                     var weapon = (ScriptableWeapon)_scriptEquip;
 
+                    if (weapon._weaponConditionSlot._scriptableCondition)
+                    {
+                        __instance._toolTipDescription.text += Localyssation.GetFormattedString(
+                            "FORMAT_EQUIP_WEAPON_CONDITION",
+                            __instance._toolTipDescription.fontSize,
+                            weapon._weaponConditionSlot._chance * 100f,
+                            Localyssation.GetString($"{KeyUtil.GetForAsset(weapon._weaponConditionSlot._scriptableCondition)}_NAME"));
+                    }
+
                     if (Enum.TryParse<DamageType>(__instance._equipWeaponDamageType.text, out var damageType))
                         __instance._equipWeaponDamageType.text = __instance._equipWeaponDamageType.text.Replace(damageType.ToString(), Localyssation.GetString(KeyUtil.GetForAsset(damageType)));
 
