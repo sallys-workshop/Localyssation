@@ -233,20 +233,22 @@ namespace Localyssation.Patches
         {
             if (__instance._characterFileData._isEmptySlot)
             {
-                __instance._characterNicknameText.text = Localyssation.GetString("CHARACTER_SELECT_DATA_ENTRY_EMPTY_SLOT");
+                __instance._characterNicknameText.text = Localyssation.GetString("CHARACTER_SELECT_DATA_ENTRY_EMPTY_SLOT", __instance._characterNicknameText.fontSize);
             }
             else
             {
+                var fontSize = __instance._characterInfoText.fontSize;
+
                 var raceName = "";
-                var className = Localyssation.GetString("PLAYER_CLASS_EMPTY_NAME");
+                var className = Localyssation.GetString("PLAYER_CLASS_EMPTY_NAME", fontSize);
 
                 var race = GameManager._current.LocateRace(__instance._characterFileData._appearanceProfile._setRaceTag);
-                if (race) raceName = Localyssation.GetString($"{KeyUtil.GetForAsset(race)}_NAME");
+                if (race) raceName = Localyssation.GetString($"{KeyUtil.GetForAsset(race)}_NAME", fontSize);
 
                 if (!string.IsNullOrEmpty(__instance._characterFileData._statsProfile._classID))
                 {
                     var playerClass = GameManager._current.LocateClass(__instance._characterFileData._statsProfile._classID);
-                    if (playerClass) className = Localyssation.GetString($"{KeyUtil.GetForAsset(playerClass)}_NAME");
+                    if (playerClass) className = Localyssation.GetString($"{KeyUtil.GetForAsset(playerClass)}_NAME", fontSize);
                 }
 
                 __instance._characterInfoText.text = Localyssation.GetFormattedString(
@@ -267,15 +269,15 @@ namespace Localyssation.Patches
             {
                 var key = KeyUtil.GetForAsset(race);
 
-                __instance._raceDescriptionHeader.text = (Localyssation.GetString($"{key}_NAME") ?? "");
-                __instance._raceDescriptorField.text = (Localyssation.GetString($"{key}_DESCRIPTION") ?? "");
-                __instance._colorMiscTag.text = (Localyssation.GetString($"{key}_MISC") ?? "");
-                __instance._miscTag.text = (Localyssation.GetString($"{key}_MISC") ?? "");
+                __instance._raceDescriptionHeader.text = (Localyssation.GetString($"{key}_NAME", __instance._raceDescriptionHeader.fontSize) ?? "");
+                __instance._raceDescriptorField.text = (Localyssation.GetString($"{key}_DESCRIPTION", __instance._raceDescriptorField.fontSize) ?? "");
+                __instance._colorMiscTag.text = (Localyssation.GetString($"{key}_MISC", __instance._colorMiscTag.fontSize) ?? "");
+                __instance._miscTag.text = (Localyssation.GetString($"{key}_MISC", __instance._miscTag.fontSize) ?? "");
                 if (race._racialSkills.Length >= 1)
                 {
                     var skillKey = KeyUtil.GetForAsset(race._racialSkills[0]);
-                    __instance._raceInitialSkillTag.text = (Localyssation.GetString($"{skillKey}_NAME") ?? "");
-                    __instance._raceInitialSkillDescriptor.text = (Localyssation.GetString($"{skillKey}_DESCRIPTION") ?? "");
+                    __instance._raceInitialSkillTag.text = (Localyssation.GetString($"{skillKey}_NAME", __instance._raceInitialSkillTag.fontSize) ?? "");
+                    __instance._raceInitialSkillDescriptor.text = (Localyssation.GetString($"{skillKey}_DESCRIPTION", __instance._raceInitialSkillDescriptor.fontSize) ?? "");
                 }
             }
         }
@@ -442,14 +444,14 @@ namespace Localyssation.Patches
                 var key = KeyUtil.GetForAsset(_scriptEquip);
 
                 if (!string.IsNullOrEmpty(_scriptEquip._itemName))
-                    __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME"));
+                    __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME", __instance._toolTipName.fontSize));
                 __instance._toolTipSubName.text = Localyssation.GetFormattedString(
                     "FORMAT_EQUIP_ITEM_RARITY",
                     __instance._toolTipSubName.fontSize,
                     Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquip._itemRarity)));
 
                 if (!string.IsNullOrEmpty(_scriptEquip._itemDescription))
-                    __instance._toolTipDescription.text = __instance._toolTipDescription.text.Replace(_scriptEquip._itemDescription, Localyssation.GetString($"{key}_DESCRIPTION"));
+                    __instance._toolTipDescription.text = __instance._toolTipDescription.text.Replace(_scriptEquip._itemDescription, Localyssation.GetString($"{key}_DESCRIPTION", __instance._toolTipDescription.fontSize));
 
                 if (_scriptEquip._classRequirement)
                     __instance._equipClassRequirement.text = Localyssation.GetFormattedString(
@@ -471,16 +473,16 @@ namespace Localyssation.Patches
                     }
 
                     if (Enum.TryParse<DamageType>(__instance._equipWeaponDamageType.text, out var damageType))
-                        __instance._equipWeaponDamageType.text = __instance._equipWeaponDamageType.text.Replace(damageType.ToString(), Localyssation.GetString(KeyUtil.GetForAsset(damageType)));
+                        __instance._equipWeaponDamageType.text = __instance._equipWeaponDamageType.text.Replace(damageType.ToString(), Localyssation.GetString(KeyUtil.GetForAsset(damageType), __instance._equipWeaponDamageType.fontSize));
 
                     if (weapon._combatElement)
                     {
                         if (!string.IsNullOrEmpty(weapon._combatElement._elementName))
-                            __instance._equipElementText.text = __instance._equipElementText.text.Replace(weapon._combatElement._elementName, Localyssation.GetString($"{KeyUtil.GetForAsset(weapon._combatElement)}_NAME"));
+                            __instance._equipElementText.text = __instance._equipElementText.text.Replace(weapon._combatElement._elementName, Localyssation.GetString($"{KeyUtil.GetForAsset(weapon._combatElement)}_NAME", __instance._equipElementText.fontSize));
                     }
                     else
                     {
-                        __instance._equipElementText.text = __instance._equipElementText.text.Replace("Normal", Localyssation.GetString("COMBAT_ELEMENT_NORMAL_NAME"));
+                        __instance._equipElementText.text = __instance._equipElementText.text.Replace("Normal", Localyssation.GetString("COMBAT_ELEMENT_NORMAL_NAME", __instance._equipElementText.fontSize));
                     }
                 }
             }
@@ -521,12 +523,13 @@ namespace Localyssation.Patches
 
                 var trackElementText = __instance._trackElementText.text.Split(new string[] { "\n" }, StringSplitOptions.None);
                 var c = 0;
+                var fontSize = __instance._trackElementText.fontSize;
                 void ReplaceTrackElementText(string newText, int progressCurrent, int progressMax)
                 {
                     var styleTag = trackElementText[c].Substring(0, trackElementText[c].IndexOf(">") + 1);
                     var formattedQuestString = Localyssation.GetFormattedString(
                         "FORMAT_QUEST_TRACK_ELEMENT",
-                        __instance._trackElementText.fontSize,
+                        fontSize,
                         newText, progressCurrent, progressMax);
                     trackElementText[c] = styleTag + formattedQuestString + "</color>";
                     c++;
@@ -536,19 +539,19 @@ namespace Localyssation.Patches
                 {
                     var questItemRequirement = __instance._scriptQuest._questObjective._questItemRequirements[i];
                     var itemKey = $"{KeyUtil.GetForAsset(questItemRequirement._questItem)}_NAME";
-                    ReplaceTrackElementText(Localyssation.GetString(itemKey), questProgressData._itemProgressValues[i], questItemRequirement._itemsNeeded);
+                    ReplaceTrackElementText(Localyssation.GetString(itemKey, fontSize), questProgressData._itemProgressValues[i], questItemRequirement._itemsNeeded);
                 }
                 for (var i = 0; i < __instance._scriptQuest._questObjective._questCreepRequirements.Length; i++)
                 {
                     var questCreepRequirement = __instance._scriptQuest._questObjective._questCreepRequirements[i];
                     var creepKey = $"{KeyUtil.GetForAsset(questCreepRequirement._questCreep)}_NAME_IN_QUEST_TRACK_SLAIN{(questCreepRequirement._creepsKilled <= 1 ? "" : "_MULTIPLE")}";
-                    ReplaceTrackElementText(Localyssation.GetString(creepKey), questProgressData._creepKillProgressValues[i], questCreepRequirement._creepsKilled);
+                    ReplaceTrackElementText(Localyssation.GetString(creepKey, fontSize), questProgressData._creepKillProgressValues[i], questCreepRequirement._creepsKilled);
                 }
                 for (var i = 0; i < __instance._scriptQuest._questObjective._questTriggerRequirements.Length; i++)
                 {
                     var questTriggerRequirement = __instance._scriptQuest._questObjective._questTriggerRequirements[i];
                     var triggerKey = KeyUtil.GetForAsset(questTriggerRequirement);
-                    ReplaceTrackElementText($"{Localyssation.GetString(triggerKey + "_PREFIX")} {Localyssation.GetString(triggerKey + "_SUFFIX")}", questProgressData._triggerProgressValues[i], questTriggerRequirement._triggerEmitsNeeded);
+                    ReplaceTrackElementText($"{Localyssation.GetString(triggerKey + "_PREFIX", fontSize)} {Localyssation.GetString(triggerKey + "_SUFFIX", fontSize)}", questProgressData._triggerProgressValues[i], questTriggerRequirement._triggerEmitsNeeded);
                 }
 
                 __instance._trackElementText.text = string.Join("\n", trackElementText);
