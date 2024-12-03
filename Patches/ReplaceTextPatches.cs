@@ -52,10 +52,10 @@ namespace Localyssation.Patches
         }
 
         /// <summary>
-        /// Remaps all UnityEngine.UI.Text instances found in this object, and under all of its children, with localised variants if the in-game strings match remap keys.
+        /// Remaps all UnityEngine.UI.Text instances found in this object, and under all of its children, with localised variants if the GameObject names match remap keys.
         /// </summary>
         /// <param name="gameObject">The GameObject to find Text instances in.</param>
-        /// <param name="textRemaps">Key-value pairs of in-game strings to replace and language keys to replace with.</param>
+        /// <param name="textRemaps">Key-value pairs of GameObject names to find and language keys to replace their text with.</param>
         /// <param name="onRemap">A method called on a successful remap.</param>
         public static void RemapAllTextUnderObject(GameObject gameObject, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
         {
@@ -76,6 +76,29 @@ namespace Localyssation.Patches
                 {
                     var textParent = text.transform.parent;
                     if (textParent) TryRemapSingle(textParent, text);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remaps all UnityEngine.UI.Text instances found under the parent transform with localised variants if the child GameObject paths match remap keys.
+        /// </summary>
+        /// <param name="parentTransform">The Transform to find Text instances under.</param>
+        /// <param name="textRemaps">Key-value pairs of GameObject paths to find and language keys to replace their text with.</param>
+        /// <param name="onRemap">A method called on a successful remap.</param>
+        public static void RemapChildTextsByPath(Transform parentTransform, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
+        {
+            foreach (var textRemap in textRemaps)
+            {
+                var foundTransform = parentTransform.Find(textRemap.Key);
+                if (foundTransform)
+                {
+                    var text = foundTransform.GetComponent<Text>();
+                    if (text)
+                    {
+                        LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(textRemap.Value));
+                        if (onRemap != null) onRemap(foundTransform, textRemap.Value);
+                    }
                 }
             }
         }
@@ -269,7 +292,7 @@ namespace Localyssation.Patches
 
         [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_HeaderText))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> CharacterSelectManager_Handle_HeaderText(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> CharacterSelectManager_Handle_HeaderText_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
                 { "Singleplayer", "CHARACTER_SELECT_HEADER_GAME_MODE_SINGLEPLAYER" },
@@ -562,6 +585,113 @@ namespace Localyssation.Patches
                 { "({0} - {1}) Damage", "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED" },
                 { "Block threshold: {0} damage", "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD" }
             });
+        }
+
+        // stats menu
+        [HarmonyPatch(typeof(StatsMenuCell), nameof(StatsMenuCell.Cell_OnAwake))]
+        [HarmonyPostfix]
+        public static void StatsMenuCell_Cell_OnAwake(StatsMenuCell __instance)
+        {
+            RemapAllTextUnderObject(__instance.gameObject, new Dictionary<string, string>()
+            {
+                { "_text_statsHeader", "TAB_MENU_CELL_STATS_HEADER" },
+                { "_text_attributePointCounter (1)", "TAB_MENU_CELL_STATS_ATTRIBUTE_POINT_COUNTER" },
+                { "_button_applyAttributePoints", "TAB_MENU_CELL_STATS_BUTTON_APPLY_ATTRIBUTE_POINTS" },
+            });
+            RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
+            {
+                { "_infoStatPanel/_statInfoCell_nickName/_text_nickName", "TAB_MENU_CELL_STATS_INFO_CELL_NICK_NAME" },
+                { "_infoStatPanel/_statInfoCell_raceName/_text_raceName", "TAB_MENU_CELL_STATS_INFO_CELL_RACE_NAME" },
+                { "_infoStatPanel/_statInfoCell_className/_text_className", "TAB_MENU_CELL_STATS_INFO_CELL_CLASS_NAME" },
+                { "_infoStatPanel/_statInfoCell_levelCounter/_text_levelCounter", "TAB_MENU_CELL_STATS_INFO_CELL_LEVEL_COUNTER" },
+                { "_infoStatPanel/_statInfoCell_experience/_text_experience", "TAB_MENU_CELL_STATS_INFO_CELL_EXPERIENCE" },
+
+                { "_infoStatPanel/_statInfoCell_maxHealth/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_HEALTH" },
+                { "_infoStatPanel/_statInfoCell_maxMana/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_MANA" },
+                { "_infoStatPanel/_statInfoCell_maxStamina/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_STAMINA" },
+
+                { "_infoStatPanel/_statInfoCell_attack/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_ATTACK" },
+                { "_infoStatPanel/_statInfoCell_rangedPower/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_RANGED_POWER" },
+                { "_infoStatPanel/_statInfoCell_physCritical/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_PHYS_CRITICAL" },
+
+                { "_infoStatPanel/_statInfoCell_magicPow/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_POW" },
+                { "_infoStatPanel/_statInfoCell_magicCrit/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_CRIT" },
+
+                { "_infoStatPanel/_statInfoCell_defense/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_DEFENSE" },
+                { "_infoStatPanel/_statInfoCell_magicDef/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_DEF" },
+
+                { "_infoStatPanel/_statInfoCell_evasion/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_EVASION" },
+                { "_infoStatPanel/_statInfoCell_moveSpd/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MOVE_SPD" },
+            });
+        }
+
+        [HarmonyPatch(typeof(StatsMenuCell), nameof(StatsMenuCell.Apply_StatsCellData))]
+        [HarmonyPostfix]
+        public static void StatsMenuCell_Apply_StatsCellData(StatsMenuCell __instance)
+        {
+            if (!TabMenu._current._isOpen && !__instance._mainPlayer._bufferingStatus) return;
+
+            if (!string.IsNullOrEmpty(__instance._mainPlayer._pVisual._playerAppearanceStruct._setRaceTag)) {
+                var race = GameManager._current.LocateRace(__instance._mainPlayer._pVisual._playerAppearanceStruct._setRaceTag);
+                if (race)
+                {
+                    __instance._statsCell_raceTag.text = Localyssation.GetString($"{KeyUtil.GetForAsset(race)}_NAME", __instance._statsCell_raceTag.fontSize);
+                }
+            }
+
+            if (__instance._mainPlayer._pStats._currentLevel >= GameManager._current._statLogics._maxMainLevel)
+                __instance._statsCell_experience.text = Localyssation.GetString("EXP_COUNTER_MAX", __instance._statsCell_experience.fontSize);
+
+            var classFontSize = __instance._statsCell_baseClassTag.fontSize;
+            string classText;
+            if (__instance._mainPlayer._pStats._class)
+                classText = Localyssation.GetString($"{KeyUtil.GetForAsset(__instance._mainPlayer._pStats._class)}_NAME", classFontSize);
+            else
+                classText = Localyssation.GetString("PLAYER_CLASS_EMPTY_NAME", classFontSize);
+            __instance._statsCell_baseClassTag.text = classText;
+        }
+
+        [HarmonyPatch(typeof(StatsMenuCell), nameof(StatsMenuCell.ToolTip_DisplayBaseStat))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> StatsMenuCell_ToolTip_DisplayBaseStat_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
+                { "<b>Base Stat:</b> <i>", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_BEGIN" },
+                { "%</i> (Critical %)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_END_CRIT" },
+                { "%</i> (Evasion %)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_END_EVASION" },
+                { "{0}</i> (Attack Power)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_ATTACK_POW" },
+                { "{0}</i> (Max Mana)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_MP" },
+                { "{0}</i> (Max Health)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_HP" },
+                { "{0}</i> (Dex Power)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_RANGE_POW" },
+                { "%</i> (Magic Critical %)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_END_MAGIC_CRIT" },
+                { "{0}</i> (Magic Defense)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAGIC_DEF" },
+                { "{0}</i> (Defense)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_DEFENSE" },
+                { "{0}</i> (Magic Power)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAGIC_POW" },
+                { "{0}</i> (Max Stamina)", "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_STAM" },
+            });
+        }
+
+        [HarmonyPatch(typeof(AttributeListDataEntry), nameof(AttributeListDataEntry.Handle_AttributeData))]
+        [HarmonyPostfix]
+        public static void AttributeListDataEntry_Handle_AttributeData(AttributeListDataEntry __instance)
+        {
+            if (!GameManager._current ||
+                !Player._mainPlayer ||
+                string.IsNullOrEmpty(__instance._pStats._playerAttributes[__instance._dataID]._attributeName))
+                return;
+
+            var key = KeyUtil.GetForAsset(__instance._gm._statLogics._statAttributes[__instance._dataID]);
+            __instance._dataNameText.text = Localyssation.GetString($"{key}_NAME", __instance._dataNameText.fontSize);
+        }
+
+        [HarmonyPatch(typeof(AttributeListDataEntry), nameof(AttributeListDataEntry.Init_TooltipInfo))]
+        [HarmonyPostfix]
+        public static void AttributeListDataEntry_Init_TooltipInfo(AttributeListDataEntry __instance)
+        {
+            if (string.IsNullOrEmpty(__instance._scriptableAttribute._attributeDescriptor)) return;
+
+            var key = KeyUtil.GetForAsset(__instance._scriptableAttribute);
+            ToolTipManager._current.Apply_GenericToolTip(Localyssation.GetString($"{key}_DESCRIPTOR"));
         }
 
         // quests

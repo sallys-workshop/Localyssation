@@ -19,6 +19,7 @@ This mod is not finished yet! As such, no public releases are available for now.
   * Character select menu
   * Character creation menu
   * Equipment tooltips
+  * Stats tab
   * Quests (excluding a few quest menu strings)
 * Translated text can have special text edit tags:
   * `<firstupper>` - the first letter of the string inside this tag will be changed to the uppercase variant

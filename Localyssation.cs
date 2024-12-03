@@ -363,6 +363,48 @@ namespace Localyssation
                 { "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED", "({0} - {1}) Damage" },
                 { "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD", "Block threshold: {0} damage" },
 
+                // tab menu
+                { "TAB_MENU_CELL_STATS_HEADER", "Stats" },
+
+                { "TAB_MENU_CELL_STATS_ATTRIBUTE_POINT_COUNTER", "Points" },
+                { "TAB_MENU_CELL_STATS_BUTTON_APPLY_ATTRIBUTE_POINTS", "Apply" },
+
+                { "TAB_MENU_CELL_STATS_INFO_CELL_NICK_NAME", "Nickname" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_RACE_NAME", "Race" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_CLASS_NAME", "Class" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_LEVEL_COUNTER", "Level" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_EXPERIENCE", "Experience" },
+
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MAX_HEALTH", "Health" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MAX_MANA", "Mana" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MAX_STAMINA", "Stamina" },
+
+                { "TAB_MENU_CELL_STATS_INFO_CELL_ATTACK", "Attack Power" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_RANGED_POWER", "Dex Power" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_PHYS_CRITICAL", "Phys. Crit %" },
+
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_POW", "Mgk. Power" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_CRIT", "Mgk. Crit %" },
+
+                { "TAB_MENU_CELL_STATS_INFO_CELL_DEFENSE", "Defense" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_DEF", "Mgk. Defense" },
+
+                { "TAB_MENU_CELL_STATS_INFO_CELL_EVASION", "Evasion %" },
+                { "TAB_MENU_CELL_STATS_INFO_CELL_MOVE_SPD", "Mov Spd %" },
+
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_BEGIN", "<b>Base Stat:</b> <i>" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_END_CRIT", "%</i> (Critical %)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_END_EVASION", "%</i> (Evasion %)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_ATTACK_POW", "{0}</i> (Attack Power)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_MP", "{0}</i> (Max Mana)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_HP", "{0}</i> (Max Health)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_RANGE_POW", "{0}</i> (Dex Power)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_END_MAGIC_CRIT", "%</i> (Magic Critical %)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAGIC_DEF", "{0}</i> (Magic Defense)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_DEFENSE", "{0}</i> (Defense)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAGIC_POW", "{0}</i> (Magic Power)" },
+                { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_STAM", "{0}</i> (Max Stamina)" },
+
                 // quests
                 { "FORMAT_QUEST_REQUIRED_LEVEL", "(lv-{0})" },
                 { "QUEST_TYPE_CLASS", "(Class Tome)" },
