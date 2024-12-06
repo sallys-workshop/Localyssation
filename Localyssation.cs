@@ -427,12 +427,13 @@ namespace Localyssation
             return language;
         }
 
-        public static string GetStringRaw(string key)
+        public const string GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED = "SAME_AS_KEY";
+        public static string GetStringRaw(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
             string result;
             if (currentLanguage.strings.TryGetValue(key, out result)) return result;
             if (defaultLanguage.strings.TryGetValue(key, out result)) return result;
-            return key;
+            return (defaultValue == "SAME_AS_KEY" ? key : defaultValue);
         }
 
         private delegate string TextEditTagFunc(string str, string arg, int fontSize);
@@ -556,9 +557,9 @@ namespace Localyssation
             return result;
         }
 
-        public static string GetString(string key, int fontSize = -1)
+        public static string GetString(string key, int fontSize = -1, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
-            return ApplyTextEditTags(GetStringRaw(key), fontSize);
+            return ApplyTextEditTags(GetStringRaw(key, defaultValue), fontSize);
         }
 
         public static string GetFormattedString(string formatKey, int fontSize = -1, params object[] formatArgs)
