@@ -19,8 +19,11 @@ This mod is not finished yet! As such, no public releases are available for now.
   * Character select menu
   * Character creation menu
   * Equipment tooltips
-  * Stats tab
-  * Quests (excluding a few quest menu strings)
+  * Tab menu:
+    * Stats
+    * Quests (partially)
+  * Quests
+  * Dialogues
 * Translated text can have special text edit tags:
   * `<firstupper>` - the first letter of the string inside this tag will be changed to the uppercase variant
     * Example: `slime <firstupper>diva</firstupper>` will be changed into `slime Diva`

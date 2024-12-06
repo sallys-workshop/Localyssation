@@ -753,12 +753,29 @@ namespace Localyssation
         }
     }
 
+    public static class Util
+    {
+        public static string GetChildTransformPath(Transform transform, int depth = 0)
+        {
+            var str = transform.name;
+            if (depth > 0)
+            {
+                var parent = transform.parent;
+                if (parent != null)
+                {
+                    str = $"{GetChildTransformPath(parent, depth - 1)}/{str}";
+                }
+            }
+            return str;
+        }
+    }
+
     public static class KeyUtil
     {
         public static string Normalize(string key)
         {
             return new string(
-                key.ToUpper().Replace(" ", "_")
+                key.ToUpper().Replace(" ", "_").Replace("/", "_")
                 .Where(x => "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789".Contains(x))
                 .ToArray());
         }
@@ -831,6 +848,11 @@ namespace Localyssation
         public static string GetForAsset(DamageType asset)
         {
             return $"DAMAGE_TYPE_{Normalize(asset.ToString())}";
+        }
+
+        public static string GetForAsset(ScriptableDialogData asset)
+        {
+            return $"{Normalize(asset.name.ToString())}";
         }
     }
 }

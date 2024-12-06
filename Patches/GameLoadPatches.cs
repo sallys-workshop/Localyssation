@@ -1,6 +1,10 @@
 using HarmonyLib;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Localyssation.Patches
 {
@@ -80,8 +84,48 @@ namespace Localyssation.Patches
             // uncached scriptables
             foreach (var weaponType in Resources.LoadAll<ScriptableWeaponType>(""))
             {
-                var key2 = KeyUtil.GetForAsset(weaponType);
-                Localyssation.defaultLanguage.RegisterKey($"{key2}_NAME", weaponType._weaponTypeName);
+                var key = KeyUtil.GetForAsset(weaponType);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", weaponType._weaponTypeName);
+            }
+            foreach (var dialogData in Resources.LoadAll<ScriptableDialogData>(""))
+            {
+                var key = KeyUtil.GetForAsset(dialogData);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME_TAG", dialogData._nameTag);
+
+                var branchTypes = new Dictionary<DialogBranch[], string>()
+                {
+                    { dialogData._dialogBranches, "BRANCH" },
+                    { dialogData._introductionBranches, "INTRODUCTION_BRANCH" }
+                };
+
+                foreach (var branchType in branchTypes)
+                {
+                    var branchArray = branchType.Key;
+                    var branchTypeName = branchType.Value;
+                    for (var branchIndex = 0; branchIndex < branchArray.Length; branchIndex++)
+                    {
+                        var branch = branchArray[branchIndex];
+                        RegisterKeysForDialogBranch(key, $"{branchTypeName}_{branchIndex}", branch);
+                    }
+                }
+
+                var quickSentenceArrays = new Dictionary<string[], string>()
+                {
+                    { dialogData._shopkeepResponses, "SHOPKEEP_RESPONSE" },
+                    { dialogData._shopkeepRejections, "SHOPKEEP_REJECTION" },
+                    { dialogData._questAcceptResponses, "QUEST_ACCEPT_RESPONSE" },
+                    { dialogData._questCompleteResponses, "QUEST_COMPLETE_RESPONSE" }
+                };
+                foreach (var quickSentenceArrayData in quickSentenceArrays)
+                {
+                    var quickSentenceArray = quickSentenceArrayData.Key;
+                    var quickSentenceArrayName = quickSentenceArrayData.Value;
+                    for (var quickSentenceIndex = 0; quickSentenceIndex < quickSentenceArray.Length; quickSentenceIndex++)
+                    {
+                        var quickSentence = quickSentenceArray[quickSentenceIndex];
+                        ReplaceTextPatches.dialogManagerQuickSentencesHack[quickSentence] = $"{key}_{quickSentenceArrayName}_{quickSentenceIndex}";
+                    }
+                }
             }
 
             // enums
@@ -91,11 +135,79 @@ namespace Localyssation.Patches
             foreach (DamageType damageType in Enum.GetValues(typeof(DamageType)))
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(damageType), damageType.ToString());
 
+            // scene-specific
+            // this temporarily loads EVERY scene in the game to gather scene-specific keys, so we'll do it only when necessary
+            if (Localyssation.configCreateDefaultLanguageFiles.Value)
+            {
+                Localyssation.instance.StartCoroutine(RegisterSceneSpecificStrings());
+            }
+
             // misc
             Localyssation.defaultLanguage.strings["FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY"] = $"{{0}} {GameManager._current._statLogics._currencyName}";
 
             if (Localyssation.configCreateDefaultLanguageFiles.Value)
                 Localyssation.defaultLanguage.WriteToFileSystem();
+        }
+
+        private static void RegisterKeysForDialogBranch(string dialogDataKey, string keySuffixBranch, DialogBranch branch)
+        {
+            for (var dialogIndex = 0; dialogIndex < branch.dialogs.Length; dialogIndex++)
+            {
+                var dialog = branch.dialogs[dialogIndex];
+                Localyssation.defaultLanguage.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_INPUT", dialog._dialogInput);
+
+                if (dialog._altInputs != null && dialog._altInputs.Length != 0)
+                {
+                    for (var altInputIndex = 0; altInputIndex < dialog._altInputs.Length; altInputIndex++)
+                    {
+                        Localyssation.defaultLanguage.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_INPUT_ALT_{altInputIndex}", dialog._altInputs[altInputIndex]);
+                    }
+                }
+
+                for (var selectionIndex = 0; selectionIndex < dialog._dialogSelections.Length; selectionIndex++)
+                {
+                    var selection = dialog._dialogSelections[selectionIndex];
+                    Localyssation.defaultLanguage.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_SELECTION_{selectionIndex}", selection._selectionCaption);
+                }
+            }
+        }
+
+        static IEnumerator RegisterSceneSpecificStrings()
+        {
+            var excludedSceneNames = new List<string>()
+            {
+                "00_bootStrapper", "01_rootScene"
+            };
+            for (var i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                var scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                if (!excludedSceneNames.Any(x => scenePath.Contains(x)))
+                {
+                    yield return SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive);
+
+                    var scene = SceneManager.GetSceneByPath(scenePath);
+                    if (scene.IsValid())
+                    {
+                        var sceneName = scene.name;
+                        foreach (var dialogTrigger in GameObject.FindObjectsOfType<DialogTrigger>(true))
+                        {
+                            if (dialogTrigger._useLocalDialogBranch && dialogTrigger.gameObject.scene.name == sceneName)
+                            {
+                                var key = KeyUtil.GetForAsset(dialogTrigger._scriptDialogData);
+                                RegisterKeysForDialogBranch(key, KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{Util.GetChildTransformPath(dialogTrigger.transform, 2)}"), dialogTrigger._localDialogBranch);
+                            }
+                        }
+
+                        yield return SceneManager.UnloadSceneAsync(scene);
+                    }
+                }
+            }
+
+            yield return Resources.UnloadUnusedAssets();
+
+            Localyssation.defaultLanguage.WriteToFileSystem();
+
+            yield break;
         }
     }
 }
