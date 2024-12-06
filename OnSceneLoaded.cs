@@ -32,7 +32,7 @@ namespace Localyssation
                         {
                             if (text.text == "Loading...")
                             {
-                                LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc("GAME_LOADING"));
+                                LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc("GAME_LOADING"), text.text);
                                 text.alignment = TextAnchor.MiddleRight;
                             }
                         }

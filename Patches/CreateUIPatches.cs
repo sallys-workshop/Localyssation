@@ -49,7 +49,7 @@ namespace Localyssation.Patches
                 });
 
                 // make the cell title translateable
-                LangAdjustables.RegisterText(languageSelectCell.transform.Find("Text").GetComponent<Text>(), LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE"));
+                LangAdjustables.RegisterText(languageSelectCell.transform.Find("Text").GetComponent<Text>(), LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", "Language"));
             }
         }
 
