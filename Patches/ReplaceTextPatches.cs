@@ -600,11 +600,11 @@ namespace Localyssation.Patches
             });
             RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
-                { "_infoStatPanel/_statInfoCell_nickName/_text_nickName", "TAB_MENU_CELL_STATS_INFO_CELL_NICK_NAME" },
-                { "_infoStatPanel/_statInfoCell_raceName/_text_raceName", "TAB_MENU_CELL_STATS_INFO_CELL_RACE_NAME" },
-                { "_infoStatPanel/_statInfoCell_className/_text_className", "TAB_MENU_CELL_STATS_INFO_CELL_CLASS_NAME" },
-                { "_infoStatPanel/_statInfoCell_levelCounter/_text_levelCounter", "TAB_MENU_CELL_STATS_INFO_CELL_LEVEL_COUNTER" },
-                { "_infoStatPanel/_statInfoCell_experience/_text_experience", "TAB_MENU_CELL_STATS_INFO_CELL_EXPERIENCE" },
+                { "_infoStatPanel/_statInfoCell_nickName/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_NICK_NAME" },
+                { "_infoStatPanel/_statInfoCell_raceName/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_RACE_NAME" },
+                { "_infoStatPanel/_statInfoCell_className/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_CLASS_NAME" },
+                { "_infoStatPanel/_statInfoCell_levelCounter/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_LEVEL_COUNTER" },
+                { "_infoStatPanel/_statInfoCell_experience/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_EXPERIENCE" },
 
                 { "_infoStatPanel/_statInfoCell_maxHealth/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_HEALTH" },
                 { "_infoStatPanel/_statInfoCell_maxMana/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_MANA" },
@@ -880,11 +880,13 @@ namespace Localyssation.Patches
             {
                 if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_{requirement}"))
                     creepKey = $"{creepKey}_VARIANT_{requirement}";
-                else creepKey = $"{creepKey}_VARIANT_MANY";
+                else if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_MANY"))
+                    creepKey = $"{creepKey}_VARIANT_MANY";
 
                 if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_VARIANT_{requirement}"))
                     formatKey = $"{formatKey}_VARIANT_{requirement}";
-                else formatKey = $"{formatKey}_VARIANT_MANY";
+                else if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_VARIANT_MANY"))
+                    formatKey = $"{formatKey}_VARIANT_MANY";
             }
             if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_QUEST_KILLED"))
                 creepKey = $"{creepKey}_VARIANT_QUEST_KILLED";

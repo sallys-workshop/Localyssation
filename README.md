@@ -58,4 +58,8 @@ You do not have to ask me if you can make a translation. This mod is a library t
     * `<scale=1.0>` - text in this tag will have its scale multiplied by the amount provided in the argument
         * Example: `Slime <scale=0.8>Diva</scale>` will resize the word "Diva" to 80% of its original size
         * This is particularly useful for shrinking text that otherwise wouldn't fit in the UI
+* Creeps have a normal `_NAME` key and an optional `_NAME_VARIANT_MANY` key. The "MANY" variant is used whenever an enemy's automatically filled name must be in plural (e.g. in the Quest Tracker, "Slime Divas slain: 0 / 1")
+    * You can also add your own `_NAME_VARIANT_<number>` variants if plural names are different on your language at specific numbers, e.g. `CREEP_SLIME_DIVA_NAME_VARIANT_4`.
+        * The mod will first look for a `VARIANT_<number>` string. If not found, it will try to look for a `VARIANT_MANY` one. If neither exist, the default singular creep name will be used.
+    * The `FORMAT_QUEST_PROGRESS_CREEPS_KILLED` string (e.g. "Enemies slain: 0 / 5") can also have `VARIANT_MANY` and `VARIANT_<number>` variants. You can use them if your language need them.
 * You can change the `Reload Language Keybind` config option to let yourself reload your translation files right inside the game, without having to relaunch it every time you make a change
