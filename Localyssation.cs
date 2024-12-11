@@ -455,6 +455,41 @@ namespace Localyssation
                 { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAGIC_POW", "{0}</i> (Magic Power)" },
                 { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_STAM", "{0}</i> (Max Stamina)" },
 
+
+                { "TAB_MENU_CELL_SKILLS_HEADER", "Skills" },
+
+                { "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER", "Skill Points" },
+
+                { "TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP_NOVICE", "General Skills" },
+                { "TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP", "{0} Skills" },
+
+                { "TAB_MENU_CELL_SKILLS_CLASS_HEADER_NOVICE", "General Skillbook" },
+                { "TAB_MENU_CELL_SKILLS_CLASS_HEADER", "{0} Skillbook" },
+
+                { "SKILL_RANK_SOULBOUND", "Soulbound Skill" },
+                { "FORMAT_SKILL_RANK", "[Rank {0} / {1}]" },
+                { "FORMAT_SKILL_TOOLTIP_DAMAGE_TYPE", "{0} Skill" },
+                { "FORMAT_SKILL_TOOLTIP_ITEM_COST", "x{0} {1}" },
+                { "FORMAT_SKILL_TOOLTIP_MANA_COST", "{0} Mana" },
+                { "FORMAT_SKILL_TOOLTIP_HEALTH_COST", "{0} Health" },
+                { "FORMAT_SKILL_TOOLTIP_STAMINA_COST", "{0} Stamina" },
+                { "SKILL_TOOLTIP_TOOLTIP_CAST_TIME_INSTANT", "Instant Cast" },
+                { "FORMAT_SKILL_TOOLTIP_CAST_TIME", "{0} sec Cast" },
+                { "FORMAT_SKILL_TOOLTIP_COOLDOWN", "{0} sec Cooldown" },
+                
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_NEXT_RANK", "\n<color=white><i>[Next Rank]</i></color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CURRENT_RANK", "\n<color=white><i>[Rank {0}]</i></color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_REQUIRED_LEVEL", "<color=red>\n(Requires Lv. {0})</color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_COOLDOWN", "<color=yellow>{0} sec cooldown.</color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME", "<color=yellow>{0} sec cast time.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME_INSTANT", "<color=yellow>instant cast time.</color>" },
+
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_CANCEL_ON_HIT", " <color=yellow>Cancels if hit.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_PERMANENT", " <color=yellow>Permanent.</color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_DURATION", " <color=yellow>Lasts for {0} seconds.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_STACKABLE", " <color=yellow>Stackable.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE", " <color=yellow>Refreshes when re-applied.</color>" },
+
                 // quests
                 { "FORMAT_QUEST_REQUIRED_LEVEL", "(lv-{0})" },
                 { "QUEST_TYPE_CLASS", "(Class Tome)" },
