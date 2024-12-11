@@ -530,12 +530,18 @@ namespace Localyssation.Patches
             {
                 var key = KeyUtil.GetForAsset(_scriptEquip);
 
+                var shownRarity = _scriptEquip._itemRarity;
+                if (!string.IsNullOrWhiteSpace(_itemData._modifierTag) && GameManager._current.LocateStatModifier(_itemData._modifierTag))
+                {
+                    shownRarity += 1;
+                }
+
                 if (!string.IsNullOrEmpty(_scriptEquip._itemName))
                     __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME", __instance._toolTipName.fontSize, __instance._toolTipName.text));
                 __instance._toolTipSubName.text = Localyssation.GetFormattedString(
                     "FORMAT_EQUIP_ITEM_RARITY",
                     __instance._toolTipSubName.fontSize,
-                    Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquip._itemRarity), __instance._toolTipSubName.fontSize, _scriptEquip._itemRarity.ToString()));
+                    Localyssation.GetString(KeyUtil.GetForAsset(shownRarity), __instance._toolTipSubName.fontSize, _scriptEquip._itemRarity.ToString()));
 
                 if (!string.IsNullOrEmpty(_scriptEquip._itemDescription))
                     __instance._toolTipDescription.text = Localyssation.GetString($"{key}_DESCRIPTION", __instance._toolTipDescription.fontSize, __instance._toolTipDescription.text);
