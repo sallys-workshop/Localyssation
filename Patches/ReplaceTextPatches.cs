@@ -419,7 +419,6 @@ namespace Localyssation.Patches
 
                 { "Image_06", "SETTINGS_INPUT_HEADER_CAMERA_CONTROL" },
                 { "_cell_cameraSensitivity", "SETTINGS_INPUT_CELL_CAMERA_SENSITIVITY" },
-                { "Button_01", "SETTINGS_BUTTON_RESET" },
                 { "_cell_invertXCameraAxis", "SETTINGS_INPUT_CELL_INVERT_X_CAMERA_AXIS" },
                 { "_cell_invertYCameraAxis", "SETTINGS_INPUT_CELL_INVERT_Y_CAMERA_AXIS" },
                 { "_cell_keybinding_37", "SETTINGS_INPUT_CELL_KEYBINDING_RESET_CAMERA" },
@@ -510,6 +509,15 @@ namespace Localyssation.Patches
                         LangAdjustables.RegisterDropdown(dropdown, dropdownOptionsTextFuncs);
                     }
                 }
+            });
+
+            RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
+            {
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_fieldOfView/Button/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_cameraSmoothing/Button_01/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_cameraHoriz/Button_01/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_cameraVert/Button_01/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_inputSettingsTab/_backdrop/Scroll View/Viewport/Content/_cell_cameraSensitivity/Button_01/Text", "SETTINGS_BUTTON_RESET" },
             });
         }
 
