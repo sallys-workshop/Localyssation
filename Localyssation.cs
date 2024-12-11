@@ -15,12 +15,13 @@ using System.Linq;
 
 namespace Localyssation
 {
+    [BepInDependency(Nessie.ATLYSS.EasySettings.MyPluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Localyssation : BaseUnityPlugin
     {
         public const string PLUGIN_GUID = "com.themysticsword.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.0.2";
+        public const string PLUGIN_VERSION = "0.0.3";
 
         public static Localyssation instance;
 
@@ -42,6 +43,11 @@ namespace Localyssation
         internal static BepInEx.Configuration.ConfigEntry<bool> configCreateDefaultLanguageFiles;
         internal static BepInEx.Configuration.ConfigEntry<KeyCode> configReloadLanguageKeybind;
 
+        internal static bool settingsTabReady = false;
+        internal static bool languagesLoaded = false;
+        internal static bool settingsTabSetup = false;
+        internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
+
         private void Awake()
         {
             instance = this;
@@ -60,16 +66,61 @@ namespace Localyssation
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
                 ChangeLanguage(previouslySelectedLanguage);
 
-            configCreateDefaultLanguageFiles = config.Bind("Developers", "Create Default Language Files", false, "If enabled, files for the default game language will be created in the mod's directory on game load");
+            configCreateDefaultLanguageFiles = config.Bind("Developers", "Create Default Language Files On Load", false, "If enabled, files for the default game language will be created in the mod's directory on game load");
             configReloadLanguageKeybind = config.Bind("Developers", "Reload Language Keybind", KeyCode.None, "When you press this button, your current language's files will be reloaded mid-game");
+
+            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(() =>
+            {
+                settingsTabReady = true;
+                TrySetupSettingsTab();
+            });
+            Nessie.ATLYSS.EasySettings.Settings.OnCancelSettings.AddListener(() =>
+            {
+                if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage2))
+                {
+                    ChangeLanguage(previouslySelectedLanguage2);
+                }
+            });
+            Nessie.ATLYSS.EasySettings.Settings.OnApplySettings.AddListener(() =>
+            {
+                var language = languagesList[languageDropdown.AppliedValue];
+                configLanguage.Value = language.info.code;
+            });
 
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
             harmony.PatchAll(typeof(Patches.ReplaceTextPatches));
-            harmony.PatchAll(typeof(Patches.CreateUIPatches));
             OnSceneLoaded.Init();
             LangAdjustables.Init();
+        }
+
+        private static void TrySetupSettingsTab()
+        {
+            if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
+            settingsTabSetup = true;
+
+            var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
+
+            tab.AddHeader("Localyssation");
+
+            var languageNames = new List<string>();
+            var currentLanguageIndex = 0;
+            for (var i = 0; i < languagesList.Count; i++)
+            {
+                var language = languagesList[i];
+                languageNames.Add(language.info.name);
+                if (language == currentLanguage) currentLanguageIndex = i;
+            }
+            languageDropdown = tab.AddDropdown("Language", languageNames, currentLanguageIndex);
+            languageDropdown.OnValueChanged.AddListener((valueIndex) =>
+            {
+                ChangeLanguage(languagesList[valueIndex]);
+            });
+            LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
+
+            tab.AddToggle(configCreateDefaultLanguageFiles);
+            tab.AddKeyButton(configReloadLanguageKeybind);
         }
 
         private void Update()
@@ -93,16 +144,15 @@ namespace Localyssation
                 if (loadedLanguage.LoadFromFileSystem())
                     RegisterLanguage(loadedLanguage);
             }
+
+            languagesLoaded = true;
+            TrySetupSettingsTab();
         }
 
         public static void RegisterLanguage(Language language)
         {
-            if (languages.TryGetValue(language.info.code, out var existingLanguage))
-            {
-                existingLanguage.info = language.info;
-                foreach (var kvp in language.strings) existingLanguage.strings[kvp.Key] = kvp.Value;
-                return;
-            }
+            if (languages.ContainsKey(language.info.code)) return;
+
             languages[language.info.code] = language;
             languagesList.Add(language);
         }
