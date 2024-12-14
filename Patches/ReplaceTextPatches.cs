@@ -717,11 +717,18 @@ namespace Localyssation.Patches
             RemapAllTextUnderObject(__instance.gameObject, new Dictionary<string, string>()
             {
                 { "_text_skillsHeader", "TAB_MENU_CELL_SKILLS_HEADER" },
-                { "_text_skillPointsTag", "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER" },
             });
             RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
+                { "_backdrop_skillPoints/_text_skillPointsTag", "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER" },
                 { "Content_noviceSkills/_skillsCell_skillListObject_recall/_text_skillRank", "SKILL_RANK_SOULBOUND" },
+            }, (transform, key) =>
+            {
+                if (key == "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER")
+                {
+                    var text = transform.GetComponent<Text>();
+                    if (text) text.alignment = TextAnchor.MiddleLeft;
+                }
             });
         }
 
@@ -739,8 +746,8 @@ namespace Localyssation.Patches
                     if (!playerClass) return;
 
                     var classKey = $"{KeyUtil.GetForAsset(playerClass)}_NAME";
-                    if (Localyssation.currentLanguage.strings.ContainsKey(classKey + "_VARIANT_SKILLS"))
-                        classKey += "_VARIANT_SKILLS";
+                    if (Localyssation.currentLanguage.strings.ContainsKey(classKey + "_VARIANT_OF"))
+                        classKey += "_VARIANT_OF";
 
                     ToolTipManager._current.Apply_GenericToolTip(Localyssation.GetFormattedString(
                         "TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP",
@@ -765,8 +772,8 @@ namespace Localyssation.Patches
                     break;
                 case SkillTier.CLASS:
                     var classKey = $"{KeyUtil.GetForAsset(__instance._pStats._class)}_NAME";
-                    if (Localyssation.currentLanguage.strings.ContainsKey(classKey + "_VARIANT_SKILLS"))
-                        classKey += "_VARIANT_SKILLS";
+                    if (Localyssation.currentLanguage.strings.ContainsKey(classKey + "_VARIANT_OF"))
+                        classKey += "_VARIANT_OF";
                     txt = Localyssation.GetFormattedString(
                         "TAB_MENU_CELL_SKILLS_CLASS_HEADER",
                         fontSize,
@@ -832,6 +839,9 @@ namespace Localyssation.Patches
                         Localyssation.GetString($"{KeyUtil.GetForAsset(requiredItem)}_NAME", __instance._itemCost.fontSize, requiredItem._itemName));
                 }
             }
+
+            var passiveSkillText = __instance._passiveSkillTabObject.transform.Find("_passiveSkill_text").GetComponent<Text>();
+            passiveSkillText.text = Localyssation.GetString("SKILL_TOOLTIP_PASSIVE", passiveSkillText.fontSize, passiveSkillText.text);
         }
 
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillStats))]
@@ -842,7 +852,7 @@ namespace Localyssation.Patches
                 { "{0} Mana", "FORMAT_SKILL_TOOLTIP_MANA_COST" },
                 { "{0} Health", "FORMAT_SKILL_TOOLTIP_HEALTH_COST" },
                 { "{0} Stamina", "FORMAT_SKILL_TOOLTIP_STAMINA_COST" },
-                { "Instant Cast", "SKILL_TOOLTIP_TOOLTIP_CAST_TIME_INSTANT" },
+                { "Instant Cast", "SKILL_TOOLTIP_CAST_TIME_INSTANT" },
                 { "{0} sec Cast", "FORMAT_SKILL_TOOLTIP_CAST_TIME" },
                 { "{0} sec Cooldown", "FORMAT_SKILL_TOOLTIP_COOLDOWN" },
             });

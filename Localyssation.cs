@@ -499,10 +499,11 @@ namespace Localyssation
                 { "FORMAT_SKILL_TOOLTIP_MANA_COST", "{0} Mana" },
                 { "FORMAT_SKILL_TOOLTIP_HEALTH_COST", "{0} Health" },
                 { "FORMAT_SKILL_TOOLTIP_STAMINA_COST", "{0} Stamina" },
-                { "SKILL_TOOLTIP_TOOLTIP_CAST_TIME_INSTANT", "Instant Cast" },
+                { "SKILL_TOOLTIP_CAST_TIME_INSTANT", "Instant Cast" },
                 { "FORMAT_SKILL_TOOLTIP_CAST_TIME", "{0} sec Cast" },
                 { "FORMAT_SKILL_TOOLTIP_COOLDOWN", "{0} sec Cooldown" },
-                
+                { "SKILL_TOOLTIP_PASSIVE", "Passive Skill" },
+
                 { "SKILL_TOOLTIP_RANK_DESCRIPTOR_NEXT_RANK", "\n<color=white><i>[Next Rank]</i></color>" },
                 { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CURRENT_RANK", "\n<color=white><i>[Rank {0}]</i></color>" },
                 { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_REQUIRED_LEVEL", "<color=red>\n(Requires Lv. {0})</color>" },
