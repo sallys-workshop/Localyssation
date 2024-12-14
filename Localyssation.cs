@@ -40,6 +40,7 @@ namespace Localyssation
         internal static BepInEx.Configuration.ConfigFile config;
 
         internal static BepInEx.Configuration.ConfigEntry<string> configLanguage;
+        internal static BepInEx.Configuration.ConfigEntry<bool> configTranslatorMode;
         internal static BepInEx.Configuration.ConfigEntry<bool> configCreateDefaultLanguageFiles;
         internal static BepInEx.Configuration.ConfigEntry<KeyCode> configReloadLanguageKeybind;
 
@@ -66,25 +67,14 @@ namespace Localyssation
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
                 ChangeLanguage(previouslySelectedLanguage);
 
-            configCreateDefaultLanguageFiles = config.Bind("Developers", "Create Default Language Files On Load", false, "If enabled, files for the default game language will be created in the mod's directory on game load");
-            configReloadLanguageKeybind = config.Bind("Developers", "Reload Language Keybind", KeyCode.None, "When you press this button, your current language's files will be reloaded mid-game");
+            configTranslatorMode = config.Bind("Translators", "Translator Mode", false, "Enables the features of this section");
+            configCreateDefaultLanguageFiles = config.Bind("Translators", "Create Default Language Files On Load", true, "If enabled, files for the default game language will be created in the mod's directory on game load");
+            configReloadLanguageKeybind = config.Bind("Translators", "Reload Language Keybind", KeyCode.F10, "When you press this button, your current language's files will be reloaded mid-game");
 
             Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(() =>
             {
                 settingsTabReady = true;
                 TrySetupSettingsTab();
-            });
-            Nessie.ATLYSS.EasySettings.Settings.OnCancelSettings.AddListener(() =>
-            {
-                if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage2))
-                {
-                    ChangeLanguage(previouslySelectedLanguage2);
-                }
-            });
-            Nessie.ATLYSS.EasySettings.Settings.OnApplySettings.AddListener(() =>
-            {
-                var language = languagesList[languageDropdown.AppliedValue];
-                configLanguage.Value = language.info.code;
             });
 
             Harmony harmony = new Harmony(PLUGIN_GUID);
@@ -115,20 +105,56 @@ namespace Localyssation
             languageDropdown = tab.AddDropdown("Language", languageNames, currentLanguageIndex);
             languageDropdown.OnValueChanged.AddListener((valueIndex) =>
             {
-                ChangeLanguage(languagesList[valueIndex]);
+                var language = languagesList[valueIndex];
+                ChangeLanguage(language);
+                configLanguage.Value = language.info.code;
             });
             LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
 
-            tab.AddToggle(configCreateDefaultLanguageFiles);
-            tab.AddKeyButton(configReloadLanguageKeybind);
+            tab.AddToggle(configTranslatorMode);
+            if (configTranslatorMode.Value)
+            {
+                tab.AddToggle(configCreateDefaultLanguageFiles);
+                tab.AddKeyButton(configReloadLanguageKeybind);
+                tab.AddButton("Add Missing Keys to Current Language", () =>
+                {
+                    foreach (var kvp in defaultLanguage.strings)
+                    {
+                        if (!currentLanguage.strings.ContainsKey(kvp.Key))
+                        {
+                            currentLanguage.strings[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    currentLanguage.WriteToFileSystem();
+                });
+                tab.AddButton("Log Untranslated Strings", () =>
+                {
+                    var changedCount = 0;
+                    var totalCount = 0;
+                    logger.LogMessage($"Logging strings that are the same in {defaultLanguage.info.name} and {currentLanguage.info.name}:");
+                    foreach (var kvp in currentLanguage.strings)
+                    {
+                        if (defaultLanguage.strings.TryGetValue(kvp.Key, out var valueInDefaultLanguage))
+                        {
+                            totalCount += 1;
+                            if (kvp.Value == valueInDefaultLanguage) logger.LogMessage(kvp.Key);
+                            else changedCount += 1;
+                        }
+                    }
+                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({(changedCount / totalCount * 100f):0.00}%) strings are different between the languages.");
+                });
+            }
         }
 
         private void Update()
         {
-            if (UnityInput.Current.GetKeyDown(configReloadLanguageKeybind.Value))
+            if (configTranslatorMode.Value)
             {
-                currentLanguage.LoadFromFileSystem(true);
-                CallOnLanguageChanged(currentLanguage);
+                if (UnityInput.Current.GetKeyDown(configReloadLanguageKeybind.Value))
+                {
+                    currentLanguage.LoadFromFileSystem(true);
+                    CallOnLanguageChanged(currentLanguage);
+                }
             }
         }
 
