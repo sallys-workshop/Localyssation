@@ -15,12 +15,13 @@ using System.Linq;
 
 namespace Localyssation
 {
+    [BepInDependency(Nessie.ATLYSS.EasySettings.MyPluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Localyssation : BaseUnityPlugin
     {
         public const string PLUGIN_GUID = "com.themysticsword.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.0.2";
+        public const string PLUGIN_VERSION = "0.0.3";
 
         public static Localyssation instance;
 
@@ -39,8 +40,14 @@ namespace Localyssation
         internal static BepInEx.Configuration.ConfigFile config;
 
         internal static BepInEx.Configuration.ConfigEntry<string> configLanguage;
+        internal static BepInEx.Configuration.ConfigEntry<bool> configTranslatorMode;
         internal static BepInEx.Configuration.ConfigEntry<bool> configCreateDefaultLanguageFiles;
         internal static BepInEx.Configuration.ConfigEntry<KeyCode> configReloadLanguageKeybind;
+
+        internal static bool settingsTabReady = false;
+        internal static bool languagesLoaded = false;
+        internal static bool settingsTabSetup = false;
+        internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
         private void Awake()
         {
@@ -60,24 +67,94 @@ namespace Localyssation
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
                 ChangeLanguage(previouslySelectedLanguage);
 
-            configCreateDefaultLanguageFiles = config.Bind("Developers", "Create Default Language Files", false, "If enabled, files for the default game language will be created in the mod's directory on game load");
-            configReloadLanguageKeybind = config.Bind("Developers", "Reload Language Keybind", KeyCode.None, "When you press this button, your current language's files will be reloaded mid-game");
+            configTranslatorMode = config.Bind("Translators", "Translator Mode", false, "Enables the features of this section");
+            configCreateDefaultLanguageFiles = config.Bind("Translators", "Create Default Language Files On Load", true, "If enabled, files for the default game language will be created in the mod's directory on game load");
+            configReloadLanguageKeybind = config.Bind("Translators", "Reload Language Keybind", KeyCode.F10, "When you press this button, your current language's files will be reloaded mid-game");
+
+            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(() =>
+            {
+                settingsTabReady = true;
+                TrySetupSettingsTab();
+            });
 
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
             harmony.PatchAll(typeof(Patches.ReplaceTextPatches));
-            harmony.PatchAll(typeof(Patches.CreateUIPatches));
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
 
+        private static void TrySetupSettingsTab()
+        {
+            if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
+            settingsTabSetup = true;
+
+            var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
+
+            tab.AddHeader("Localyssation");
+
+            var languageNames = new List<string>();
+            var currentLanguageIndex = 0;
+            for (var i = 0; i < languagesList.Count; i++)
+            {
+                var language = languagesList[i];
+                languageNames.Add(language.info.name);
+                if (language == currentLanguage) currentLanguageIndex = i;
+            }
+            languageDropdown = tab.AddDropdown("Language", languageNames, currentLanguageIndex);
+            languageDropdown.OnValueChanged.AddListener((valueIndex) =>
+            {
+                var language = languagesList[valueIndex];
+                ChangeLanguage(language);
+                configLanguage.Value = language.info.code;
+            });
+            LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
+
+            tab.AddToggle(configTranslatorMode);
+            if (configTranslatorMode.Value)
+            {
+                tab.AddToggle(configCreateDefaultLanguageFiles);
+                tab.AddKeyButton(configReloadLanguageKeybind);
+                tab.AddButton("Add Missing Keys to Current Language", () =>
+                {
+                    foreach (var kvp in defaultLanguage.strings)
+                    {
+                        if (!currentLanguage.strings.ContainsKey(kvp.Key))
+                        {
+                            currentLanguage.strings[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    currentLanguage.WriteToFileSystem();
+                });
+                tab.AddButton("Log Untranslated Strings", () =>
+                {
+                    var changedCount = 0;
+                    var totalCount = 0;
+                    logger.LogMessage($"Logging strings that are the same in {defaultLanguage.info.name} and {currentLanguage.info.name}:");
+                    foreach (var kvp in currentLanguage.strings)
+                    {
+                        if (defaultLanguage.strings.TryGetValue(kvp.Key, out var valueInDefaultLanguage))
+                        {
+                            totalCount += 1;
+                            if (kvp.Value == valueInDefaultLanguage) logger.LogMessage(kvp.Key);
+                            else changedCount += 1;
+                        }
+                    }
+                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({(changedCount / totalCount * 100f):0.00}%) strings are different between the languages.");
+                });
+            }
+        }
+
         private void Update()
         {
-            if (UnityInput.Current.GetKeyDown(configReloadLanguageKeybind.Value))
+            if (configTranslatorMode.Value)
             {
-                currentLanguage.LoadFromFileSystem(true);
-                CallOnLanguageChanged(currentLanguage);
+                if (UnityInput.Current.GetKeyDown(configReloadLanguageKeybind.Value))
+                {
+                    currentLanguage.LoadFromFileSystem(true);
+                    CallOnLanguageChanged(currentLanguage);
+                }
             }
         }
 
@@ -93,16 +170,15 @@ namespace Localyssation
                 if (loadedLanguage.LoadFromFileSystem())
                     RegisterLanguage(loadedLanguage);
             }
+
+            languagesLoaded = true;
+            TrySetupSettingsTab();
         }
 
         public static void RegisterLanguage(Language language)
         {
-            if (languages.TryGetValue(language.info.code, out var existingLanguage))
-            {
-                existingLanguage.info = language.info;
-                foreach (var kvp in language.strings) existingLanguage.strings[kvp.Key] = kvp.Value;
-                return;
-            }
+            if (languages.ContainsKey(language.info.code)) return;
+
             languages[language.info.code] = language;
             languagesList.Add(language);
         }
@@ -404,6 +480,42 @@ namespace Localyssation
                 { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_DEFENSE", "{0}</i> (Defense)" },
                 { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAGIC_POW", "{0}</i> (Magic Power)" },
                 { "TAB_MENU_CELL_STATS_TOOLTIP_BASE_STAT_FORMAT_MAX_STAM", "{0}</i> (Max Stamina)" },
+
+
+                { "TAB_MENU_CELL_SKILLS_HEADER", "Skills" },
+
+                { "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER", "Skill Points" },
+
+                { "TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP_NOVICE", "General Skills" },
+                { "TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP", "{0} Skills" },
+
+                { "TAB_MENU_CELL_SKILLS_CLASS_HEADER_NOVICE", "General Skillbook" },
+                { "TAB_MENU_CELL_SKILLS_CLASS_HEADER", "{0} Skillbook" },
+
+                { "SKILL_RANK_SOULBOUND", "Soulbound Skill" },
+                { "FORMAT_SKILL_RANK", "[Rank {0} / {1}]" },
+                { "FORMAT_SKILL_TOOLTIP_DAMAGE_TYPE", "{0} Skill" },
+                { "FORMAT_SKILL_TOOLTIP_ITEM_COST", "x{0} {1}" },
+                { "FORMAT_SKILL_TOOLTIP_MANA_COST", "{0} Mana" },
+                { "FORMAT_SKILL_TOOLTIP_HEALTH_COST", "{0} Health" },
+                { "FORMAT_SKILL_TOOLTIP_STAMINA_COST", "{0} Stamina" },
+                { "SKILL_TOOLTIP_CAST_TIME_INSTANT", "Instant Cast" },
+                { "FORMAT_SKILL_TOOLTIP_CAST_TIME", "{0} sec Cast" },
+                { "FORMAT_SKILL_TOOLTIP_COOLDOWN", "{0} sec Cooldown" },
+                { "SKILL_TOOLTIP_PASSIVE", "Passive Skill" },
+
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_NEXT_RANK", "\n<color=white><i>[Next Rank]</i></color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CURRENT_RANK", "\n<color=white><i>[Rank {0}]</i></color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_REQUIRED_LEVEL", "<color=red>\n(Requires Lv. {0})</color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_COOLDOWN", "<color=yellow>{0} sec cooldown.</color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME", "<color=yellow>{0} sec cast time.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME_INSTANT", "<color=yellow>instant cast time.</color>" },
+
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_CANCEL_ON_HIT", " <color=yellow>Cancels if hit.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_PERMANENT", " <color=yellow>Permanent.</color>" },
+                { "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_DURATION", " <color=yellow>Lasts for {0} seconds.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_STACKABLE", " <color=yellow>Stackable.</color>" },
+                { "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE", " <color=yellow>Refreshes when re-applied.</color>" },
 
                 // quests
                 { "FORMAT_QUEST_REQUIRED_LEVEL", "(lv-{0})" },

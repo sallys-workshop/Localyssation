@@ -2,7 +2,8 @@
     <PropertyGroup>
         <ATLYSS_PATH>D:\SteamLibrary\steamapps\common\ATLYSS\</ATLYSS_PATH>
         <ATLYSS_MANAGED>$(ATLYSS_PATH)\ATLYSS_Data\Managed</ATLYSS_MANAGED>
-        <ATLYSS_BEPINEX>$(ATLYSS_PATH)\BepInEx\core</ATLYSS_BEPINEX>
+        <ATLYSS_BEPINEX>D:\Program Files\r2modman\mods\ATLYSS\profiles\Mod Creation\BepInEx\core</ATLYSS_BEPINEX>
+        <ATLYSS_BEPINEX_PLUGINS>D:\Program Files\r2modman\mods\ATLYSS\profiles\Mod Creation\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -126,6 +127,15 @@
         </Reference>
         <Reference Include="MonoMod.Utils">
             <HintPath>$(ATLYSS_BEPINEX)\MonoMod.Utils.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+
+    
+    <!-- Mod assemblies. -->
+    <ItemGroup>
+        <Reference Include="EasySettings">
+            <HintPath>$(ATLYSS_BEPINEX_PLUGINS)\Nessie-EasySettings\EasySettings.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>
