@@ -25,7 +25,7 @@ namespace Localyssation
         // handy function to slot into the newTextFunc param when you need a simple key->string replacement
         public static System.Func<int, string> GetStringFunc(string key, string defaultValue = Localyssation.GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
-            return (fontSize) => Localyssation.GetString(key, fontSize, defaultValue);
+            return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
         }
 
         public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc)
