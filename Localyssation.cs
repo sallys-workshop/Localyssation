@@ -425,6 +425,11 @@ namespace Localyssation
                 { "SETTINGS_BUTTON_APPLY", "Apply" },
 
                 // equipment
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Gear" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY", "[Unknown]" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE", "???" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION", "You can't really see what this is until you buy it." },
+
                 { "FORMAT_EQUIP_ITEM_RARITY", "[{0}]" },
                 { "FORMAT_EQUIP_LEVEL_REQUIREMENT", "Lv-{0}" },
                 { "FORMAT_EQUIP_CLASS_REQUIREMENT", "Class: {0}" },

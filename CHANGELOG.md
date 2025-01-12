@@ -1,5 +1,6 @@
 ## 0.0.4
 * Dialogue "quick sentences" can now be translated (e.g. quest accept/complete responses, enchanting responses, etc.)
+* Fixed Skrit's gamble item descriptions being revealed, and made gamble item text translatable (under `EQUIP_TOOLTIP_GAMBLE_ITEM_` keys)
 * Made new settings translatable:
 	* Display Global Nametags
 	* Hide Stat Point Notice Panel

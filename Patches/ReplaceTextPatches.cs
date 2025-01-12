@@ -530,7 +530,7 @@ namespace Localyssation.Patches
         [HarmonyPostfix]
         public static void EquipToolTip_Apply_EquipStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
         {
-            if (_scriptEquip)
+            if (_scriptEquip && !__instance._isGambleItem)
             {
                 var key = KeyUtil.GetForAsset(_scriptEquip);
 
@@ -593,6 +593,10 @@ namespace Localyssation.Patches
         public static IEnumerable<CodeInstruction> EquipToolTip_Apply_EquipStats_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
+                { "Mystery Gear", "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME" },
+                { "[Unknown]", "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY" },
+                { "???", "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE" },
+                { "You can't really see what this is until you buy it.", "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
                 { "Lv-{0}", "FORMAT_EQUIP_LEVEL_REQUIREMENT" },
                 { "Helm (Armor)", "EQUIP_TOOLTIP_TYPE_HELM" },
                 { "Chestpiece (Armor)", "EQUIP_TOOLTIP_TYPE_CHESTPIECE" },
