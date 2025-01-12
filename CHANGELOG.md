@@ -1,3 +1,9 @@
+## 0.0.4
+* Dialogue "quick sentences" can now be translated (e.g. quest accept/complete responses, enchanting responses, etc.)
+* Made new settings translatable:
+	* Display Global Nametags
+	* Hide Stat Point Notice Panel
+	* Hide Skill Point Notice Panel
 ## 0.0.3
 * The mod now requires [EasySettings](https://thunderstore.io/c/atlyss/p/Nessie/EasySettings/)
 * Moved the Language selection button and "Developer" configs to **Settings > Mods > Localyssation**

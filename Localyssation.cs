@@ -21,7 +21,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "com.themysticsword.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.0.3";
+        public const string PLUGIN_VERSION = "0.0.4";
 
         public static Localyssation instance;
 
