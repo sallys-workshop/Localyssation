@@ -128,7 +128,9 @@ namespace Localyssation.Patches
                     for (var quickSentenceIndex = 0; quickSentenceIndex < quickSentenceArray.Length; quickSentenceIndex++)
                     {
                         var quickSentence = quickSentenceArray[quickSentenceIndex];
-                        ReplaceTextPatches.dialogManagerQuickSentencesHack[quickSentence] = $"{key}_{quickSentenceArrayName}_{quickSentenceIndex}";
+                        var quickSentenceKey = $"{key}_{quickSentenceArrayName}_{quickSentenceIndex}";
+                        ReplaceTextPatches.dialogManagerQuickSentencesHack[quickSentence] = quickSentenceKey;
+                        Localyssation.defaultLanguage.RegisterKey(quickSentenceKey, quickSentence);
                     }
                 }
             }

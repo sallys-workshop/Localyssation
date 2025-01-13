@@ -25,23 +25,37 @@ namespace Localyssation
         // handy function to slot into the newTextFunc param when you need a simple key->string replacement
         public static System.Func<int, string> GetStringFunc(string key, string defaultValue = Localyssation.GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
-            return (fontSize) => Localyssation.GetString(key, fontSize, defaultValue);
+            return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
         }
 
-        public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc)
+        internal static Dictionary<UnityEngine.UI.Text, LangAdjustableUIText> registeredTexts = new Dictionary<UnityEngine.UI.Text, LangAdjustableUIText>();
+        public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc = null)
         {
-            if (text.GetComponent<LangAdjustableUIText>()) return;
-
-            var replaceable = text.gameObject.AddComponent<LangAdjustableUIText>();
-            replaceable.newTextFunc = newTextFunc;
+            LangAdjustableUIText adjustable;
+            if (!registeredTexts.TryGetValue(text, out adjustable))
+                adjustable = registeredTexts[text] = text.gameObject.AddComponent<LangAdjustableUIText>();
+            
+            if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
 
-        public static void RegisterDropdown(UnityEngine.UI.Dropdown dropdown, List<System.Func<int, string>> newTextFuncs)
+        internal static Dictionary<TMPro.TextMeshProUGUI, LangAdjustableTMProUGUIText> registeredTMProUGUITexts = new Dictionary<TMPro.TextMeshProUGUI, LangAdjustableTMProUGUIText>();
+        public static void RegisterText(TMPro.TextMeshProUGUI text, System.Func<int, string> newTextFunc = null)
         {
-            if (dropdown.GetComponent<LangAdjustableUIDropdown>()) return;
+            LangAdjustableTMProUGUIText adjustable;
+            if (!registeredTMProUGUITexts.TryGetValue(text, out adjustable))
+                adjustable = registeredTMProUGUITexts[text] = text.gameObject.AddComponent<LangAdjustableTMProUGUIText>();
 
-            var replaceable = dropdown.gameObject.AddComponent<LangAdjustableUIDropdown>();
-            replaceable.newTextFuncs = newTextFuncs;
+            if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
+        }
+
+        internal static Dictionary<UnityEngine.UI.Dropdown, LangAdjustableUIDropdown> registeredDropdowns = new Dictionary<UnityEngine.UI.Dropdown, LangAdjustableUIDropdown>();
+        public static void RegisterDropdown(UnityEngine.UI.Dropdown dropdown, List<System.Func<int, string>> newTextFuncs = null)
+        {
+            LangAdjustableUIDropdown adjustable;
+            if (!registeredDropdowns.TryGetValue(dropdown, out adjustable))
+                adjustable = registeredDropdowns[dropdown] = dropdown.gameObject.AddComponent<LangAdjustableUIDropdown>();
+
+            if (newTextFuncs != null) adjustable.newTextFuncs = newTextFuncs;
         }
 
         public interface ILangAdjustable
@@ -54,6 +68,11 @@ namespace Localyssation
             public UnityEngine.UI.Text text;
             public System.Func<int, string> newTextFunc;
 
+            public bool fontReplaced = false;
+            public int orig_fontSize;
+            public float orig_lineSpacing;
+            public Font orig_font;
+
             public bool textAutoShrinkable = true;
             public bool textAutoShrunk = false;
             public bool orig_resizeTextForBestFit = false;
@@ -63,6 +82,7 @@ namespace Localyssation
             public void Awake()
             {
                 text = GetComponent<UnityEngine.UI.Text>();
+                text.verticalOverflow = VerticalWrapMode.Overflow;
                 Localyssation.instance.onLanguageChanged += onLanguageChanged;
             }
 
@@ -78,9 +98,44 @@ namespace Localyssation
 
             public void AdjustToLanguage(Language newLanguage)
             {
-                if (newTextFunc != null)
+                bool TryReplaceFont(Font originalFont, Language.BundledFontLookupInfo replacementFontLookupInfo)
                 {
-                    text.text = newTextFunc(text.fontSize);
+                    if (originalFont &&
+                        replacementFontLookupInfo != null &&
+                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                    {
+                        if (text.font == loadedFont.uguiFont) return true;
+                        if (text.font == originalFont)
+                        {
+                            text.font = loadedFont.uguiFont;
+                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                            fontReplaced = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                var fontReplacedThisTime = false;
+                if (!fontReplaced)
+                {
+                    orig_font = text.font;
+                    orig_fontSize = text.fontSize;
+                    orig_lineSpacing = text.lineSpacing;
+                }
+                if (TryReplaceFont(Localyssation.GameAssetCache.uguiFontCentaur, Localyssation.currentLanguage.info.fontReplacementCentaur) ||
+                    TryReplaceFont(Localyssation.GameAssetCache.uguiFontTerminalGrotesque, Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque))
+                {
+                    fontReplacedThisTime = true;
+                }
+                if (!fontReplacedThisTime && fontReplaced)
+                {
+                    fontReplaced = false;
+                    text.font = orig_font;
+                    text.fontSize = orig_fontSize;
+                    text.lineSpacing = orig_lineSpacing;
                 }
 
                 if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
@@ -109,11 +164,131 @@ namespace Localyssation
                         textAutoShrunk = false;
                     }
                 }
+
+                if (newTextFunc != null)
+                {
+                    text.text = newTextFunc(text.fontSize);
+                }
             }
 
             public void OnDestroy()
             {
                 Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+                registeredTexts.Remove(text);
+            }
+        }
+
+        public class LangAdjustableTMProUGUIText : MonoBehaviour, ILangAdjustable
+        {
+            public TMPro.TextMeshProUGUI text;
+            public System.Func<int, string> newTextFunc;
+
+            public bool fontReplaced = false;
+            public float orig_fontSize;
+            public float orig_lineSpacing;
+            public TMPro.TMP_FontAsset orig_font;
+
+            public bool textAutoShrinkable = true;
+            public bool textAutoShrunk = false;
+            public bool orig_resizeTextForBestFit = false;
+            public float orig_resizeTextMaxSize;
+            public float orig_resizeTextMinSize;
+
+            public void Awake()
+            {
+                text = GetComponent<TMPro.TextMeshProUGUI>();
+                Localyssation.instance.onLanguageChanged += onLanguageChanged;
+            }
+
+            public void Start()
+            {
+                AdjustToLanguage(Localyssation.currentLanguage);
+            }
+
+            private void onLanguageChanged(Language newLanguage)
+            {
+                AdjustToLanguage(newLanguage);
+            }
+
+            public void AdjustToLanguage(Language newLanguage)
+            {
+                bool TryReplaceFont(TMPro.TMP_FontAsset originalFont, Language.BundledFontLookupInfo replacementFontLookupInfo)
+                {
+                    if (originalFont &&
+                        replacementFontLookupInfo != null &&
+                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                    {
+                        if (text.font == loadedFont.tmpFont) return true;
+                        if (text.font == originalFont)
+                        {
+                            text.font = loadedFont.tmpFont;
+                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                            fontReplaced = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                var fontReplacedThisTime = false;
+                if (!fontReplaced)
+                {
+                    orig_font = text.font;
+                    orig_fontSize = text.fontSize;
+                    orig_lineSpacing = text.lineSpacing;
+                }
+                if (TryReplaceFont(Localyssation.GameAssetCache.tmpFontCentaur, Localyssation.currentLanguage.info.fontReplacementCentaur) ||
+                    TryReplaceFont(Localyssation.GameAssetCache.tmpFontTerminalGrotesque, Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque))
+                {
+                    fontReplacedThisTime = true;
+                }
+                if (!fontReplacedThisTime && fontReplaced)
+                {
+                    fontReplaced = false;
+                    text.font = orig_font;
+                    text.fontSize = orig_fontSize;
+                    text.lineSpacing = orig_lineSpacing;
+                }
+
+                if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
+                {
+                    if (newLanguage.info.autoShrinkOverflowingText)
+                    {
+                        if (textAutoShrinkable)
+                        {
+                            orig_resizeTextForBestFit = text.enableAutoSizing;
+                            orig_resizeTextMaxSize = text.fontSizeMax;
+                            orig_resizeTextMinSize = text.fontSizeMin;
+
+                            text.fontSizeMax = text.fontSize;
+                            text.fontSizeMin = System.Math.Min(2, text.fontSizeMin);
+                            text.enableAutoSizing = true;
+
+                            textAutoShrunk = true;
+                        }
+                    }
+                    else
+                    {
+                        text.enableAutoSizing = orig_resizeTextForBestFit;
+                        text.fontSizeMax = orig_resizeTextMaxSize;
+                        text.fontSizeMin = orig_resizeTextMinSize;
+
+                        textAutoShrunk = false;
+                    }
+                }
+
+                if (newTextFunc != null)
+                {
+                    text.text = newTextFunc((int)text.fontSize);
+                }
+            }
+
+            public void OnDestroy()
+            {
+                Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+                registeredTMProUGUITexts.Remove(text);
             }
         }
 
@@ -150,7 +325,7 @@ namespace Localyssation
 
             public void AdjustToLanguage(Language newLanguage)
             {
-                if (newTextFuncs.Count == dropdown.options.Count)
+                if (newTextFuncs != null && newTextFuncs.Count == dropdown.options.Count)
                 {
                     for (var i = 0; i < dropdown.options.Count; i++)
                     {
@@ -164,6 +339,7 @@ namespace Localyssation
             public void OnDestroy()
             {
                 Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+                registeredDropdowns.Remove(dropdown);
             }
         }
     }

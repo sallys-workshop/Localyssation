@@ -21,7 +21,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "com.themysticsword.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.0.3";
+        public const string PLUGIN_VERSION = "0.0.4";
 
         public static Localyssation instance;
 
@@ -32,6 +32,9 @@ namespace Localyssation
         public static Language currentLanguage;
         public static Dictionary<string, Language> languages = new Dictionary<string, Language>();
         public static readonly List<Language> languagesList = new List<Language>();
+
+        public static Dictionary<string, FontBundle> fontBundles = new Dictionary<string, FontBundle>();
+        public static readonly List<FontBundle> fontBundlesList = new List<FontBundle>();
 
         public event System.Action<Language> onLanguageChanged;
         internal void CallOnLanguageChanged(Language newLanguage) { if (onLanguageChanged != null) onLanguageChanged.Invoke(newLanguage); }
@@ -49,6 +52,22 @@ namespace Localyssation
         internal static bool settingsTabSetup = false;
         internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
+        public static class GameAssetCache
+        {
+            public static Font uguiFontCentaur;
+            public static TMPro.TMP_FontAsset tmpFontCentaur;
+            public static Font uguiFontTerminalGrotesque;
+            public static TMPro.TMP_FontAsset tmpFontTerminalGrotesque;
+
+            internal static void Load()
+            {
+                uguiFontCentaur = Resources.Load<Font>("_graphic/_font/centaur");
+                tmpFontCentaur = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/centaur sdf");
+                uguiFontTerminalGrotesque = Resources.Load<Font>("_graphic/_font/terminal-grotesque");
+                tmpFontTerminalGrotesque = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/terminal-grotesque sdf");
+            }
+        }
+
         private void Awake()
         {
             instance = this;
@@ -58,10 +77,13 @@ namespace Localyssation
             assembly = System.Reflection.Assembly.GetExecutingAssembly();
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
 
+            GameAssetCache.Load();
+
             defaultLanguage = CreateDefaultLanguage();
             RegisterLanguage(defaultLanguage);
             ChangeLanguage(defaultLanguage);
             LoadLanguagesFromFileSystem();
+            LoadFontBundlesFromFileSystem();
 
             configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
@@ -141,7 +163,7 @@ namespace Localyssation
                             else changedCount += 1;
                         }
                     }
-                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({(changedCount / totalCount * 100f):0.00}%) strings are different between the languages.");
+                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({((float)changedCount / (float)totalCount * 100f):0.00}%) strings are different between the languages.");
                 });
             }
         }
@@ -175,12 +197,34 @@ namespace Localyssation
             TrySetupSettingsTab();
         }
 
+        public static void LoadFontBundlesFromFileSystem()
+        {
+            var filePaths = Directory.GetFiles(Paths.PluginPath, "localyssationFontBundle.json", SearchOption.AllDirectories);
+            foreach (var filePath in filePaths)
+            {
+                var fontBundlePath = Path.GetDirectoryName(filePath);
+
+                var loadedFontBundle = new FontBundle();
+                loadedFontBundle.fileSystemPath = fontBundlePath;
+                if (loadedFontBundle.LoadFromFileSystem())
+                    RegisterFontBundle(loadedFontBundle);
+            }
+        }
+
         public static void RegisterLanguage(Language language)
         {
             if (languages.ContainsKey(language.info.code)) return;
 
             languages[language.info.code] = language;
             languagesList.Add(language);
+        }
+
+        public static void RegisterFontBundle(FontBundle fontBundle)
+        {
+            if (fontBundles.ContainsKey(fontBundle.info.bundleName)) return;
+
+            fontBundles[fontBundle.info.bundleName] = fontBundle;
+            fontBundlesList.Add(fontBundle);
         }
 
         public static void ChangeLanguage(Language newLanguage)
@@ -203,6 +247,7 @@ namespace Localyssation
                 // general
                 { "GAME_LOADING", "Loading..." },
                 { "EXP_COUNTER_MAX", "MAX" },
+                { "COMBAT_ELEMENT_NORMAL_NAME", "Normal" },
 
                 // main menu
                 { "MAIN_MENU_BUTTON_SINGLEPLAY", "Singleplayer" },
@@ -407,11 +452,14 @@ namespace Localyssation
                 { "SETTINGS_NETWORK_HEADER_UI_SETTINGS", "UI Settings" },
                 { "SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", "Language" },
                 { "SETTINGS_NETWORK_CELL_DISPLAY_CREEP_NAMETAGS", "Display Enemy Nametags" },
+                { "SETTINGS_NETWORK_CELL_DISPLAY_GLOBAL_NICKNAME_TAGS", "Display Global Nametags <color=cyan>(@XX)</color>" },
                 { "SETTINGS_NETWORK_CELL_DISPLAY_LOCAL_NAMETAG", "Display Local Character Name Tag" },
                 { "SETTINGS_NETWORK_CELL_DISPLAY_HOST_TAG", "Display [HOST] Tag on Host Character" },
                 { "SETTINGS_NETWORK_CELL_HIDE_DUNGEON_MINIMAP", "Hide Dungeon Minimap" },
                 { "SETTINGS_NETWORK_CELL_HIDE_FPS_COUNTER", "Hide FPS Counter" },
                 { "SETTINGS_NETWORK_CELL_HIDE_PING_COUNTER", "Hide Ping Counter" },
+                { "SETTINGS_NETWORK_CELL_HIDE_STAT_POINT_COUNTER", "Hide Stat Point Notice Panel" },
+                { "SETTINGS_NETWORK_CELL_HIDE_SKILL_POINT_COUNTER", "Hide Skill Point Notice Panel" },
 
                 { "SETTINGS_NETWORK_HEADER_CLIENT_SETTINGS", "Client Settings" },
                 { "SETTINGS_NETWORK_CELL_ENABLE_PVP_ON_MAP_ENTER", "Flag for PvP when available" },
@@ -421,8 +469,29 @@ namespace Localyssation
                 { "SETTINGS_BUTTON_CANCEL", "Cancel" },
                 { "SETTINGS_BUTTON_APPLY", "Apply" },
 
+                // items
+                { "FORMAT_ITEM_RARITY", "[{0}]" },
+                { "FORMAT_ITEM_TOOLTIP_VENDOR_VALUE_COUNTER", "{0}" },
+                { "FORMAT_ITEM_TOOLTIP_VENDOR_VALUE_COUNTER_MULTIPLE", "<color=grey>(x{0} each)</color> {1}" },
+
+                { "ITEM_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Item" },
+                { "ITEM_TOOLTIP_GAMBLE_ITEM_RARITY", "[Unknown]" },
+                { "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION", "You can't really see what this is until you buy it." },
+
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY", "Recovers {0} Health." },
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY", "Recovers {0} Mana." },
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY", "Recovers {0} Stamina." },
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN", "Gain {0} Experience on use." },
+
+                { "ITEM_TOOLTIP_TYPE_CONSUMABLE", "Consumable" },
+                { "ITEM_TOOLTIP_TYPE_TRADE", "Trade Item" },
+
                 // equipment
-                { "FORMAT_EQUIP_ITEM_RARITY", "[{0}]" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Gear" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY", "[Unknown]" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE", "???" },
+                { "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION", "You can't really see what this is until you buy it." },
+
                 { "FORMAT_EQUIP_LEVEL_REQUIREMENT", "Lv-{0}" },
                 { "FORMAT_EQUIP_CLASS_REQUIREMENT", "Class: {0}" },
                 { "FORMAT_EQUIP_WEAPON_CONDITION", "\n<color=lime>- <color=yellow>{0}%</color> chance to apply {1}.</color>" },
@@ -545,7 +614,7 @@ namespace Localyssation
             string result;
             if (currentLanguage.strings.TryGetValue(key, out result)) return result;
             if (defaultLanguage.strings.TryGetValue(key, out result)) return result;
-            return (defaultValue == "SAME_AS_KEY" ? key : defaultValue);
+            return (defaultValue == GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED ? key : defaultValue);
         }
 
         private delegate string TextEditTagFunc(string str, string arg, int fontSize);
@@ -669,14 +738,9 @@ namespace Localyssation
             return result;
         }
 
-        public static string GetString(string key, int fontSize = -1, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
+        public static string GetString(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED, int fontSize = -1)
         {
             return ApplyTextEditTags(GetStringRaw(key, defaultValue), fontSize);
-        }
-
-        public static string GetFormattedString(string formatKey, int fontSize = -1, params object[] formatArgs)
-        {
-            return ApplyTextEditTags(string.Format(GetStringRaw(formatKey), formatArgs), fontSize);
         }
     }
 
@@ -687,6 +751,14 @@ namespace Localyssation
             public string code = "";
             public string name = "";
             public bool autoShrinkOverflowingText = false;
+            public BundledFontLookupInfo fontReplacementCentaur = new BundledFontLookupInfo();
+            public BundledFontLookupInfo fontReplacementTerminalGrotesque = new BundledFontLookupInfo();
+        }
+
+        public class BundledFontLookupInfo
+        {
+            public string bundleName = "";
+            public string fontName = "";
         }
 
         public LanguageInfo info = new LanguageInfo();
@@ -705,7 +777,6 @@ namespace Localyssation
 
             var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
             var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
-            var stringScaleFactorsFilePath = Path.Combine(fileSystemPath, "stringScaleFactors.tsv");
             try
             {
                 info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
@@ -740,6 +811,69 @@ namespace Localyssation
                 var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
                 tsvRows.Insert(0, new List<string>() { "key", "value" });
                 File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Localyssation.logger.LogError(e);
+                return false;
+            }
+        }
+    }
+
+    public class FontBundle
+    {
+        public class FontBundleInfo
+        {
+            public string bundleName = "";
+            public FontInfo[] fontInfos = new FontInfo[] { };
+        }
+
+        public class FontInfo
+        {
+            public string name = "";
+            public float sizeMultiplier = 1;
+        }
+
+        public class LoadedFont
+        {
+            public Font uguiFont;
+            public TMPro.TMP_FontAsset tmpFont;
+            public FontInfo info;
+        }
+
+        public FontBundleInfo info = new FontBundleInfo();
+        public string fileSystemPath;
+        public AssetBundle bundle;
+        public Dictionary<string, LoadedFont> loadedFonts = new Dictionary<string, LoadedFont>();
+
+        public bool LoadFromFileSystem()
+        {
+            if (string.IsNullOrEmpty(fileSystemPath)) return false;
+
+            var infoFilePath = Path.Combine(fileSystemPath, "localyssationFontBundle.json");
+            try
+            {
+                info = JsonConvert.DeserializeObject<FontBundleInfo>(File.ReadAllText(infoFilePath));
+                
+                var bundleFilePath = Path.Combine(fileSystemPath, info.bundleName);
+                if (!File.Exists(bundleFilePath)) return false;
+                bundle = AssetBundle.LoadFromFile(bundleFilePath);
+                foreach (var fontInfo in info.fontInfos)
+                {
+                    var loadedUGUIFont = bundle.LoadAsset<Font>(fontInfo.name);
+                    var loadedTMPFont = bundle.LoadAsset<TMPro.TMP_FontAsset>($"{fontInfo.name} SDF");
+                    if (loadedUGUIFont && loadedTMPFont)
+                    {
+                        loadedFonts[fontInfo.name] = new LoadedFont
+                        {
+                            uguiFont = loadedUGUIFont,
+                            tmpFont = loadedTMPFont,
+                            info = fontInfo
+                        };
+                    }
+                }
 
                 return true;
             }
