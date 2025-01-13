@@ -70,6 +70,7 @@ namespace Localyssation
 
             public bool fontReplaced = false;
             public int orig_fontSize;
+            public float orig_lineSpacing;
             public Font orig_font;
 
             public bool textAutoShrinkable = true;
@@ -81,6 +82,7 @@ namespace Localyssation
             public void Awake()
             {
                 text = GetComponent<UnityEngine.UI.Text>();
+                text.verticalOverflow = VerticalWrapMode.Overflow;
                 Localyssation.instance.onLanguageChanged += onLanguageChanged;
             }
 
@@ -108,6 +110,7 @@ namespace Localyssation
                         {
                             text.font = loadedFont.uguiFont;
                             text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
                             fontReplaced = true;
                             return true;
                         }
@@ -120,6 +123,7 @@ namespace Localyssation
                 {
                     orig_font = text.font;
                     orig_fontSize = text.fontSize;
+                    orig_lineSpacing = text.lineSpacing;
                 }
                 if (TryReplaceFont(Localyssation.GameAssetCache.uguiFontCentaur, Localyssation.currentLanguage.info.fontReplacementCentaur) ||
                     TryReplaceFont(Localyssation.GameAssetCache.uguiFontTerminalGrotesque, Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque))
@@ -131,6 +135,7 @@ namespace Localyssation
                     fontReplaced = false;
                     text.font = orig_font;
                     text.fontSize = orig_fontSize;
+                    text.lineSpacing = orig_lineSpacing;
                 }
 
                 if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
@@ -180,6 +185,7 @@ namespace Localyssation
 
             public bool fontReplaced = false;
             public float orig_fontSize;
+            public float orig_lineSpacing;
             public TMPro.TMP_FontAsset orig_font;
 
             public bool textAutoShrinkable = true;
@@ -218,6 +224,7 @@ namespace Localyssation
                         {
                             text.font = loadedFont.tmpFont;
                             text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
                             fontReplaced = true;
                             return true;
                         }
@@ -230,6 +237,7 @@ namespace Localyssation
                 {
                     orig_font = text.font;
                     orig_fontSize = text.fontSize;
+                    orig_lineSpacing = text.lineSpacing;
                 }
                 if (TryReplaceFont(Localyssation.GameAssetCache.tmpFontCentaur, Localyssation.currentLanguage.info.fontReplacementCentaur) ||
                     TryReplaceFont(Localyssation.GameAssetCache.tmpFontTerminalGrotesque, Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque))
@@ -241,6 +249,7 @@ namespace Localyssation
                     fontReplaced = false;
                     text.font = orig_font;
                     text.fontSize = orig_fontSize;
+                    text.lineSpacing = orig_lineSpacing;
                 }
 
                 if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
