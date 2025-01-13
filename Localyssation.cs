@@ -141,7 +141,7 @@ namespace Localyssation
                             else changedCount += 1;
                         }
                     }
-                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({(changedCount / totalCount * 100f):0.00}%) strings are different between the languages.");
+                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({((float)changedCount / (float)totalCount * 100f):0.00}%) strings are different between the languages.");
                 });
             }
         }
