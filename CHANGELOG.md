@@ -4,6 +4,7 @@
 		* Font bundle creation guide here: https://github.com/TheMysticSword/Localyssation/wiki/Font-Bundles
 	* A default extra font bundle is included in the mod, named `localyssation_extra_font_bundle`. It contains the following fonts:
 		* Alegreya (includes Latin, Greek and Cyrillic glyphs)
+		* Open Sans (includes Latin, Greek, Cyrillic and Hebrew glyphs)
 		* Source Han Sans (includes glyphs used in Simplified Chinese, Traditional Chinese, Japanese and Korean)
 	* `localyssationLanguage.json` now includes 2 new fields, `fontReplacementCentaur` and `fontReplacementTerminalGrotesque`:
 		* Centaur is the fancy fantasy serif font
@@ -24,6 +25,7 @@
 	* Display Global Nametags
 	* Hide Stat Point Notice Panel
 	* Hide Skill Point Notice Panel
+* Fixed "Log Untranslated Strings" button not calculating the percentage progress properly
 ## 0.0.3
 * The mod now requires [EasySettings](https://thunderstore.io/c/atlyss/p/Nessie/EasySettings/)
 * Moved the Language selection button and "Developer" configs to **Settings > Mods > Localyssation**
