@@ -33,6 +33,9 @@ namespace Localyssation
         public static Dictionary<string, Language> languages = new Dictionary<string, Language>();
         public static readonly List<Language> languagesList = new List<Language>();
 
+        public static Dictionary<string, FontBundle> fontBundles = new Dictionary<string, FontBundle>();
+        public static readonly List<FontBundle> fontBundlesList = new List<FontBundle>();
+
         public event System.Action<Language> onLanguageChanged;
         internal void CallOnLanguageChanged(Language newLanguage) { if (onLanguageChanged != null) onLanguageChanged.Invoke(newLanguage); }
 
@@ -49,6 +52,22 @@ namespace Localyssation
         internal static bool settingsTabSetup = false;
         internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
+        public static class GameAssetCache
+        {
+            public static Font uguiFontCentaur;
+            public static TMPro.TMP_FontAsset tmpFontCentaur;
+            public static Font uguiFontTerminalGrotesque;
+            public static TMPro.TMP_FontAsset tmpFontTerminalGrotesque;
+
+            internal static void Load()
+            {
+                uguiFontCentaur = Resources.Load<Font>("_graphic/_font/centaur");
+                tmpFontCentaur = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/centaur sdf");
+                uguiFontTerminalGrotesque = Resources.Load<Font>("_graphic/_font/terminal-grotesque");
+                tmpFontTerminalGrotesque = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/terminal-grotesque sdf");
+            }
+        }
+
         private void Awake()
         {
             instance = this;
@@ -58,10 +77,13 @@ namespace Localyssation
             assembly = System.Reflection.Assembly.GetExecutingAssembly();
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
 
+            GameAssetCache.Load();
+
             defaultLanguage = CreateDefaultLanguage();
             RegisterLanguage(defaultLanguage);
             ChangeLanguage(defaultLanguage);
             LoadLanguagesFromFileSystem();
+            LoadFontBundlesFromFileSystem();
 
             configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
@@ -175,12 +197,34 @@ namespace Localyssation
             TrySetupSettingsTab();
         }
 
+        public static void LoadFontBundlesFromFileSystem()
+        {
+            var filePaths = Directory.GetFiles(Paths.PluginPath, "localyssationFontBundle.json", SearchOption.AllDirectories);
+            foreach (var filePath in filePaths)
+            {
+                var fontBundlePath = Path.GetDirectoryName(filePath);
+
+                var loadedFontBundle = new FontBundle();
+                loadedFontBundle.fileSystemPath = fontBundlePath;
+                if (loadedFontBundle.LoadFromFileSystem())
+                    RegisterFontBundle(loadedFontBundle);
+            }
+        }
+
         public static void RegisterLanguage(Language language)
         {
             if (languages.ContainsKey(language.info.code)) return;
 
             languages[language.info.code] = language;
             languagesList.Add(language);
+        }
+
+        public static void RegisterFontBundle(FontBundle fontBundle)
+        {
+            if (fontBundles.ContainsKey(fontBundle.info.bundleName)) return;
+
+            fontBundles[fontBundle.info.bundleName] = fontBundle;
+            fontBundlesList.Add(fontBundle);
         }
 
         public static void ChangeLanguage(Language newLanguage)
@@ -690,6 +734,14 @@ namespace Localyssation
             public string code = "";
             public string name = "";
             public bool autoShrinkOverflowingText = false;
+            public BundledFontLookupInfo fontReplacementCentaur = new BundledFontLookupInfo();
+            public BundledFontLookupInfo fontReplacementTerminalGrotesque = new BundledFontLookupInfo();
+        }
+
+        public class BundledFontLookupInfo
+        {
+            public string bundleName = "";
+            public string fontName = "";
         }
 
         public LanguageInfo info = new LanguageInfo();
@@ -708,7 +760,6 @@ namespace Localyssation
 
             var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
             var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
-            var stringScaleFactorsFilePath = Path.Combine(fileSystemPath, "stringScaleFactors.tsv");
             try
             {
                 info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
@@ -743,6 +794,69 @@ namespace Localyssation
                 var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
                 tsvRows.Insert(0, new List<string>() { "key", "value" });
                 File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Localyssation.logger.LogError(e);
+                return false;
+            }
+        }
+    }
+
+    public class FontBundle
+    {
+        public class FontBundleInfo
+        {
+            public string bundleName = "";
+            public FontInfo[] fontInfos = new FontInfo[] { };
+        }
+
+        public class FontInfo
+        {
+            public string name = "";
+            public float sizeMultiplier = 1;
+        }
+
+        public class LoadedFont
+        {
+            public Font uguiFont;
+            public TMPro.TMP_FontAsset tmpFont;
+            public FontInfo info;
+        }
+
+        public FontBundleInfo info = new FontBundleInfo();
+        public string fileSystemPath;
+        public AssetBundle bundle;
+        public Dictionary<string, LoadedFont> loadedFonts = new Dictionary<string, LoadedFont>();
+
+        public bool LoadFromFileSystem()
+        {
+            if (string.IsNullOrEmpty(fileSystemPath)) return false;
+
+            var infoFilePath = Path.Combine(fileSystemPath, "localyssationFontBundle.json");
+            try
+            {
+                info = JsonConvert.DeserializeObject<FontBundleInfo>(File.ReadAllText(infoFilePath));
+                
+                var bundleFilePath = Path.Combine(fileSystemPath, info.bundleName);
+                if (!File.Exists(bundleFilePath)) return false;
+                bundle = AssetBundle.LoadFromFile(bundleFilePath);
+                foreach (var fontInfo in info.fontInfos)
+                {
+                    var loadedUGUIFont = bundle.LoadAsset<Font>(fontInfo.name);
+                    var loadedTMPFont = bundle.LoadAsset<TMPro.TMP_FontAsset>($"{fontInfo.name} SDF");
+                    if (loadedUGUIFont && loadedTMPFont)
+                    {
+                        loadedFonts[fontInfo.name] = new LoadedFont
+                        {
+                            uguiFont = loadedUGUIFont,
+                            tmpFont = loadedTMPFont,
+                            info = fontInfo
+                        };
+                    }
+                }
 
                 return true;
             }

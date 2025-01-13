@@ -1,4 +1,21 @@
 ## 0.0.4
+* Added custom font support:
+	* In addition to creating custom languages, you can now create "font bundles"
+		* Font bundle creation guide here: https://github.com/TheMysticSword/Localyssation/wiki/Font-Bundles
+	* A default extra font bundle is included in the mod, named `localyssation_extra_font_bundle`. It contains the following fonts:
+		* Alegreya (includes Latin, Greek and Cyrillic glyphs)
+		* Source Han Sans (includes glyphs used in Simplified Chinese, Traditional Chinese, Japanese and Korean)
+	* `localyssationLanguage.json` now includes 2 new fields, `fontReplacementCentaur` and `fontReplacementTerminalGrotesque`:
+		* Centaur is the fancy fantasy serif font
+		* Terminal Grotesque is the flat font used in most UI and tooltips
+		* To set a font replacement, change these fields like this:
+		```
+		"fontReplacementCentaur": {
+			"bundleName": "localyssation_extra_font_bundle",
+			"fontName": "Alegreya"
+		}
+		```
+		where `bundleName` is the name of the font bundle you want to use a font from, and `fontName` is the name of the font you want to use
 * Dialogue "quick sentences" can now be translated (e.g. quest accept/complete responses, enchanting responses, etc.)
 * Fixed Skrit's gamble item descriptions being revealed, and made gamble item text translatable (under `EQUIP_TOOLTIP_GAMBLE_ITEM_` keys)
 * Made new settings translatable:

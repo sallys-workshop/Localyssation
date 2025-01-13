@@ -142,6 +142,16 @@ namespace Localyssation.Patches
             }
         }
 
+        [HarmonyPatch(typeof(Text), nameof(Text.OnEnable))]
+        [HarmonyPostfix]
+        public static void Text_OnEnable(Text __instance)
+        {
+            if (Localyssation.currentLanguage != null && __instance != null && __instance.font != null)
+            {
+                LangAdjustables.RegisterText(__instance);
+            }
+        }
+
         // main menu & character select
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Awake))]
         [HarmonyPostfix]
