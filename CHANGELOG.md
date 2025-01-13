@@ -16,6 +16,8 @@
 		}
 		```
 		where `bundleName` is the name of the font bundle you want to use a font from, and `fontName` is the name of the font you want to use
+* Renamed the following keys:
+	* `FORMAT_EQUIP_ITEM_RARITY` to `FORMAT_ITEM_RARITY`
 * Dialogue "quick sentences" can now be translated (e.g. quest accept/complete responses, enchanting responses, etc.)
 * Fixed Skrit's gamble item descriptions being revealed, and made gamble item text translatable (under `EQUIP_TOOLTIP_GAMBLE_ITEM_` keys)
 * Made new settings translatable:

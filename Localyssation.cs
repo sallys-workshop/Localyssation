@@ -247,6 +247,7 @@ namespace Localyssation
                 // general
                 { "GAME_LOADING", "Loading..." },
                 { "EXP_COUNTER_MAX", "MAX" },
+                { "COMBAT_ELEMENT_NORMAL_NAME", "Normal" },
 
                 // main menu
                 { "MAIN_MENU_BUTTON_SINGLEPLAY", "Singleplayer" },
@@ -468,13 +469,29 @@ namespace Localyssation
                 { "SETTINGS_BUTTON_CANCEL", "Cancel" },
                 { "SETTINGS_BUTTON_APPLY", "Apply" },
 
+                // items
+                { "FORMAT_ITEM_RARITY", "[{0}]" },
+                { "FORMAT_ITEM_TOOLTIP_VENDOR_VALUE_COUNTER", "{0}" },
+                { "FORMAT_ITEM_TOOLTIP_VENDOR_VALUE_COUNTER_MULTIPLE", "<color=grey>(x{0} each)</color> {1}" },
+
+                { "ITEM_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Item" },
+                { "ITEM_TOOLTIP_GAMBLE_ITEM_RARITY", "[Unknown]" },
+                { "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION", "You can't really see what this is until you buy it." },
+
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY", "Recovers {0} Health." },
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY", "Recovers {0} Mana." },
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY", "Recovers {0} Stamina." },
+                { "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN", "Gain {0} Experience on use." },
+
+                { "ITEM_TOOLTIP_TYPE_CONSUMABLE", "Consumable" },
+                { "ITEM_TOOLTIP_TYPE_TRADE", "Trade Item" },
+
                 // equipment
                 { "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Gear" },
                 { "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY", "[Unknown]" },
                 { "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE", "???" },
                 { "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION", "You can't really see what this is until you buy it." },
 
-                { "FORMAT_EQUIP_ITEM_RARITY", "[{0}]" },
                 { "FORMAT_EQUIP_LEVEL_REQUIREMENT", "Lv-{0}" },
                 { "FORMAT_EQUIP_CLASS_REQUIREMENT", "Class: {0}" },
                 { "FORMAT_EQUIP_WEAPON_CONDITION", "\n<color=lime>- <color=yellow>{0}%</color> chance to apply {1}.</color>" },
