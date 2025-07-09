@@ -22,7 +22,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.1.0-SW";
+        public const string PLUGIN_VERSION = "072025.a4-0.1.0-SW";
 
         public static Localyssation instance;
 
