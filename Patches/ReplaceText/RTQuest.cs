@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal class RTQuest
+    internal static class RTQuest
     {
         // quests
         [HarmonyPatch(typeof(QuestListDataEntry), nameof(QuestListDataEntry.Update))]
@@ -396,7 +395,7 @@ namespace Localyssation.Patches.ReplaceText
                     return string.Format(
                         Localyssation.GetString(
                             "FORMAT_QUEST_PROGRESS",
-                            ReplaceTextPatches.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)),
+                            RTQuest.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)),
                         Math.Min(__instance._questProgressData[questIndex]._creepKillProgressValues[questCreepRequirementIndex] + 1, questCreepRequirement._creepsKilled),
                         questCreepRequirement._creepsKilled);
                 }));

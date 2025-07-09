@@ -1,17 +1,9 @@
 using HarmonyLib;
-using Mirror;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Localyssation.Patches.ReplaceText
+namespace Localyssation.Patches.ReplaceText  
 {
-    internal static class ReplaceTextPatches
+    internal static class RTText
     {
         
         [HarmonyPatch(typeof(Text), nameof(Text.text), MethodType.Setter)]
@@ -34,7 +26,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 LangAdjustables.RegisterText(__instance);
             }
-            Op
+            
         }
 
     }

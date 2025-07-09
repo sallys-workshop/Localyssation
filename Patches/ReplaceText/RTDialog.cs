@@ -55,7 +55,7 @@ namespace Localyssation.Patches.ReplaceText
                             return Localyssation.GetString(
                                 GetInputKey(
                                     KeyUtil.Normalize(
-                                        $"LOCAL_BRANCH_{dialogTrigger.gameObject.scene.name}_{RTUtil.GetChildTransformPath(dialogTrigger.transform, 2)}"
+                                        $"LOCAL_BRANCH_{dialogTrigger.gameObject.scene.name}_{Util.GetChildTransformPath(dialogTrigger.transform, 2)}"
                                         )
                                     ), oldString);
                         }

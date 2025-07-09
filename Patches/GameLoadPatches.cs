@@ -130,7 +130,7 @@ namespace Localyssation.Patches
                     {
                         var quickSentence = quickSentenceArray[quickSentenceIndex];
                         var quickSentenceKey = $"{key}_{quickSentenceArrayName}_{quickSentenceIndex}";
-                        ReplaceTextPatches.dialogManagerQuickSentencesHack[quickSentence] = quickSentenceKey;
+                        RTDialog.dialogManagerQuickSentencesHack[quickSentence] = quickSentenceKey;
                         Localyssation.defaultLanguage.RegisterKey(quickSentenceKey, quickSentence);
                     }
                 }
