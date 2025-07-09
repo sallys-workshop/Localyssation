@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal class RTItems
+    internal static class RTItems
     {
         // items
         [HarmonyPatch(typeof(ItemToolTip), nameof(ItemToolTip.Apply_ItemStats))]

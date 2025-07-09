@@ -44,10 +44,12 @@ namespace Localyssation.Patches.ReplaceText
         {
             if (!Player._mainPlayer) return;
 
+            PlayerQuesting _pQuest = Player._mainPlayer._pQuest;
+
             __instance._questLogCounterText.text = string.Format(
                 Localyssation.GetString("FORMAT_QUEST_MENU_CELL_QUEST_LOG_COUNTER", __instance._questLogCounterText.text, __instance._questLogCounterText.fontSize),
-                __instance._pQuest._questProgressData.Count,
-                __instance._pQuest._questLogLimit);
+                _pQuest._questProgressData.Count,
+                _pQuest._questLogLimit);
 
             var finishedQuestCount = 0;
             if (ProfileDataManager._current._characterFile._questProgressProfile._finishedQuests != null)
@@ -57,12 +59,12 @@ namespace Localyssation.Patches.ReplaceText
                 finishedQuestCount);
 
             var errandsStr = "";
-            if (__instance._pQuest._questProgressData.Count > 0 && __instance._selectedQuest)
+            if (_pQuest._questProgressData.Count > 0 && __instance._selectedQuest)
             {
                 var acceptedQuestIndex = 0;
-                while (acceptedQuestIndex < __instance._pQuest._questProgressData.Count && !QuestTrackerManager._current._refreshingElements)
+                while (acceptedQuestIndex < _pQuest._questProgressData.Count && !QuestTrackerManager._current._refreshingElements)
                 {
-                    var questProgress = __instance._pQuest._questProgressData[acceptedQuestIndex];
+                    var questProgress = _pQuest._questProgressData[acceptedQuestIndex];
                     if (questProgress._questTag == __instance._selectedQuest._questName)
                     {
                         if (questProgress._questComplete)
@@ -138,9 +140,10 @@ namespace Localyssation.Patches.ReplaceText
                     case QuestSubType.CLASS:
                         __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_CLASS", null, fontSize)}</color>";
                         break;
-                    case QuestSubType.MASTERY:
-                        __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_MASTERY", null, fontSize)}</color>";
-                        break;
+                    // No more QuestSubType.MASTERY
+                    //case QuestSubType.MASTERY:
+                    //    __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_MASTERY", null, fontSize)}</color>";
+                    //    break;
                 }
             }
             else
@@ -149,7 +152,7 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.Handle_Expbar))]
+        [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.Update))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> QuestSelectionManager_Handle_Expbar_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -202,7 +205,7 @@ namespace Localyssation.Patches.ReplaceText
                 Localyssation.GetString(formatKey, fontSize: fontSize),
                 Localyssation.GetString(creepKey, fontSize: fontSize));
         }
-        [HarmonyPatch(typeof(QuestTrackElement), nameof(QuestTrackElement.Handle_QuestTrackInfo))]
+        [HarmonyPatch(typeof(QuestTrackElement), nameof(QuestTrackElement.Update_QuestTrackElement))]
         [HarmonyPostfix]
         public static void QuestTrackElement_Handle_QuestTrackInfo(QuestTrackElement __instance)
         {

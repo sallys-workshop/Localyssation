@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal class RTEquipments
+    internal static class RTEquipments
     {
         // equipment
         [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]

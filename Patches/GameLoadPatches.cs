@@ -143,6 +143,9 @@ namespace Localyssation.Patches
             foreach (DamageType damageType in Enum.GetValues(typeof(DamageType)))
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(damageType), damageType.ToString());
 
+            foreach (SkillControlType skillControlType in Enum.GetValues(typeof(SkillControlType)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(skillControlType), skillControlType.ToString());
+
             // scene-specific
             // this temporarily loads EVERY scene in the game to gather scene-specific keys, so we'll do it only when necessary
             if (Localyssation.configTranslatorMode.Value && Localyssation.configCreateDefaultLanguageFiles.Value)

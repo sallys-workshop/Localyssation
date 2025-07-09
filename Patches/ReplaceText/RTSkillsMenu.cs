@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal class RTSkillsMenu
+    internal static class RTSkillsMenu
     {
         // skills menu
         [HarmonyPatch(typeof(SkillsMenuCell), nameof(SkillsMenuCell.Cell_OnAwake))]
@@ -84,7 +84,9 @@ namespace Localyssation.Patches.ReplaceText
             __instance._skillsCell_classHeader.text = txt;
         }
 
-        [HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Handle_SkillData))]
+        // TODO: cannot decide which one to apply, rank text partially copied from `Update` method
+        //[HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Apply_SkillData))]
+        [HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Update))]
         [HarmonyPostfix]
         public static void SkillListDataEntry_Handle_SkillData(SkillListDataEntry __instance)
         {
@@ -93,13 +95,20 @@ namespace Localyssation.Patches.ReplaceText
             __instance._skillNameText.text = Localyssation.GetString(
                 $"{KeyUtil.GetForAsset(__instance._scriptSkill)}_NAME",
                 __instance._skillNameText.text,
-                __instance._skillNameText.fontSize);
+                __instance._skillNameText.fontSize
+            );
+
             if (__instance._skillRankText)
             {
-                __instance._skillRankText.text = string.Format(
-                    Localyssation.GetString("FORMAT_SKILL_RANK", __instance._skillRankText.text, __instance._skillRankText.fontSize),
-                    __instance._skillStruct._rank,
-                    __instance._scriptSkill._skillRanks.Length);
+                // "rank" now is skill type
+                if (__instance._scriptSkill._skillControlType == SkillControlType.Passive)
+                {
+                    __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillControlType));
+                }
+                else
+                {
+                    __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillUtilityType));
+                }
             }
         }
 

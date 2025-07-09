@@ -7,6 +7,7 @@ using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
 using System.Linq;
+using System;
 
 #pragma warning disable CS0618
 
@@ -102,7 +103,18 @@ namespace Localyssation
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
-            harmony.PatchAll(typeof(Patches.ReplaceText.ReplaceTextPatches));
+            List<Type> types = new List<Type>()
+            {
+                typeof(Patches.ReplaceText.RTDialog),
+                typeof(Patches.ReplaceText.RTEquipments),
+                typeof(Patches.ReplaceText.RTItems),
+                typeof(Patches.ReplaceText.RTMainMenu),
+                typeof(Patches.ReplaceText.RTQuest),
+                typeof(Patches.ReplaceText.RTSettings),
+                typeof(Patches.ReplaceText.RTSkillsMenu),
+                typeof(Patches.ReplaceText.RTStatMenu),
+                typeof(Patches.ReplaceText.RTText)
+            };
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
@@ -1094,6 +1106,16 @@ namespace Localyssation
         public static string GetForAsset(DamageType asset)
         {
             return $"DAMAGE_TYPE_{Normalize(asset.ToString())}";
+        }
+
+        public static string GetForAsset(SkillControlType asset)
+        {
+            return $"SKILL_CONTROL_TYPE_{Normalize(asset.ToString())}";
+        }
+
+        public static string GetForAsset(CombatColliderType asset)
+        {
+            return $"COMBAT_COLLIDER_TYPE_{Normalize(asset.ToString())}";
         }
 
         public static string GetForAsset(ScriptableDialogData asset)
