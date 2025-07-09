@@ -20,9 +20,9 @@ namespace Localyssation
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Localyssation : BaseUnityPlugin
     {
-        public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
+        public const string PLUGIN_GUID = "org.sallys_workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "072025.a4-0.1.0-SW";
+        public const string PLUGIN_VERSION = "0.1.0";
 
         public static Localyssation instance;
 
@@ -103,7 +103,7 @@ namespace Localyssation
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
-            List<Type> types = new List<Type>()
+            List<Type> replaceText = new List<Type>()
             {
                 typeof(Patches.ReplaceText.RTDialog),
                 typeof(Patches.ReplaceText.RTEquipments),
@@ -115,6 +115,10 @@ namespace Localyssation
                 typeof(Patches.ReplaceText.RTStatMenu),
                 typeof(Patches.ReplaceText.RTText)
             };
+            foreach (var type in replaceText)
+            {
+                harmony.PatchAll(type);
+            }
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
