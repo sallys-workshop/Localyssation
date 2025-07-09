@@ -19,9 +19,9 @@ namespace Localyssation
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Localyssation : BaseUnityPlugin
     {
-        public const string PLUGIN_GUID = "com.themysticsword.localyssation";
+        public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.0.4";
+        public const string PLUGIN_VERSION = "0.1.0-SW";
 
         public static Localyssation instance;
 
@@ -102,7 +102,7 @@ namespace Localyssation
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
-            harmony.PatchAll(typeof(Patches.ReplaceTextPatches));
+            harmony.PatchAll(typeof(Patches.ReplaceText.ReplaceTextPatches));
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }

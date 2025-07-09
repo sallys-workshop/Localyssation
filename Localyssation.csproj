@@ -1,9 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <ATLYSS_PATH>D:\SteamLibrary\steamapps\common\ATLYSS\</ATLYSS_PATH>
-        <ATLYSS_MANAGED>$(ATLYSS_PATH)\ATLYSS_Data\Managed</ATLYSS_MANAGED>
-        <ATLYSS_BEPINEX>D:\Program Files\r2modman\mods\ATLYSS\profiles\Mod Creation\BepInEx\core</ATLYSS_BEPINEX>
-        <ATLYSS_BEPINEX_PLUGINS>D:\Program Files\r2modman\mods\ATLYSS\profiles\Mod Creation\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+        <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
+        <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
+        <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -142,5 +141,8 @@
             <HintPath>$(ATLYSS_BEPINEX_PLUGINS)\Nessie-EasySettings\EasySettings.dll</HintPath>
             <Private>False</Private>
         </Reference>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Properties\" />
     </ItemGroup>
 </Project>

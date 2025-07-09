@@ -1,0 +1,42 @@
+using HarmonyLib;
+using Mirror;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace Localyssation.Patches.ReplaceText
+{
+    internal static class ReplaceTextPatches
+    {
+        
+        [HarmonyPatch(typeof(Text), nameof(Text.text), MethodType.Setter)]
+        [HarmonyPrefix]
+        public static void Text_set_text(Text __instance, ref string value)
+        {
+            // if fontSize is not provided for a <scale> tag,
+            // it gets auto-replaced with a <scalefallback> tag that gets parsed here instead
+            if (__instance != null && value != null && value.Contains("scalefallback"))
+            {
+                value = Localyssation.ApplyTextEditTags(value, __instance.fontSize, RTUtil.getFallbackTextEditTags());
+            }
+        }
+
+        [HarmonyPatch(typeof(Text), nameof(Text.OnEnable))]
+        [HarmonyPostfix]
+        public static void Text_OnEnable(Text __instance)
+        {
+            if (Localyssation.currentLanguage != null && __instance != null && __instance.font != null)
+            {
+                LangAdjustables.RegisterText(__instance);
+            }
+            Op
+        }
+
+    }
+
+}
