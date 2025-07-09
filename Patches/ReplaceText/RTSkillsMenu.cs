@@ -206,7 +206,7 @@ namespace Localyssation.Patches.ReplaceText
             //        return Localyssation.GetString($"{key}_RANK_{_rank + 1}_DESCRIPTOR", oldString);
             //    }));
             //return matcher.InstructionEnumeration();
-            return instructions;
+            return instructions; //TODO
         }
 
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
@@ -240,7 +240,7 @@ namespace Localyssation.Patches.ReplaceText
             //        return Localyssation.GetString($"{key}_{condition._conditionRank}_DESCRIPTION", oldString);
             //    }));
             //return matcher.InstructionEnumeration();
-            return instructions;
+            return instructions; //TODO
 
         }
 

@@ -44,7 +44,7 @@ namespace Localyssation.Patches
             {
                 var key = $"{KeyUtil.GetForAsset(condition)}";
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", condition._conditionName);
-                Localyssation.defaultLanguage.RegisterKey($"{key}_{condition._conditionRank}_DESCRIPTION", condition._conditionDescription);
+                //Localyssation.defaultLanguage.RegisterKey($"{key}_{condition._conditionRank}_DESCRIPTION", condition._conditionDescription);
             }
             foreach (var statModifier in __instance._cachedScriptableStatModifiers.Values)
             {
@@ -74,11 +74,11 @@ namespace Localyssation.Patches
                 var key = KeyUtil.GetForAsset(skill);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", skill._skillName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", skill._skillDescription);
-                for (var rankIndex = 0; rankIndex < skill._skillRanks.Length; rankIndex++)
-                {
-                    var rank = skill._skillRanks[rankIndex];
-                    Localyssation.defaultLanguage.RegisterKey($"{key}_RANK_{rankIndex + 1}_DESCRIPTOR", rank._rankDescriptor);
-                }
+                //for (var rankIndex = 0; rankIndex < skill._skillRanks.Length; rankIndex++)
+                //{
+                //    var rank = skill._skillRanks[rankIndex];
+                //    Localyssation.defaultLanguage.RegisterKey($"{key}_RANK_{rankIndex + 1}_DESCRIPTOR", rank._rankDescriptor);
+                //}
             }
             foreach (var statAttribute in GameManager._current._statLogics._statAttributes)
             {
@@ -91,7 +91,7 @@ namespace Localyssation.Patches
             foreach (var weaponType in Resources.LoadAll<ScriptableWeaponType>(""))
             {
                 var key = KeyUtil.GetForAsset(weaponType);
-                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", weaponType._weaponTypeName);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", weaponType._weaponTypeClassTag);
             }
             foreach (var dialogData in Resources.LoadAll<ScriptableDialogData>(""))
             {

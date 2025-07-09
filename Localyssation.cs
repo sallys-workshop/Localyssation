@@ -1045,7 +1045,7 @@ namespace Localyssation
 
         public static string GetForAsset(ScriptableWeaponType asset)
         {
-            return $"WEAPON_TYPE_{Normalize(asset._weaponTypeName)}";
+            return $"WEAPON_TYPE_{Normalize(asset._weaponTypeClassTag)}";
         }
 
         public static string GetForAsset(ScriptableCreep asset)
