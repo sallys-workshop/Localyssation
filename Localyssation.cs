@@ -499,8 +499,8 @@ namespace Localyssation
                 //{ "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY", "Recovers {0} Stamina." },
                 //{ "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN", "Gain {0} Experience on use." },
 
-                { "ITEM_TOOLTIP_TYPE_CONSUMABLE", "Consumable" },
-                { "ITEM_TOOLTIP_TYPE_TRADE", "Trade Item" },
+                //{ "ITEM_TOOLTIP_TYPE_CONSUMABLE", "Consumable" },
+                //{ "ITEM_TOOLTIP_TYPE_TRADE", "Trade Item" },
 
                 // equipment
                 { "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Gear" },
