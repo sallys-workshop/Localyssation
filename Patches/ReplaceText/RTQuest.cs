@@ -303,6 +303,7 @@ namespace Localyssation.Patches.ReplaceText
                         Localyssation.GetString(
                             "FORMAT_QUEST_PROGRESS",
                             Localyssation.GetString($"{KeyUtil.GetForAsset(questItemRequirement._questItem)}_NAME")),
+                        Localyssation.GetString(KeyUtil.GetForAsset(questItemRequirement._questItem)),
                         acquiredItemsArray[questItemRequirementIndex],
                         questItemRequirement._itemsNeeded);
                 }));
@@ -398,8 +399,13 @@ namespace Localyssation.Patches.ReplaceText
                     return string.Format(
                         Localyssation.GetString(
                             "FORMAT_QUEST_PROGRESS",
-                            RTQuest.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)),
-                        Math.Min(__instance._questProgressData[questIndex]._creepKillProgressValues[questCreepRequirementIndex] + 1, questCreepRequirement._creepsKilled),
+                            RTQuest.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)
+                        ),
+                        questCreepRequirement._questCreep,
+                        Math.Min(
+                            __instance._questProgressData[questIndex]._creepKillProgressValues[questCreepRequirementIndex] + 1, 
+                            questCreepRequirement._creepsKilled
+                        ),
                         questCreepRequirement._creepsKilled);
                 }));
 
