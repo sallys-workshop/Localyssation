@@ -34,6 +34,9 @@ namespace Localyssation.Patches.ReplaceText
                 __instance._toolTipSubName.text = string.Format(
                     Localyssation.GetString("FORMAT_ITEM_RARITY", __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
                     Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptItem._itemRarity), __instance._scriptItem._itemRarity.ToString(), __instance._toolTipSubName.fontSize));
+                
+                if (__instance._scriptItem._itemType != ItemType.GEAR)
+                    __instance._itemToolTipType.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptItem._itemType));
             }
         }
 

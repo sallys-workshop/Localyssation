@@ -1140,5 +1140,10 @@ namespace Localyssation
         {
             return $"{Normalize(asset.name.ToString())}";
         }
+
+        public static string GetForAsset(ItemType asset)
+        {
+            return $"ITEM_TYPE_{Normalize(asset.ToString())}";
+        }
     }
 }
