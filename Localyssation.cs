@@ -1,5 +1,7 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using Localyssation.Patches.ReplaceFont;
+using Localyssation.Patches.ReplaceText;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -115,24 +117,8 @@ namespace Localyssation
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
-            harmony.PatchAll(typeof(Patches.ReplaceFont.FRChat));
-            harmony.PatchAll(typeof(Patches.ReplaceFont.FRPlayerNickname));
-            List<Type> replaceText = new List<Type>()
-            {
-                typeof(Patches.ReplaceText.RTDialog),
-                typeof(Patches.ReplaceText.RTEquipments),
-                typeof(Patches.ReplaceText.RTItems),
-                typeof(Patches.ReplaceText.RTMainMenu),
-                typeof(Patches.ReplaceText.RTQuest),
-                typeof(Patches.ReplaceText.RTSettings),
-                typeof(Patches.ReplaceText.RTSkillsMenu),
-                typeof(Patches.ReplaceText.RTStatMenu),
-                typeof(Patches.ReplaceText.RTText)
-            };
-            foreach (var type in replaceText)
-            {
-                harmony.PatchAll(type);
-            }
+            FRUtil.PatchAll(harmony);
+            RTUtil.PatchAll(harmony);
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }

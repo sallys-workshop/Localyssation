@@ -130,6 +130,26 @@ namespace Localyssation.Patches.ReplaceText
             return fallbackTextEditTags;
         }
 
+        private static List<Type> PATCH_CLASSES = new List<Type>()
+        {
+            typeof(RTDialog),
+            typeof(RTEquipments),
+            typeof(RTItems),
+            typeof(RTMainMenu),
+            typeof(RTQuest),
+            typeof(RTSettings),
+            typeof(RTSkillsMenu),
+            typeof(RTStatMenu),
+            typeof(RTText)
+        };
+
+        public static void PatchAll(Harmony harmony)
+        {
+            foreach (var item in PATCH_CLASSES)
+            {
+                harmony.PatchAll(item);
+            }
+        }
 
     }
 
