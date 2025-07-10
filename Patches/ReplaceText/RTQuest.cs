@@ -352,6 +352,7 @@ namespace Localyssation.Patches.ReplaceText
                         Localyssation.GetString(
                             "FORMAT_QUEST_PROGRESS",
                             $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}"),
+                        $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}",
                         __instance._questProgressData[questIndex]._triggerProgressValues[questTriggerRequirementIndex],
                         questTriggerRequirement._triggerEmitsNeeded);
                 }));
