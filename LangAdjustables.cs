@@ -79,6 +79,8 @@ namespace Localyssation
             public int orig_resizeTextMaxSize;
             public int orig_resizeTextMinSize;
 
+            public static List<string> USED_FONTS = new List<string>();
+
             public void Awake()
             {
                 text = GetComponent<UnityEngine.UI.Text>();
@@ -98,16 +100,22 @@ namespace Localyssation
 
             public void AdjustToLanguage(Language newLanguage)
             {
-                bool TryReplaceFont(Font originalFont, Language.BundledFontLookupInfo replacementFontLookupInfo)
+                bool TryReplaceFont(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
                 {
-                    if (originalFont &&
+                    
+                    if (
                         replacementFontLookupInfo != null &&
                         Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
                         fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                     {
                         if (text.font == loadedFont.uguiFont) return true;
-                        if (text.font == originalFont)
+                        if (text.font.name == originalFontName)
                         {
+                            if (!USED_FONTS.Contains(text.font.name))
+                            {
+                                Localyssation.logger.LogInfo(text.font.name);
+                                USED_FONTS.Add(text.font.name);
+                            }
                             text.font = loadedFont.uguiFont;
                             text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
                             text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
@@ -125,8 +133,20 @@ namespace Localyssation
                     orig_fontSize = text.fontSize;
                     orig_lineSpacing = text.lineSpacing;
                 }
-                if (TryReplaceFont(Localyssation.GameAssetCache.uguiFontCentaur, Localyssation.currentLanguage.info.fontReplacementCentaur) ||
-                    TryReplaceFont(Localyssation.GameAssetCache.uguiFontTerminalGrotesque, Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque))
+                if (
+                    TryReplaceFont(
+                        Localyssation.VanillaFonts.CENTAUR, 
+                        Localyssation.currentLanguage.info.fontReplacementCentaur
+                        ) 
+                    || TryReplaceFont(
+                        Localyssation.VanillaFonts.TERMINAL_GROTESQUE, 
+                        Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque
+                        )
+                    || TryReplaceFont(
+                        Localyssation.VanillaFonts.LIBRATION_SANS,
+                        Localyssation.currentLanguage.info.fontReplacementLibrationSans
+                        )
+                    )
                 {
                     fontReplacedThisTime = true;
                 }
@@ -194,6 +214,8 @@ namespace Localyssation
             public float orig_resizeTextMaxSize;
             public float orig_resizeTextMinSize;
 
+            public static List<string> FONT_NAMES = new List<string>();
+
             public void Awake()
             {
                 text = GetComponent<TMPro.TextMeshProUGUI>();
@@ -212,15 +234,16 @@ namespace Localyssation
 
             public void AdjustToLanguage(Language newLanguage)
             {
-                bool TryReplaceFont(TMPro.TMP_FontAsset originalFont, Language.BundledFontLookupInfo replacementFontLookupInfo)
+                bool TryReplaceFont(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
                 {
-                    if (originalFont &&
+                    if (
                         replacementFontLookupInfo != null &&
                         Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
                         fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                     {
+                        
                         if (text.font == loadedFont.tmpFont) return true;
-                        if (text.font == originalFont)
+                        if (text.font.name == originalFontName)
                         {
                             text.font = loadedFont.tmpFont;
                             text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
@@ -239,8 +262,20 @@ namespace Localyssation
                     orig_fontSize = text.fontSize;
                     orig_lineSpacing = text.lineSpacing;
                 }
-                if (TryReplaceFont(Localyssation.GameAssetCache.tmpFontCentaur, Localyssation.currentLanguage.info.fontReplacementCentaur) ||
-                    TryReplaceFont(Localyssation.GameAssetCache.tmpFontTerminalGrotesque, Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque))
+                if (
+                    TryReplaceFont(
+                        Localyssation.VanillaFonts.CENTAUR, 
+                        Localyssation.currentLanguage.info.fontReplacementCentaur
+                        ) 
+                    || TryReplaceFont(
+                        Localyssation.VanillaFonts.TERMINAL_GROTESQUE, 
+                        Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque
+                        )
+                    || TryReplaceFont(
+                        Localyssation.VanillaFonts.LIBRATION_SANS,
+                        Localyssation.currentLanguage.info.fontReplacementLibrationSans
+                        )
+                    )
                 {
                     fontReplacedThisTime = true;
                 }

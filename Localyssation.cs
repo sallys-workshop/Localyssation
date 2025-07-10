@@ -1,13 +1,13 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
-using System.Linq;
-using System;
 
 #pragma warning disable CS0618
 
@@ -22,7 +22,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "0.1.0";
+        public const string PLUGIN_VERSION = "202507.04.0.1";
 
         public static Localyssation instance;
 
@@ -59,6 +59,8 @@ namespace Localyssation
             public static TMPro.TMP_FontAsset tmpFontCentaur;
             public static Font uguiFontTerminalGrotesque;
             public static TMPro.TMP_FontAsset tmpFontTerminalGrotesque;
+            public static Font uguiFontLibrationSans;
+            public static TMPro.TMP_FontAsset tmpFontLibrationSans;
 
             internal static void Load()
             {
@@ -66,7 +68,17 @@ namespace Localyssation
                 tmpFontCentaur = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/centaur sdf");
                 uguiFontTerminalGrotesque = Resources.Load<Font>("_graphic/_font/terminal-grotesque");
                 tmpFontTerminalGrotesque = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/terminal-grotesque sdf");
+                uguiFontLibrationSans = Resources.Load<Font>("_graphic/_font/libration sans");
+                tmpFontLibrationSans = Resources.Load<TMPro.TMP_FontAsset>("LiberationSans SDF_2");
             }
+        }
+
+        public static class VanillaFonts
+        {
+            public static string CENTAUR = "CENTAUR";
+            public static string TERMINAL_GROTESQUE = "terminal-grotesque";
+            public static string LIBRATION_SANS = "LiberationSans";
+            public static string HOBOSTD = "HoboStd";
         }
 
         private void Awake()
@@ -103,6 +115,7 @@ namespace Localyssation
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
+            harmony.PatchAll(typeof(Patches.ChatFontReplace));
             List<Type> replaceText = new List<Type>()
             {
                 typeof(Patches.ReplaceText.RTDialog),
@@ -769,6 +782,7 @@ namespace Localyssation
             public bool autoShrinkOverflowingText = false;
             public BundledFontLookupInfo fontReplacementCentaur = new BundledFontLookupInfo();
             public BundledFontLookupInfo fontReplacementTerminalGrotesque = new BundledFontLookupInfo();
+            public BundledFontLookupInfo fontReplacementLibrationSans = new BundledFontLookupInfo();
         }
 
         public class BundledFontLookupInfo
