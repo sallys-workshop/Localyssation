@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
@@ -130,8 +131,7 @@ namespace Localyssation.Patches.ReplaceText
             return fallbackTextEditTags;
         }
 
-        private static List<Type> PATCH_CLASSES = new List<Type>()
-        {
+        private static readonly ImmutableList<Type> PATCH_CLASSES = ImmutableList.Create(
             typeof(RTDialog),
             typeof(RTEquipments),
             typeof(RTItems),
@@ -141,7 +141,7 @@ namespace Localyssation.Patches.ReplaceText
             typeof(RTSkillsMenu),
             typeof(RTStatMenu),
             typeof(RTText)
-        };
+        );
 
         public static void PatchAll(Harmony harmony)
         {
@@ -153,9 +153,4 @@ namespace Localyssation.Patches.ReplaceText
 
     }
 
-    internal static class RTLore
-    {
-        public const string CROWN = "CROWN";
-        public const string CROWN_PLURAL = "CROWN_PLURAL";
-    }
 }

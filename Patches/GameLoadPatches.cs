@@ -16,18 +16,21 @@ namespace Localyssation.Patches
         public static void GameManager_Cache_ScriptableAssets(GameManager __instance)
         {
             // cached scriptables
+            // items
             foreach (var item in __instance._cachedScriptableItems.Values)
             {
                 var key = KeyUtil.GetForAsset(item);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", item._itemName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", item._itemDescription);
             }
+            // creeps
             foreach (var creep in __instance._cachedScriptableCreeps.Values)
             {
                 var key = KeyUtil.GetForAsset(creep);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", creep._creepName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME_VARIANT_MANY", creep._creepName + "s");
             }
+            // quests
             foreach (var quest in __instance._cachedScriptableQuests.Values)
             {
                 var key = KeyUtil.GetForAsset(quest);
@@ -40,17 +43,20 @@ namespace Localyssation.Patches
                     Localyssation.defaultLanguage.RegisterKey($"{KeyUtil.GetForAsset(questTriggerRequirement)}_SUFFIX", questTriggerRequirement._suffix);
                 }
             }
+            // conditions
             foreach (var condition in __instance._cachedScriptableConditions.Values)
             {
                 var key = $"{KeyUtil.GetForAsset(condition)}";
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", condition._conditionName);
                 //Localyssation.defaultLanguage.RegisterKey($"{key}_{condition._conditionRank}_DESCRIPTION", condition._conditionDescription);
             }
+            // stat modifiers
             foreach (var statModifier in __instance._cachedScriptableStatModifiers.Values)
             {
                 var key = KeyUtil.GetForAsset(statModifier);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_TAG", statModifier._modifierTag);
             }
+            // races
             foreach (var race in __instance._cachedScriptableRaces.Values)
             {
                 var key = KeyUtil.GetForAsset(race);
@@ -58,17 +64,20 @@ namespace Localyssation.Patches
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", race._raceDescription);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_MISC", race._miscName);
             }
+            // combat elements
             foreach (var combatElement in __instance._cachedScriptableCombatElements.Values)
             {
                 var key = KeyUtil.GetForAsset(combatElement);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", combatElement._elementName);
             }
             Localyssation.defaultLanguage.RegisterKey($"PLAYER_CLASS_EMPTY_NAME", GameManager._current._statLogics._emptyClassName);
+            // player classes
             foreach (var playerClass in __instance._cachedScriptablePlayerClasses.Values)
             {
                 var key = KeyUtil.GetForAsset(playerClass);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", playerClass._className);
             }
+            // skills
             foreach (var skill in __instance._cachedScriptableSkills.Values)
             {
                 var key = KeyUtil.GetForAsset(skill);
@@ -80,6 +89,7 @@ namespace Localyssation.Patches
                 //    Localyssation.defaultLanguage.RegisterKey($"{key}_RANK_{rankIndex + 1}_DESCRIPTOR", rank._rankDescriptor);
                 //}
             }
+            // stats
             foreach (var statAttribute in GameManager._current._statLogics._statAttributes)
             {
                 var key = KeyUtil.GetForAsset(statAttribute);
@@ -145,6 +155,10 @@ namespace Localyssation.Patches
 
             foreach (SkillControlType skillControlType in Enum.GetValues(typeof(SkillControlType)))
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(skillControlType), skillControlType.ToString());
+            foreach (CombatColliderType combatColliderType in Enum.GetValues(typeof(CombatColliderType)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(combatColliderType), combatColliderType.ToString());
+            foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(itemType), itemType.ToString());
 
             // scene-specific
             // this temporarily loads EVERY scene in the game to gather scene-specific keys, so we'll do it only when necessary

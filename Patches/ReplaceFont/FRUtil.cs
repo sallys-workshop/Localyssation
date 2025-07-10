@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,11 +29,11 @@ namespace Localyssation.Patches.ReplaceFont
             }
         }
 
-        private static List<Type> PATCH_CLASSES = new List<Type>() { 
+        private static readonly ImmutableList<Type> PATCH_CLASSES = ImmutableList.Create(
             typeof(FRChat),
             typeof(FRItemObjectVisual),
-            typeof(FRPlayerNickname),
-        };
+            typeof(FRPlayerNickname)
+        );
 
         public static void PatchAll(Harmony harmony)
         {
