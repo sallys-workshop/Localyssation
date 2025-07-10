@@ -24,7 +24,7 @@ namespace Localyssation.Patches.ReplaceText
                 if (!string.IsNullOrEmpty(_scriptEquip._itemName))
                     __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME", __instance._toolTipName.text, __instance._toolTipName.fontSize));
                 __instance._toolTipSubName.text = string.Format(
-                    Localyssation.GetString("FORMAT_ITEM_RARITY", __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
+                    Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_RARITY, __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
                     Localyssation.GetString(KeyUtil.GetForAsset(shownRarity), _scriptEquip._itemRarity.ToString(), __instance._toolTipSubName.fontSize));
 
                 if (!string.IsNullOrEmpty(_scriptEquip._itemDescription))
@@ -32,7 +32,7 @@ namespace Localyssation.Patches.ReplaceText
 
                 if (_scriptEquip._classRequirement)
                     __instance._equipClassRequirement.text = string.Format(
-                        Localyssation.GetString("FORMAT_EQUIP_CLASS_REQUIREMENT", __instance._equipClassRequirement.text, __instance._equipClassRequirement.fontSize),
+                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_CLASS_REQUIREMENT, __instance._equipClassRequirement.text, __instance._equipClassRequirement.fontSize),
                         Localyssation.GetString($"{KeyUtil.GetForAsset(_scriptEquip._classRequirement)}_NAME", __instance._equipClassRequirement.text, __instance._equipClassRequirement.fontSize));
 
                 if (_scriptEquip.GetType() == typeof(ScriptableWeapon))
@@ -42,7 +42,7 @@ namespace Localyssation.Patches.ReplaceText
                     if (weapon._weaponConditionSlot._scriptableCondition)
                     {
                         __instance._toolTipDescription.text += string.Format(
-                            Localyssation.GetString("FORMAT_EQUIP_WEAPON_CONDITION", __instance._toolTipDescription.text, __instance._toolTipDescription.fontSize),
+                            Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_CONDITION, __instance._toolTipDescription.text, __instance._toolTipDescription.fontSize),
                             weapon._weaponConditionSlot._chance * 100f,
                             Localyssation.GetString(
                                 $"{KeyUtil.GetForAsset(weapon._weaponConditionSlot._scriptableCondition)}_NAME",
@@ -77,29 +77,31 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> EquipToolTip_Apply_EquipStats_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-                { "Mystery Gear", "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME" },
-                { "[Unknown]", "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY" },
-                { "???", "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE" },
-                { "You can't really see what this is until you buy it.", "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
-                { "Lv-{0}", "FORMAT_EQUIP_LEVEL_REQUIREMENT" },
-                { "Helm (Armor)", "EQUIP_TOOLTIP_TYPE_HELM" },
-                { "Chestpiece (Armor)", "EQUIP_TOOLTIP_TYPE_CHESTPIECE" },
-                { "Leggings (Armor)", "EQUIP_TOOLTIP_TYPE_LEGGINGS" },
-                { "Cape (Armor)", "EQUIP_TOOLTIP_TYPE_CAPE" },
-                { "Ring (Armor)", "EQUIP_TOOLTIP_TYPE_RING" },
-                { "Shield", "EQUIP_TOOLTIP_TYPE_SHIELD" },
-                { "<color=#efcc00>({0} - {1})</color> Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED_POWERFUL" },
-                { "<color=#c5e384>({0} - {1})</color> Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED" },
-                { "\n<color=grey>(Base Damage: {0} - {1})</color>", "FORMAT_EQUIP_STATS_DAMAGE_COMPARE_BASE" },
-                { "({0} - {1}) Damage", "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED" },
-                { "Block threshold: {0} damage", "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD" }
-            });
-        }
+
+        // ineffective
+        //[HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
+        //[HarmonyTranspiler]
+        //public static IEnumerable<CodeInstruction> EquipToolTip_Apply_EquipStats_Transpiler(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
+        //        { "Mystery Gear", "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME" },
+        //        { "[Unknown]", "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY" },
+        //        { "???", "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE" },
+        //        { "You can't really see what this is until you buy it.", "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
+        //        { "Lv-{0}", "FORMAT_EQUIP_LEVEL_REQUIREMENT" },
+        //        { "Helm (Armor)", "EQUIP_TOOLTIP_TYPE_HELM" },
+        //        { "Chestpiece (Armor)", "EQUIP_TOOLTIP_TYPE_CHESTPIECE" },
+        //        { "Leggings (Armor)", "EQUIP_TOOLTIP_TYPE_LEGGINGS" },
+        //        { "Cape (Armor)", "EQUIP_TOOLTIP_TYPE_CAPE" },
+        //        { "Ring (Armor)", "EQUIP_TOOLTIP_TYPE_RING" },
+        //        { "Shield", "EQUIP_TOOLTIP_TYPE_SHIELD" },
+        //        { "<color=#efcc00>({0} - {1})</color> Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED_POWERFUL" },
+        //        { "<color=#c5e384>({0} - {1})</color> Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED" },
+        //        { "\n<color=grey>(Base Damage: {0} - {1})</color>", "FORMAT_EQUIP_STATS_DAMAGE_COMPARE_BASE" },
+        //        { "({0} - {1}) Damage", "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED" },
+        //        { "Block threshold: {0} damage", "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD" }
+        //    });
+        //}
 
     }
 }
