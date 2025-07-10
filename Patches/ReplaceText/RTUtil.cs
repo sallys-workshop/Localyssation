@@ -132,4 +132,10 @@ namespace Localyssation.Patches.ReplaceText
 
 
     }
+
+    internal static class RTLore
+    {
+        public const string CROWN = "CROWN";
+        public const string CROWN_PLURAL = "CROWN_PLURAL";
+    }
 }

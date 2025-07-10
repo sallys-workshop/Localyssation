@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -44,10 +45,11 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ItemToolTip_Apply_ItemStats_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            // TODO: 失效了
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
                 { "Mystery Item", "ITEM_TOOLTIP_GAMBLE_ITEM_NAME" },
                 { "[Unknown]", "ITEM_TOOLTIP_GAMBLE_ITEM_RARITY" },
-                { "You can't really see what this is until you buy it.", "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
+                { "You can't really see what __instance is until you buy it.", "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
                 { "Recovers {0} Health.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY" },
                 { "Recovers {0} Mana.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY" },
                 { "Recovers {0} Stamina.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY" },
@@ -57,5 +59,41 @@ namespace Localyssation.Patches.ReplaceText
             });
         }
 
+        [HarmonyPatch(typeof(ItemObjectVisual), nameof(ItemObjectVisual.Apply_ItemObjectVisual))]
+        [HarmonyPostfix]
+        public static void ItemObjectVisual_Apply_ItemObjectVisual(ItemObjectVisual __instance)
+        {
+            if (__instance._itemObject._currencyDropAmount > 0)
+                Apply_CurrencyVisual();
+            else
+                Apply_ItemVisual();
+
+            void Apply_CurrencyVisual()
+            {
+                int currencyDropAmount = __instance._itemObject._currencyDropAmount;
+                __instance._itemNametagTextMesh.text = string.Format("{0:n0} ", currencyDropAmount) + 
+                    Localyssation.GetString(currencyDropAmount > 1 ? RTLore.CROWN_PLURAL : RTLore.CROWN);
+            }
+
+            void Apply_ItemVisual()
+            {
+                string str = "";
+                if (__instance._itemObject._foundItem._itemType == ItemType.GEAR)
+                {
+                    __instance._itemVisualErrorSpriteRend.gameObject.SetActive(!((ScriptableEquipment)__instance._itemObject._foundItem).CanEquipItem(Player._mainPlayer._pStats, false));
+                    if (__instance._itemObject._local_itemData._modifierID > 0)
+                    {
+                        // modifier
+                        str = Localyssation.GetString(
+                            KeyUtil.GetForAsset(
+                                GameManager._current.Locate_StatModifier(__instance._itemObject._local_itemData._modifierID)
+                                )
+                            ) + " ";
+                        
+                    }
+                }
+                __instance._itemNametagTextMesh.text = str + Localyssation.GetString(KeyUtil.GetForAsset(__instance._itemObject._foundItem));
+            }
+        }
     }
 }
