@@ -1,11 +1,10 @@
-﻿using HarmonyLib;
-using UnityEngine.UI;
+﻿using System;
+using HarmonyLib;
 
-namespace Localyssation.Patches
+namespace Localyssation.Patches.ReplaceFont
 {
-    internal static class ChatFontReplace
+    internal static class FRPlayerNickname
     {
-
         private static void replaceTmpFont(TMPro.TMP_Text text, Language.BundledFontLookupInfo replacementFontLookupInfo)
         {
             if (
@@ -25,22 +24,14 @@ namespace Localyssation.Patches
             }
         }
 
-
-        [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.UserCode_Rpc_RecieveChatMessage__String__Boolean__ChatChannel))]
+        [HarmonyPatch(typeof(Player), nameof(Player.Handle_ClientParameters))]
         [HarmonyPostfix]
-        public static void FixChatFont(ChatBehaviour __instance, string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
+        public static void Player_Handle_ClientParameter_Postfix(Player __instance)
         {
-            var text = __instance._chatTextMesh;
-            var replacementFontLookupInfo = Localyssation.currentLanguage.info.fontReplacementLibrationSans;
-
-            replaceTmpFont(text, replacementFontLookupInfo);
-        }
-
-        [HarmonyPatch(typeof(ChatBehaviourAssets), nameof(ChatBehaviourAssets.Update))]
-        [HarmonyPostfix]
-        public static void FixChatBehaviourAssets(ChatBehaviourAssets __instance)
-        {
-            replaceTmpFont(__instance._chatText, Localyssation.currentLanguage.info.fontReplacementLibrationSans);
+            if (__instance._nicknameTextMesh.enabled)
+                replaceTmpFont(__instance._nicknameTextMesh, Localyssation.currentLanguage.info.fontReplacementLibrationSans);
+            if (__instance._globalNicknameTextMesh.enabled)
+                replaceTmpFont(__instance._globalNicknameTextMesh, Localyssation.currentLanguage.info.fontReplacementLibrationSans);
         }
     }
 }

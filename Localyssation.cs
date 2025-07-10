@@ -22,7 +22,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "202507.04.0.1";
+        public const string PLUGIN_VERSION = "202507.04.0.2";
 
         public static Localyssation instance;
 
@@ -115,7 +115,8 @@ namespace Localyssation
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
-            harmony.PatchAll(typeof(Patches.ChatFontReplace));
+            harmony.PatchAll(typeof(Patches.ReplaceFont.FRChat));
+            harmony.PatchAll(typeof(Patches.ReplaceFont.FRPlayerNickname));
             List<Type> replaceText = new List<Type>()
             {
                 typeof(Patches.ReplaceText.RTDialog),
