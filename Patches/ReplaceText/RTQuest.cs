@@ -81,7 +81,7 @@ namespace Localyssation.Patches.ReplaceText
             __instance._questErrandsText.text = errandsStr;
         }
 
-        [HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Select_QuestSlot))]
+        [HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Apply_QuestInfo))]
         [HarmonyPostfix]
         public static void QuestMenuCell_Select_QuestSlot(QuestMenuCell __instance, ScriptableQuest _scriptQuest)
         {

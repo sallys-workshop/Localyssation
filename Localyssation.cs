@@ -20,7 +20,7 @@ namespace Localyssation
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Localyssation : BaseUnityPlugin
     {
-        public const string PLUGIN_GUID = "org.sallys_workshop.localyssation";
+        public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
         public const string PLUGIN_VERSION = "0.1.0";
 
