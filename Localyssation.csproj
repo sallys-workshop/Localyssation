@@ -3,10 +3,13 @@
         <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
         <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
         <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+        <Configurations>Debug;Release</Configurations>
+		<MSBuildFileVersion>202507.06.0.4</MSBuildFileVersion>
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+        <TargetFramework>net481</TargetFramework>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     </PropertyGroup>
 
     <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
@@ -142,7 +145,7 @@
             <Private>False</Private>
         </Reference>
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Properties\" />
-    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="copy bin\Build\net481\Localyssation.dll -Destination C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\" />
+    </Target>
 </Project>

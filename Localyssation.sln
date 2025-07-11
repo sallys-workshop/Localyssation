@@ -7,10 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Localyssation", "Localyssat
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Build|Any CPU = Build|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Build|Any CPU.ActiveCfg = Build|Any CPU
+		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Build|Any CPU.Build.0 = Build|Any CPU
 		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
