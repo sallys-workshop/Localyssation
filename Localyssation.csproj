@@ -38,6 +38,9 @@
             <HintPath>$(ATLYSS_MANAGED)\Mirror.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="System.Collections.Immutable">
+          <HintPath>C:\Users\TowardTheStars\.nuget\packages\system.collections.immutable\9.0.7\lib\net462\System.Collections.Immutable.dll</HintPath>
+        </Reference>
 
         <!-- Unity. Add any other assemblies as needed, not all of them were listed here. -->
         <Reference Include="UnityEngine" Publicize="true">
@@ -146,6 +149,6 @@
         </Reference>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="copy bin\Build\net481\Localyssation.dll -Destination C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\" />
+      <Exec Command="xcopy &quot;$(TargetDir)Localyssation.dll&quot; &quot;C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)System.Collections.Immutable.dll&quot; &quot;C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\&quot; /Y" />
     </Target>
 </Project>
