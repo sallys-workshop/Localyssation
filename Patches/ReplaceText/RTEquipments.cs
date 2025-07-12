@@ -1,15 +1,30 @@
 ﻿using HarmonyLib;
+using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
     internal static class RTEquipments
     {
 
-
+        private static void replaceStatTags(EquipToolTip __instance)
+        {
+            const string TAG_NAME_REGEX = @"_(\w*)Tag";
+            FieldInfo[] fieldInfos = typeof(EquipToolTip).GetFields();
+            foreach (var field in fieldInfos.ToList().Where(field => Regex.IsMatch(field.Name, TAG_NAME_REGEX) && field.FieldType == typeof(Text)))
+            {
+                Text tag = (Text)field.GetValue(__instance);
+                string name = Regex.Match(field.Name, TAG_NAME_REGEX).Groups[1].Value;
+                
+            }
+        }
 
         // equipment
         [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
@@ -17,13 +32,7 @@ namespace Localyssation.Patches.ReplaceText
         public static void EquipToolTip_Apply_EquipStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
         {
 
-            //if (__instance._isGambleItem) 
-            //{
-            //    __instance._toolTipName.text = Localyssation.GetString("EQUIP_TOOLTIP_GAMBLE_ITEM_NAME");
-            //    __instance._toolTipSubName.text = Localyssation.GetString("EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY");
-            //    __instance._equipToolTipType.text = Localyssation.GetString("EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE");
-            //    __instance._toolTipDescription.text = Localyssation.GetString("EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION");
-            //}
+            replaceStatTags(__instance);
             if (_scriptEquip && !__instance._isGambleItem)
             {
                 var key = KeyUtil.GetForAsset(_scriptEquip);
@@ -99,23 +108,8 @@ namespace Localyssation.Patches.ReplaceText
             //return false;
         }
 
-        private static void ApplyWeaponStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
-        {
 
-        }
-
-        private static void ApplyEquipmentStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
-        {
-
-        }
-
-        private static void ApplyGamleEquipmentStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
-        {
-
-        }
-
-
-        // ineffective
+        
         [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> EquipToolTip_Apply_EquipStats_Transpiler(IEnumerable<CodeInstruction> instructions)

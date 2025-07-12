@@ -10,6 +10,14 @@ namespace Localyssation.Patches.ReplaceText
 {
     internal static class RTQuest
     {
+        [HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Cell_OnAwake))]
+        [HarmonyPostfix]
+        public static void QuestMenu_Cell_OnAwake_Postfix(QuestMenuCell __instance)
+        {
+            RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>() {
+                { "_text_questsHeader", I18nKeys.TabMenu.CELL_QUESTS_HEADER }
+            });
+        }
         // quests
         [HarmonyPatch(typeof(QuestListDataEntry), nameof(QuestListDataEntry.Update))]
         [HarmonyPostfix]

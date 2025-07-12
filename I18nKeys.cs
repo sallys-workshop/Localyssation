@@ -414,6 +414,45 @@ namespace Localyssation
                 = create("TAB_MENU_CELL_SKILLS_CLASS_HEADER_NOVICE", "General Skillbook");
             public static readonly string CELL_SKILLS_CLASS_HEADER
                 = create("TAB_MENU_CELL_SKILLS_CLASS_HEADER", "{0} Skillbook");
+
+            public static readonly string CELL_OPTIONS_HEADER
+                = create("TAB_MENU_CELL_OPTIONS_HEADER", "Options");
+            public static readonly string CELL_OPTIONS_BUTTON_SETTINGS
+                = create("TAB_MENU_CELL_OPTIONS_BUTTON_SETTINS", "Settings");
+            public static readonly string CELL_OPTIONS_BUTTON_SAVE_FILE
+                = create("TAB_MENU_CELL_OPTIONS_BUTTON_SAVE_FILE", "Save File");
+            public static readonly string CELL_OPTIONS_BUTTON_INVITE_TO_LOBBY
+                = create("TAB_MENU_CELL_OPTIONS_BUTTON_INVITE_TO_LOBBY", "Invite to Lobby");
+            public static readonly string CELL_OPTIONS_BUTTON_HOST_CONSOLE
+                = create("TAB_MENU_CELL_OPTIONS_BUTTON_HOST_CONSOLE", "Host Console");
+            public static readonly string CELL_OPTIONS_BUTTON_SAVE_AND_QUIT
+                = create("TAB_MENU_CELL_OPTIONS_BUTTON_SAVE_AND_QUIT", "Save & Quit");
+
+
+            public static readonly string CELL_ITEMS_HEADER
+                = create("TAB_MENU_CELL_ITEMS_HEADER", "Items");
+            public static readonly string CELL_ITEMS_EQUIP_TAB_HEADER_EQUIPMENT
+                = create("TAB_MENU_CELL_ITEMS_EQUIP_TAB_HEADER_EQUIPMENT", "Equipment");
+            public static readonly string CELL_ITEMS_EQUIP_TAB_HEADER_VANITY
+                = create("TAB_MENU_CELL_ITEMS_EQUIP_TAB_HEADER_VANITY", "Vanity");
+            public static readonly string CELL_ITEMS_EQUIP_TAB_HEADER_STAT
+                = create("TAB_MENU_CELL_ITEMS_EQUIP_TAB_HEADER_STAT", "Stats");
+
+            public static readonly string CELL_QUESTS_HEADER
+                = create("TAB_MENU_CELL_QUESTS_HEADER", "Quests");
+
+
+
+            public static readonly string CELL_WHO_HEADER
+                = create("TAB_MENU_CELL_WHO_HEADER", "Who");
+            public static readonly string CELL_WHO_BUTTON_INVITE_TO_PARTY
+                = create("TAB_MENU_CELL_WHO_BUTTON_INVITE_TO_PARTY", "Invite to Party");
+            public static readonly string CELL_WHO_BUTTON_LEAVE_PARTY
+                = create("TAB_MENU_CELL_WHO_BUTTON_LEAVE_PARTY", "Leave Party");
+            public static readonly string CELL_WHO_BUTTON_MUTE_PEER
+                = create("TAB_MENU_CELL_WHO_BUTTON_MUTE_PEER", "Mute / Unmute");
+            public static readonly string CELL_WHO_BUTTON_REFRESH_LIST
+                = create("TAB_MENU_CELL_WHO_BUTTON_REFRESH_LIST", "Refresh");
         }
         
         internal static class SkillMenu
@@ -467,6 +506,9 @@ namespace Localyssation
             public static readonly string TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE
 				= create("SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE", " <color=yellow>Refreshes when re-applied.</color>");
         }
+
+
+      
 
         internal static class Settings
         {

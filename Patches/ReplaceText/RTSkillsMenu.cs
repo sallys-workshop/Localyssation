@@ -21,7 +21,7 @@ namespace Localyssation.Patches.ReplaceText
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
                 { "_backdrop_skillPoints/_text_skillPointsTag", "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER" },
-                { "Content_noviceSkills/_skillsCell_skillListObject_recall/_text_skillRank", "SKILL_RANK_SOULBOUND" },
+                { "_skillContentGroups/Content_generalSkills/_skillsCell_skillListObject_recall/_text_skillRank", "SKILL_RANK_SOULBOUND" },
             }, (transform, key) =>
             {
                 if (key == "TAB_MENU_CELL_SKILLS_SKILL_POINT_COUNTER")
@@ -36,12 +36,13 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void SkillsMenuCell_Init_ClassTabTooltip(SkillsMenuCell __instance, int _tabValue)
         {
-            switch (_tabValue)
+            var pStats = Player._mainPlayer._pStats;
+            switch ((SkillTier)(byte)_tabValue)
             {
-                case 0:
+                case SkillTier.NOVICE:
                     ToolTipManager._current.Apply_GenericToolTip(Localyssation.GetString("TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP_NOVICE"));
                     break;
-                case 1:
+                case SkillTier.CLASS:
                     var playerClass = Player._mainPlayer._pStats._class;
                     if (!playerClass) return;
 
@@ -52,6 +53,19 @@ namespace Localyssation.Patches.ReplaceText
                     ToolTipManager._current.Apply_GenericToolTip(string.Format(
                         Localyssation.GetString("TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP"),
                         Localyssation.GetString(classKey, playerClass._className)));
+                    break;
+                case SkillTier.SUBCLASS:
+                    if (!pStats._class || pStats._syncClassTier <= 0)
+                    {
+                        return;
+                    }
+                    ToolTipManager._current.Apply_GenericToolTip(
+                        string.Format(
+                            Localyssation.GetString("TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP"),
+                            KeyUtil.GetForAsset(pStats._class._playerClassTiers[pStats._syncClassTier - 1])
+                        )
+                    );
+                        //pStats._class._playerClassTiers[pStats._syncClassTier - 1]._classTierName + " Skills");
                     break;
             }
         }
@@ -84,8 +98,6 @@ namespace Localyssation.Patches.ReplaceText
             __instance._skillsCell_classHeader.text = txt;
         }
 
-        // TODO: cannot decide which one to apply, rank text partially copied from `Update` method
-        //[HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Apply_SkillData))]
         [HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Update))]
         [HarmonyPostfix]
         public static void SkillListDataEntry_Handle_SkillData(SkillListDataEntry __instance)

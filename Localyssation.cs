@@ -24,7 +24,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "202507.06.0.4";
+        public const string PLUGIN_VERSION = "202507.06.1.0";
 
         public static Localyssation instance;
 
@@ -782,6 +782,11 @@ namespace Localyssation
         public static string GetForAsset(ItemType asset)
         {
             return $"ITEM_TOOLTIP_TYPE_{Normalize(asset.ToString())}";
+        }
+
+        public static string GetForAsset(PlayerClassTier asset)
+        {
+            return $"PLAYER_CLASS_TIER_{Normalize(asset._classTierName)}";
         }
     }
 }

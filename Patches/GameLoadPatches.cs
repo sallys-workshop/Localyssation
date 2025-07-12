@@ -76,6 +76,11 @@ namespace Localyssation.Patches
             {
                 var key = KeyUtil.GetForAsset(playerClass);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", playerClass._className);
+                // PlayerClassTier
+                foreach (PlayerClassTier playerClassTier in playerClass._playerClassTiers)
+                {
+                    Localyssation.defaultLanguage.RegisterKey($"{KeyUtil.GetForAsset(playerClassTier)}_NAME", playerClassTier._classTierName);
+                }
             }
             // skills
             foreach (var skill in __instance._cachedScriptableSkills.Values)
@@ -169,6 +174,9 @@ namespace Localyssation.Patches
 
             // misc
             Localyssation.defaultLanguage.strings["FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY"] = $"{{0}} {GameManager._current._statLogics._currencyName}";
+
+
+            
 
             if (Localyssation.configTranslatorMode.Value && Localyssation.configCreateDefaultLanguageFiles.Value)
                 Localyssation.defaultLanguage.WriteToFileSystem();

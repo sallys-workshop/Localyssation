@@ -107,6 +107,10 @@ namespace Localyssation.Patches.ReplaceText
                         if (onRemap != null) onRemap(foundTransform, textRemap.Value);
                     }
                 }
+                else
+                {
+                    Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Cannot find path `{textRemap}`.");
+                }
             }
         }
 
@@ -147,10 +151,17 @@ namespace Localyssation.Patches.ReplaceText
             typeof(RTEquipments),
             typeof(RTItems),
             typeof(RTMainMenu),
+
             typeof(RTQuest),
+
             typeof(RTSettings),
+
+            typeof(RTOptionsMenu),
             typeof(RTSkillsMenu),
             typeof(RTStatMenu),
+            typeof(RTTabMenu),
+            typeof(RTWhoMenu),
+            
             typeof(RTText)
         );
 

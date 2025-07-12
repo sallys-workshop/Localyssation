@@ -18,28 +18,28 @@ namespace Localyssation.Patches.ReplaceText
             });
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
-                { "_infoStatPanel/_statInfoCell_nickName/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_NICK_NAME" },
-                { "_infoStatPanel/_statInfoCell_raceName/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_RACE_NAME" },
-                { "_infoStatPanel/_statInfoCell_className/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_CLASS_NAME" },
-                { "_infoStatPanel/_statInfoCell_levelCounter/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_LEVEL_COUNTER" },
-                { "_infoStatPanel/_statInfoCell_experience/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_EXPERIENCE" },
+                { "_statsCell_infoStatPanel/_statInfoCell_nickName/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_NICK_NAME" },
+                { "_statsCell_infoStatPanel/_statInfoCell_raceName/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_RACE_NAME" },
+                { "_statsCell_infoStatPanel/_statInfoCell_className/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_CLASS_NAME" },
+                { "_statsCell_infoStatPanel/_statInfoCell_levelCounter/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_LEVEL_COUNTER" },
+                { "_statsCell_infoStatPanel/_statInfoCell_experience/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_EXPERIENCE" },
 
-                { "_infoStatPanel/_statInfoCell_maxHealth/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_HEALTH" },
-                { "_infoStatPanel/_statInfoCell_maxMana/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_MANA" },
-                { "_infoStatPanel/_statInfoCell_maxStamina/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_STAMINA" },
+                { "_statsCell_infoStatPanel/_statInfoCell_maxHealth/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_HEALTH" },
+                { "_statsCell_infoStatPanel/_statInfoCell_maxMana/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_MANA" },
+                { "_statsCell_infoStatPanel/_statInfoCell_maxStamina/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAX_STAMINA" },
 
-                { "_infoStatPanel/_statInfoCell_attack/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_ATTACK" },
-                { "_infoStatPanel/_statInfoCell_rangedPower/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_RANGED_POWER" },
-                { "_infoStatPanel/_statInfoCell_physCritical/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_PHYS_CRITICAL" },
+                { "_statsCell_infoStatPanel/_statInfoCell_attack/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_ATTACK" },
+                { "_statsCell_infoStatPanel/_statInfoCell_rangedPower/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_RANGED_POWER" },
+                { "_statsCell_infoStatPanel/_statInfoCell_physCritical/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_PHYS_CRITICAL" },
 
-                { "_infoStatPanel/_statInfoCell_magicPow/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_POW" },
-                { "_infoStatPanel/_statInfoCell_magicCrit/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_CRIT" },
+                { "_statsCell_infoStatPanel/_statInfoCell_magicPow/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_POW" },
+                { "_statsCell_infoStatPanel/_statInfoCell_magicCrit/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_CRIT" },
 
-                { "_infoStatPanel/_statInfoCell_defense/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_DEFENSE" },
-                { "_infoStatPanel/_statInfoCell_magicDef/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_DEF" },
+                { "_statsCell_infoStatPanel/_statInfoCell_defense/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_DEFENSE" },
+                { "_statsCell_infoStatPanel/_statInfoCell_magicDef/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MAGIC_DEF" },
 
-                { "_infoStatPanel/_statInfoCell_evasion/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_EVASION" },
-                { "_infoStatPanel/_statInfoCell_moveSpd/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MOVE_SPD" },
+                { "_statsCell_infoStatPanel/_statInfoCell_evasion/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_EVASION" },
+                { "_statsCell_infoStatPanel/_statInfoCell_moveSpd/Image_01/Text", "TAB_MENU_CELL_STATS_INFO_CELL_MOVE_SPD" },
             });
         }
 
