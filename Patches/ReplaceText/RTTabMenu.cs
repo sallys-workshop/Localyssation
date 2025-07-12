@@ -13,15 +13,17 @@ namespace Localyssation.Patches.ReplaceText
             if (__instance._currentCellSelection > 0)
             {
                 string tag = __instance._menuCells[__instance._currentCellSelection - 1]._menuCell_tag;
+                string key = $"TAB_MENU_CELL_{KeyUtil.Normalize(tag)}_HEADER";
                 __instance._button_previousCell.GetComponentInChildren<Text>().text = "<< " 
-                    + Localyssation.GetString($"TAB_MENU_CELL_{KeyUtil.Normalize(tag)}_HEADER");
+                    + Localyssation.GetString(key, I18nKeys.TR_KEYS[key]);
             }
 
             if (__instance._currentCellSelection < __instance._menuCells.Length - 1)
             {
                 string tag = __instance._menuCells[__instance._currentCellSelection + 1]._menuCell_tag;
+                string key = $"TAB_MENU_CELL_{KeyUtil.Normalize(tag)}_HEADER";
                 __instance._button_nextCell.GetComponentInChildren<Text>().text =
-                    Localyssation.GetString($"TAB_MENU_CELL_{KeyUtil.Normalize(tag)}_HEADER") + " >>";
+                    Localyssation.GetString(key, I18nKeys.TR_KEYS[key]) + " >>";
             }
         }
 

@@ -30,11 +30,16 @@ namespace Localyssation
 
         private static string create(string key, string defaultString = "")
         {
-            if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException("key"); }
+            if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException("key is empty"); }
             if (string.IsNullOrEmpty(defaultString))
             {
                 defaultString = key;
             }
+            if (TR_KEYS.ContainsKey(key))
+            {
+                throw new ArgumentException($"key `{key}` Already Exists!");
+            }
+            TR_KEYS[key] = defaultString;
             return key;
         }
 
