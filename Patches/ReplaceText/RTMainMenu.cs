@@ -170,6 +170,32 @@ namespace Localyssation.Patches.ReplaceText
             });
         }
 
+        //[HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_CharacterSelectControl))]
+        //[HarmonyTranspiler]
+        //public static IEnumerable<CodeInstruction> CharacterSelectManager_Handle_CharacterSelectControl_Transpiler(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>() {
+        //        I18nKeys.CharacterSelect.BUTTON_SELECT_CHARACTER, 
+        //        I18nKeys.CharacterSelect.BUTTON_CREATE_CHARACTER
+        //    });
+        //}
+        [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_CharacterSelectControl))]
+        [HarmonyPostfix]
+        public static void CharacterSelectManager_Handle_CharacterSelectControl_Postfix(CharacterSelectManager __instance)
+        {
+            if (__instance._mainMenuManager._mainMenuCondition == MainMenuCondition.CharacterSelect && !__instance._isSendingCharacterFile)
+            {
+                if (ProfileDataManager._current._characterFile._isEmptySlot)
+                {
+                    __instance._enterGameButtonText.text = Localyssation.GetString(I18nKeys.CharacterSelect.BUTTON_SELECT_CHARACTER);
+                }
+                else
+                {
+                    __instance._enterGameButtonText.text = Localyssation.GetString(I18nKeys.CharacterSelect.BUTTON_CREATE_CHARACTER);
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(CharacterSelectListDataEntry), nameof(CharacterSelectListDataEntry.Update))]
         [HarmonyPostfix]
         public static void CharacterSelectListDataEntry_Update(CharacterSelectListDataEntry __instance)

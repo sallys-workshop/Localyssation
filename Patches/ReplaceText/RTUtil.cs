@@ -34,6 +34,17 @@ namespace Localyssation.Patches.ReplaceText
                 }).InstructionEnumeration();
         }
 
+        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, List<string> keyReplacement)
+        {
+            Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
+            
+            foreach (var key in keyReplacement)
+            {
+                stringReplacements.Add(I18nKeys.getDefaulted(key), key);
+            }
+            return SimpleStringReplaceTranspiler(instructions, stringReplacements);
+        }
+
         /// <summary>
         /// Gets the operand from the current CodeMatcher instruction. If none found, tries to parse the last symbol of the instruction's OpCode name as an integer.
         /// </summary>

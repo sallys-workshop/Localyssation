@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -25,8 +26,9 @@ namespace Localyssation.Patches.ReplaceText
                     Localyssation.GetString("FORMAT_QUEST_REQUIRED_LEVEL", fontSize: __instance._dataNameText.fontSize),
                     __instance._scriptableQuest._questLevel);
 
-                var styleTag = __instance._dataNameText.text.Substring(0, __instance._dataNameText.text.IndexOf(">") + 1);
-                __instance._dataNameText.text = styleTag + formattedQuestString + "</color>";
+                //var styleTag = __instance._dataNameText.text.Substring(0, __instance._dataNameText.text.IndexOf(">") + 1);
+                var styleTag = Regex.Match(__instance._dataNameText.text, @"<(\w*)=([^>]*)>");
+                __instance._dataNameText.text = $"<{styleTag.Groups[1]}={styleTag.Groups[2]}>" + formattedQuestString + $"</{styleTag.Groups[1]}>";
             }
             else
             {
@@ -301,7 +303,8 @@ namespace Localyssation.Patches.ReplaceText
                     var questItemRequirementIndex = Array.IndexOf(quest._questObjective._questItemRequirements, questItemRequirement);
                     return string.Format(
                         Localyssation.GetString(
-                            "FORMAT_QUEST_PROGRESS",
+                            //"FORMAT_QUEST_PROGRESS",
+                            I18nKeys.Quest.FORMAT_PROGRESS,
                             Localyssation.GetString($"{KeyUtil.GetForAsset(questItemRequirement._questItem)}_NAME")),
                         Localyssation.GetString(KeyUtil.GetForAsset(questItemRequirement._questItem)),
                         acquiredItemsArray[questItemRequirementIndex],
@@ -350,7 +353,8 @@ namespace Localyssation.Patches.ReplaceText
                     var questTriggerRequirementIndex = Array.IndexOf(quest._questObjective._questTriggerRequirements, questTriggerRequirement);
                     return string.Format(
                         Localyssation.GetString(
-                            "FORMAT_QUEST_PROGRESS",
+                            //"FORMAT_QUEST_PROGRESS",
+                            I18nKeys.Quest.FORMAT_PROGRESS,
                             $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}"),
                         $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}",
                         __instance._questProgressData[questIndex]._triggerProgressValues[questTriggerRequirementIndex],
@@ -399,7 +403,8 @@ namespace Localyssation.Patches.ReplaceText
                     var questCreepRequirementIndex = Array.IndexOf(quest._questObjective._questCreepRequirements, questCreepRequirement);
                     return string.Format(
                         Localyssation.GetString(
-                            "FORMAT_QUEST_PROGRESS",
+                            //"FORMAT_QUEST_PROGRESS",
+                            I18nKeys.Quest.FORMAT_PROGRESS,
                             RTQuest.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)
                         ),
                         questCreepRequirement._questCreep,

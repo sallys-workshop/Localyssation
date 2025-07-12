@@ -38,6 +38,16 @@ namespace Localyssation
             return key;
         }
 
+        public static string getDefaulted(string key)
+        {
+            bool success = TR_KEYS.TryGetValue(key, out string value);
+            if (success)
+            {
+                return value;
+            }
+            return key;
+        }
+
 
         internal static class Item
         {

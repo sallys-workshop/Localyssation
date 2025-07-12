@@ -61,18 +61,18 @@ namespace Localyssation.Patches.ReplaceText
                     
                 }
 
-                if (__instance._isGambleItem) {
-                    __instance._toolTipName.text = Localyssation.GetString(I18nKeys.Item.TOOLTIP_GAMBLE_ITEM_NAME);
-                    __instance._toolTipSubName.text = Localyssation.GetString(I18nKeys.Item.TOOLTIP_GAMBLE_ITEM_RARITY);
-                    __instance._toolTipDescription.text = Localyssation.GetString(I18nKeys.Item.TOOLTIP_GAMBLE_ITEM_DESC);
-                }
+                //if (__instance._isGambleItem) {
+                //    __instance._toolTipName.text = Localyssation.GetString(I18nKeys.Item.TOOLTIP_GAMBLE_ITEM_NAME);
+                //    __instance._toolTipSubName.text = Localyssation.GetString(I18nKeys.Item.TOOLTIP_GAMBLE_ITEM_RARITY);
+                //    __instance._toolTipDescription.text = Localyssation.GetString(I18nKeys.Item.TOOLTIP_GAMBLE_ITEM_DESC);
+                //}
 
                 var key = KeyUtil.GetForAsset(__instance._scriptItem);
 
-                if (__instance._scriptItem.GetType() == typeof(ScriptableStatusConsumable))
-                {
-                    __instance._consumableDescription.text = generateConsumableDescString((ScriptableStatusConsumable)__instance._scriptItem);
-                }
+                //if (__instance._scriptItem.GetType() == typeof(ScriptableStatusConsumable))
+                //{
+                //    __instance._consumableDescription.text = generateConsumableDescString((ScriptableStatusConsumable)__instance._scriptItem);
+                //}
 
                     __instance._toolTipName.text = __instance._toolTipName.text.Replace(__instance._scriptItem._itemName, Localyssation.GetString($"{key}_NAME"));
                 __instance._toolTipDescription.text = __instance._toolTipDescription.text.Replace(__instance._scriptItem._itemDescription, Localyssation.GetString($"{key}_DESCRIPTION"));
@@ -88,24 +88,23 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        // Ineffective, functionality moved to `ItemToolTip_Apply_ItemStats`
-        //[HarmonyPatch(typeof(ItemToolTip), nameof(ItemToolTip.Apply_ItemStats))]
-        //[HarmonyTranspiler]
-        //public static IEnumerable<CodeInstruction> ItemToolTip_Apply_ItemStats_Transpiler(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    
-        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-        //        { "Mystery Item", "ITEM_TOOLTIP_GAMBLE_ITEM_NAME" },
-        //        { "[Unknown]", "ITEM_TOOLTIP_GAMBLE_ITEM_RARITY" },
-        //        { "You can't really see what __instance is until you buy it.", "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
-        //        { "Recovers {0} Health.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY" },
-        //        { "Recovers {0} Mana.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY" },
-        //        { "Recovers {0} Stamina.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY" },
-        //        { "Gain {0} Experience on use.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN" },
-        //        { "Consumable", "ITEM_TOOLTIP_TYPE_CONSUMABLE" },
-        //        { "Trade Item", "ITEM_TOOLTIP_TYPE_TRADE" },
-        //    });
-        //}
+        [HarmonyPatch(typeof(ItemToolTip), nameof(ItemToolTip.Apply_ItemStats))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ItemToolTip_Apply_ItemStats_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
+                { "Mystery Item", "ITEM_TOOLTIP_GAMBLE_ITEM_NAME" },
+                { "[Unknown]", "ITEM_TOOLTIP_GAMBLE_ITEM_RARITY" },
+                { "You can't really see what __instance is until you buy it.", "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
+                { "Recovers {0} Health.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY" },
+                { "Recovers {0} Mana.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY" },
+                { "Recovers {0} Stamina.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY" },
+                { "Gain {0} Experience on use.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN" },
+                { "Consumable", "ITEM_TOOLTIP_TYPE_CONSUMABLE" },
+                { "Trade Item", "ITEM_TOOLTIP_TYPE_TRADE" },
+            });
+        }
 
         [HarmonyPatch(typeof(ItemObjectVisual), nameof(ItemObjectVisual.Apply_ItemObjectVisual))]
         [HarmonyPostfix]
@@ -126,21 +125,24 @@ namespace Localyssation.Patches.ReplaceText
             void Apply_ItemVisual()
             {
                 string str = "";
-                if (__instance._itemObject._foundItem._itemType == ItemType.GEAR)
+                if (__instance._itemObject._foundItem)
                 {
-                    __instance._itemVisualErrorSpriteRend.gameObject.SetActive(!((ScriptableEquipment)__instance._itemObject._foundItem).CanEquipItem(Player._mainPlayer._pStats, false));
-                    if (__instance._itemObject._local_itemData._modifierID > 0)
+                    if (__instance._itemObject._foundItem._itemType == ItemType.GEAR)
                     {
-                        // modifier
-                        str = Localyssation.GetString(
-                            KeyUtil.GetForAsset(
-                                GameManager._current.Locate_StatModifier(__instance._itemObject._local_itemData._modifierID)
+                        __instance._itemVisualErrorSpriteRend.gameObject.SetActive(!((ScriptableEquipment)__instance._itemObject._foundItem).CanEquipItem(Player._mainPlayer._pStats, false));
+                        if (__instance._itemObject._local_itemData._modifierID > 0)
+                        {
+                            // modifier
+                            str = Localyssation.GetString(
+                                KeyUtil.GetForAsset(
+                                    GameManager._current.Locate_StatModifier(__instance._itemObject._local_itemData._modifierID)
                                 )
                             ) + " ";
-                        
+
+                        }
                     }
+                    __instance._itemNametagTextMesh.text = str + Localyssation.GetString(KeyUtil.GetForAsset(__instance._itemObject._foundItem) + "_NAME");
                 }
-                __instance._itemNametagTextMesh.text = str + Localyssation.GetString(KeyUtil.GetForAsset(__instance._itemObject._foundItem));
             }
         }
     }

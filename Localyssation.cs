@@ -48,6 +48,7 @@ namespace Localyssation
         internal static BepInEx.Configuration.ConfigEntry<string> configLanguage;
         internal static BepInEx.Configuration.ConfigEntry<bool> configTranslatorMode;
         internal static BepInEx.Configuration.ConfigEntry<bool> configCreateDefaultLanguageFiles;
+        internal static BepInEx.Configuration.ConfigEntry<bool> showTranslationKey;
         internal static BepInEx.Configuration.ConfigEntry<KeyCode> configReloadLanguageKeybind;
 
         internal static bool settingsTabReady = false;
@@ -107,11 +108,17 @@ namespace Localyssation
             configTranslatorMode = config.Bind("Translators", "Translator Mode", false, "Enables the features of this section");
             configCreateDefaultLanguageFiles = config.Bind("Translators", "Create Default Language Files On Load", true, "If enabled, files for the default game language will be created in the mod's directory on game load");
             configReloadLanguageKeybind = config.Bind("Translators", "Reload Language Keybind", KeyCode.F10, "When you press this button, your current language's files will be reloaded mid-game");
+            showTranslationKey = config.Bind("Translators", "Show Translation Key", false, "Show translation keys instead of translated string for debugging.");
 
             Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(() =>
             {
                 settingsTabReady = true;
                 TrySetupSettingsTab();
+            });
+
+            Nessie.ATLYSS.EasySettings.Settings.OnApplySettings.AddListener(() =>
+            {
+
             });
 
             Harmony harmony = new Harmony(PLUGIN_GUID);
@@ -150,6 +157,7 @@ namespace Localyssation
             LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
 
             tab.AddToggle(configTranslatorMode);
+            tab.AddToggle(showTranslationKey);
             if (configTranslatorMode.Value)
             {
                 tab.AddToggle(configCreateDefaultLanguageFiles);
@@ -395,6 +403,10 @@ namespace Localyssation
 
         public static string GetString(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED, int fontSize = -1)
         {
+            if (showTranslationKey.Value)
+            {
+                return key;
+            }
             return ApplyTextEditTags(GetStringRaw(key, defaultValue), fontSize);
         }
     }

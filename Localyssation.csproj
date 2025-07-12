@@ -14,7 +14,7 @@
 
     <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
     <ItemGroup>
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" ExcludeAssets="runtime" />
         <PackageReference Include="System.Collections.Immutable" Version="9.0.7" />
     </ItemGroup>
 
@@ -150,6 +150,6 @@
         </Reference>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy &quot;$(TargetDir)Localyssation.dll&quot; &quot;C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)System.Collections.Immutable.dll&quot; &quot;C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\&quot; /Y" />
+      <Exec Command="xcopy &quot;$(TargetDir)*.dll&quot; &quot;C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\&quot; /Y" />
     </Target>
 </Project>
