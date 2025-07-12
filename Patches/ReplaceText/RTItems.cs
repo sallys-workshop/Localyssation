@@ -74,7 +74,7 @@ namespace Localyssation.Patches.ReplaceText
                 //    __instance._consumableDescription.text = generateConsumableDescString((ScriptableStatusConsumable)__instance._scriptItem);
                 //}
 
-                    __instance._toolTipName.text = __instance._toolTipName.text.Replace(__instance._scriptItem._itemName, Localyssation.GetString($"{key}_NAME"));
+                __instance._toolTipName.text = __instance._toolTipName.text.Replace(__instance._scriptItem._itemName, Localyssation.GetString($"{key}_NAME"));
                 __instance._toolTipDescription.text = __instance._toolTipDescription.text.Replace(__instance._scriptItem._itemDescription, Localyssation.GetString($"{key}_DESCRIPTION"));
                 __instance._toolTipSubName.text = string.Format(
                     Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_RARITY, __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),

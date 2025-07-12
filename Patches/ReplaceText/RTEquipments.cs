@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceText
@@ -28,13 +29,20 @@ namespace Localyssation.Patches.ReplaceText
                 var key = KeyUtil.GetForAsset(_scriptEquip);
 
                 var shownRarity = _scriptEquip._itemRarity;
+                if (!string.IsNullOrEmpty(_scriptEquip._itemName))
+                {
+                    __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME", __instance._toolTipName.text, __instance._toolTipName.fontSize));
+                }
                 if (_itemData._modifierID != 0 && GameManager._current.Locate_StatModifier(_itemData._modifierID))
                 {
                     shownRarity += 1;
+                    ScriptableStatModifier modifier = GameManager._current.Locate_StatModifier(_itemData._modifierID);
+                    __instance._toolTipName.text = __instance._toolTipName.text.Replace( 
+                        modifier._modifierTag, Localyssation.GetString(KeyUtil.GetForAsset(modifier) + "_TAG")
+                    );
                 }
 
-                if (!string.IsNullOrEmpty(_scriptEquip._itemName))
-                    __instance._toolTipName.text = __instance._toolTipName.text.Replace(_scriptEquip._itemName, Localyssation.GetString($"{key}_NAME", __instance._toolTipName.text, __instance._toolTipName.fontSize));
+                
                 __instance._toolTipSubName.text = string.Format(
                     Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_RARITY, __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
                     Localyssation.GetString(KeyUtil.GetForAsset(shownRarity), _scriptEquip._itemRarity.ToString(), __instance._toolTipSubName.fontSize));
