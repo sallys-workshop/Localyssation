@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTStatMenu
+    internal static partial class RTReplacer
     {
         // stats menu
         [HarmonyPatch(typeof(StatsMenuCell), nameof(StatsMenuCell.Cell_OnAwake))]

@@ -147,22 +147,7 @@ namespace Localyssation.Patches.ReplaceText
         }
 
         private static readonly ImmutableList<Type> PATCH_CLASSES = ImmutableList.Create(
-            typeof(RTDialog),
-            typeof(RTEquipments),
-            typeof(RTItems),
-            typeof(RTMainMenu),
-
-            typeof(RTQuest),
-
-            typeof(RTSettings),
-
-            typeof(RTOptionsMenu),
-            typeof(RTSkillsMenu),
-            typeof(RTStatMenu),
-            typeof(RTTabMenu),
-            typeof(RTWhoMenu),
-            
-            typeof(RTText)
+            typeof(RTReplacer)
         );
 
         public static void PatchAll(Harmony harmony)

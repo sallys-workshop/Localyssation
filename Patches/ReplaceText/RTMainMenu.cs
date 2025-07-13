@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTMainMenu
+    internal static partial class RTReplacer
     {
 
         // main menu & character select

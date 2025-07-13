@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTTabMenu
+    internal static partial class RTReplacer
     {
         [HarmonyPatch(typeof(TabMenu), nameof(TabMenu.Handle_TabMenuControl))]
         [HarmonyPostfix]

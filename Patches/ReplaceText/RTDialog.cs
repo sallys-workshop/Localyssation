@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTDialog
+    internal static partial class RTReplacer
     {
         // dialog
         [HarmonyPatch(typeof(DialogManager), nameof(DialogManager.Start_Dialog))]

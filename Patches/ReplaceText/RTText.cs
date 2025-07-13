@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText  
 {
-    internal static class RTText
+    internal static partial class RTReplacer
     {
         
         [HarmonyPatch(typeof(Text), nameof(Text.text), MethodType.Setter)]

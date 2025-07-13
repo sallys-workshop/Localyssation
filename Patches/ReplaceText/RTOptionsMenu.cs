@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTOptionsMenu
+    internal static partial class RTReplacer
     {
         [HarmonyPatch(typeof(OptionsMenuCell), nameof(OptionsMenuCell.Cell_OnAwake))]
         [HarmonyPostfix]

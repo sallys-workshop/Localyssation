@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTEquipments
+    internal static partial class RTReplacer
     {
 
         private static void replaceStatTags(EquipToolTip __instance)

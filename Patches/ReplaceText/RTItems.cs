@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTItems
+    internal static partial class RTReplacer
     {
         private static ImmutableList<string> consumableEffectDescKeys = ImmutableList.Create(
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY,

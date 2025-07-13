@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTSettings
+    internal static partial class RTReplacer
     {
         // settings
         [HarmonyPatch(typeof(SettingsManager), nameof(SettingsManager.Start))]

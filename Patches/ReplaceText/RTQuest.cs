@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    internal static class RTQuest
+    internal static partial class RTReplacer
     {
         [HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Cell_OnAwake))]
         [HarmonyPostfix]
