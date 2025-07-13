@@ -185,7 +185,7 @@ namespace Localyssation.Patches.ReplaceText
         {
             if (__instance._mainMenuManager._mainMenuCondition == MainMenuCondition.CharacterSelect && !__instance._isSendingCharacterFile)
             {
-                if (ProfileDataManager._current._characterFile._isEmptySlot)
+                if (!ProfileDataManager._current._characterFile._isEmptySlot)
                 {
                     __instance._enterGameButtonText.text = Localyssation.GetString(I18nKeys.CharacterSelect.BUTTON_SELECT_CHARACTER);
                 }
