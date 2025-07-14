@@ -34,7 +34,7 @@ namespace Localyssation.Patches.ReplaceText
                 }).InstructionEnumeration();
         }
 
-        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, List<string> keyReplacement)
+        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, IEnumerable<string> keyReplacement)
         {
             Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
             

@@ -420,7 +420,7 @@ namespace Localyssation.Patches.ReplaceText
                         Localyssation.GetString(
                             //"FORMAT_QUEST_PROGRESS",
                             I18nKeys.Quest.FORMAT_PROGRESS,
-                            RTQuest.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)
+                            RTReplacer.GetCreepKillRequirementText(questCreepRequirement._questCreep, questCreepRequirement._creepsKilled)
                         ),
                         Localyssation.GetString(KeyUtil.GetForAsset(questCreepRequirement._questCreep) + "_NAME"),
                         Math.Min(
