@@ -8,7 +8,7 @@ namespace Localyssation
 {
     internal static partial class I18nKeys
     { 
-        static class Item
+        internal static class Item
         {
             internal static void init() { }
             public static readonly string FORMAT_ITEM_RARITY
