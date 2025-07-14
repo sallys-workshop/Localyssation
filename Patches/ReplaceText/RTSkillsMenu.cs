@@ -115,26 +115,28 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void SkillListDataEntry_Handle_SkillData(SkillListDataEntry __instance)
         {
+            if (!__instance) return;
             if (!Player._mainPlayer || Player._mainPlayer._bufferingStatus || !__instance._scriptSkill) return;
-
+            ScriptableSkill skill = __instance._scriptSkill;
             __instance._skillNameText.text = Localyssation.GetString(
-                $"{KeyUtil.GetForAsset(__instance._scriptSkill)}_NAME",
+                $"{KeyUtil.GetForAsset(skill)}_NAME",
                 __instance._skillNameText.text,
                 __instance._skillNameText.fontSize
             );
-            var _skillStruct = Player._mainPlayer._pCasting._playerSkillStructs[__instance._skillStructIndex];
+            SkillStruct _skillStruct = __instance._skillStruct;
+            
             if (_skillStruct._skillUnlocked)
             {
                 if (__instance._skillRankText)
                 {
                     // "rank" now is skill type
-                    if (__instance._scriptSkill._skillControlType == SkillControlType.Passive)
+                    if (skill._skillControlType == SkillControlType.Passive)
                     {
-                        __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillControlType));
+                        __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(skill._skillControlType));
                     }
                     else
                     {
-                        __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillUtilityType));
+                        __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(skill._skillUtilityType));
                     }
 
                 }
@@ -142,12 +144,16 @@ namespace Localyssation.Patches.ReplaceText
             else
             {
                 //__instance._skillRankText.text = $"Point Cost: {__instance._scriptSkill._skillRankParams._skillPointCost}";
-                __instance._skillRankText.text = string.Format(
-                    Localyssation.GetString(I18nKeys.SkillMenu.SKILL_POINT_COST_FORMAT),
-                    __instance._scriptSkill._skillRankParams._skillPointCost
-                );
+                if (__instance._skillRankText)
+                {
+                    __instance._skillRankText.text = string.Format(
+                        Localyssation.GetString(I18nKeys.SkillMenu.SKILL_POINT_COST_FORMAT),
+                        skill._skillRankParams._skillPointCost
+                    );
+                }
+                
             }
-            
+
         }
 
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillStats))]
@@ -209,7 +215,6 @@ namespace Localyssation.Patches.ReplaceText
             //    { "<color=yellow>{0} sec cast time.</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME" },
             //    { "<color=yellow>instant cast time.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME_INSTANT" },
             //});
-            ;
             return RTUtil.SimpleStringReplaceTranspiler(RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableList.Create(
                 I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_COOLDOWN,
                 I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME,
@@ -220,10 +225,34 @@ namespace Localyssation.Patches.ReplaceText
 
                 I18nKeys.SkillMenu.TOOLTIP_REQUIRE_SHIELD
             )), typeof(SkillToolTipRequirement).GetEnumValues().Cast<SkillToolTipRequirement>().ToDictionary(
-                x => string.Format(Localyssation.GetDefaultString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), Localyssation.GetDefaultString(KeyUtil.GetForAsset(x))), 
+                x => string.Format(Localyssation.GetDefaultString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), x.ToString().ToLower()), 
                 x => string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), Localyssation.GetString(KeyUtil.GetForAsset(x)))
             ));
         }
+
+        [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillDescriptorInfo))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SkillToolTip_Apply_SkillDecriptorInfo_Transpiler2(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = new CodeMatcher(instructions)
+                .MatchForward(true,
+                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableSkill), nameof(ScriptableSkill._skillDescription))));
+            matcher.Advance(1);
+            matcher.MatchForward(true,
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableSkill), nameof(ScriptableSkill._skillDescription))));
+            matcher.MatchForward(true,
+                new CodeMatch(x => x.IsStloc()));
+            matcher.InsertAndAdvance(
+                new CodeInstruction(OpCodes.Ldarg, 0),
+                new CodeInstruction(OpCodes.Ldarg, 1),
+                Transpilers.EmitDelegate<Func<string, SkillToolTip, int, string>>((oldString, __instance, _rank) =>
+                {
+                    var key = KeyUtil.GetForAsset(__instance._scriptSkill);
+                    return Localyssation.GetString($"{key}_DESCRIPTOR", oldString);
+                }));
+            return matcher.InstructionEnumeration();
+        }
+
         [HarmonyPatch(typeof(ScriptableStatusCondition), nameof(ScriptableStatusCondition.Generate_ConditionDescriptor))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ScriptableStatusCondition_Generate_ConditionDescriptor_Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -250,27 +279,27 @@ namespace Localyssation.Patches.ReplaceText
         //    });
         //}
 
-        //[HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
-        //[HarmonyTranspiler]
-        //public static IEnumerable<CodeInstruction> SkillToolTip_Apply_ConditionRankInfo_Transpiler2(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    //var matcher = new CodeMatcher(instructions)
-        //    //    .MatchForward(true,
-        //    //        new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableCondition), nameof(ScriptableCondition._conditionDescription))));
-        //    //matcher.Advance(1);
-        //    //matcher.InsertAndAdvance(
-        //    //    new CodeInstruction(OpCodes.Ldarg, 0),
-        //    //    new CodeInstruction(OpCodes.Ldarg, 1),
-        //    //    Transpilers.EmitDelegate<Func<string, SkillToolTip, int, string>>((oldString, __instance, _rank) =>
-        //    //    {
-        //    //        var condition = __instance._scriptSkill._skillRankParams._selfConditionOutput;
-        //    //        var key = KeyUtil.GetForAsset(condition);
-        //    //        return Localyssation.GetString($"{key}_{condition._conditionRank}_DESCRIPTION", oldString);
-        //    //    }));
-        //    //return matcher.InstructionEnumeration();
-        //    return instructions; //TODO
+        [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SkillToolTip_Apply_ConditionRankInfo_Transpiler2(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = new CodeMatcher(instructions)
+                .MatchForward(true,
+                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableCondition), nameof(ScriptableCondition._conditionDescription))));
+            matcher.Advance(1);
+            matcher.InsertAndAdvance(
+                new CodeInstruction(OpCodes.Ldarg, 0),
+                new CodeInstruction(OpCodes.Ldarg, 1),
+                Transpilers.EmitDelegate<Func<string, SkillToolTip, int, string>>((oldString, __instance, _rank) =>
+                {
+                    var condition = __instance._scriptSkill._skillRankParams._selfConditionOutput;
+                    var key = KeyUtil.GetForAsset(condition);
+                    return Localyssation.GetString($"{key}_DESCRIPTION", oldString);
+                }));
+            return matcher.InstructionEnumeration();
+            //return instructions; //TODO
 
-        //}
+        }
 
     }
 }
