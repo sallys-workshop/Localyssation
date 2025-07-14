@@ -17,6 +17,9 @@ namespace Localyssation
                 = create("EXP_COUNTER_MAX", "MAX");
             public static readonly string COMBAT_ELEMENT_NORMAL_NAME
                 = create("COMBAT_ELEMENT_NORMAL_NAME", "Normal");
+
+            public static readonly string FORMAT_MAP_ZONE
+                = create("MAP_ZONE_FORMAT", "- {0} Zone -");
         }
 
     }

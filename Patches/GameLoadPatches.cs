@@ -3,6 +3,7 @@ using Localyssation.Patches.ReplaceText;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -145,7 +146,7 @@ namespace Localyssation.Patches
                     {
                         var quickSentence = quickSentenceArray[quickSentenceIndex];
                         var quickSentenceKey = $"{key}_{quickSentenceArrayName}_{quickSentenceIndex}";
-                        RTDialog.dialogManagerQuickSentencesHack[quickSentence] = quickSentenceKey;
+                        RTReplacer.dialogManagerQuickSentencesHack[quickSentence] = quickSentenceKey;
                         Localyssation.defaultLanguage.RegisterKey(quickSentenceKey, quickSentence);
                     }
                 }
@@ -164,6 +165,8 @@ namespace Localyssation.Patches
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(combatColliderType), combatColliderType.ToString());
             foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(itemType), itemType.ToString());
+            foreach (ZoneType item in Enum.GetValues(typeof(ZoneType)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(item), item.ToString());
 
             // scene-specific
             // this temporarily loads EVERY scene in the game to gather scene-specific keys, so we'll do it only when necessary
@@ -229,6 +232,14 @@ namespace Localyssation.Patches
                                 var key = KeyUtil.GetForAsset(dialogTrigger._scriptDialogData);
                                 RegisterKeysForDialogBranch(key, KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{Util.GetChildTransformPath(dialogTrigger.transform, 2)}"), dialogTrigger._localDialogBranch);
                             }
+                        }
+
+                        foreach (var mapVisualOverrideTrigger in GameObject.FindObjectsOfType<MapVisualOverrideTrigger>(true))
+                        {
+                            string regionTag = mapVisualOverrideTrigger._reigonName;
+                            Localyssation.defaultLanguage.RegisterKey(
+                                KeyUtil.GetForMapRegionTag(regionTag), regionTag
+                            );
                         }
 
                         yield return SceneManager.UnloadSceneAsync(scene);
