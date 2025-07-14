@@ -156,7 +156,7 @@ namespace Localyssation.Patches
                 }
 
                 // export quest info
-                if (dialogData._scriptableQuests.Length > 0)
+                if (dialogData._scriptableQuests.Length > 0 && Localyssation.configExportExtra.Value)
                 {
                     new ScriptableQuestExporter(dialogData._nameTag).Export(dialogData._scriptableQuests);
                 }
@@ -190,7 +190,11 @@ namespace Localyssation.Patches
             // misc
             Localyssation.defaultLanguage.strings["FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY"] = $"{{0}} {GameManager._current._statLogics._currencyName}";
 
-            new ScriptableItemExporter().Export(GameManager._current._cachedScriptableItems.Values);
+            // Export extra
+            if (Localyssation.configExportExtra.Value)
+            {
+                new ScriptableItemExporter().Export(GameManager._current._cachedScriptableItems.Values);
+            }
 
 
             if (Localyssation.configTranslatorMode.Value && Localyssation.configCreateDefaultLanguageFiles.Value)
