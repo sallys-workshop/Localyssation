@@ -121,5 +121,10 @@ namespace Localyssation
         {
             return $"MAP_REGION_TAG_{KeyUtil.Normalize(regionTag)}";
         }
+
+        public static string GetForAsset(SkillToolTipRequirement asset)
+        {
+            return $"SKILL_TOOLTIP_REQUIREMENT_{asset.ToString()}";
+        }
     }
 }

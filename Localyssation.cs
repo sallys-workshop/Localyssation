@@ -409,6 +409,14 @@ namespace Localyssation
             }
             return ApplyTextEditTags(GetStringRaw(key, defaultValue), fontSize);
         }
+
+        public static string GetDefaultString(string key)
+        {
+            string result;
+            if (!defaultLanguage.strings.TryGetValue(key, out result))
+                result = "";
+            return result;
+        }
     }
 
     public class Language

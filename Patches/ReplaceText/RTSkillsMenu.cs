@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -110,31 +111,44 @@ namespace Localyssation.Patches.ReplaceText
             __instance._skillsCell_classHeader.text = txt;
         }
 
-        //[HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Update))]
-        //[HarmonyPostfix]
-        //public static void SkillListDataEntry_Handle_SkillData(SkillListDataEntry __instance)
-        //{
-        //    if (!Player._mainPlayer || Player._mainPlayer._bufferingStatus || !__instance._scriptSkill) return;
+        [HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Update))]
+        [HarmonyPostfix]
+        public static void SkillListDataEntry_Handle_SkillData(SkillListDataEntry __instance)
+        {
+            if (!Player._mainPlayer || Player._mainPlayer._bufferingStatus || !__instance._scriptSkill) return;
 
-        //    __instance._skillNameText.text = Localyssation.GetString(
-        //        $"{KeyUtil.GetForAsset(__instance._scriptSkill)}_NAME",
-        //        __instance._skillNameText.text,
-        //        __instance._skillNameText.fontSize
-        //    );
+            __instance._skillNameText.text = Localyssation.GetString(
+                $"{KeyUtil.GetForAsset(__instance._scriptSkill)}_NAME",
+                __instance._skillNameText.text,
+                __instance._skillNameText.fontSize
+            );
+            var _skillStruct = Player._mainPlayer._pCasting._playerSkillStructs[__instance._skillStructIndex];
+            if (_skillStruct._skillUnlocked)
+            {
+                if (__instance._skillRankText)
+                {
+                    // "rank" now is skill type
+                    if (__instance._scriptSkill._skillControlType == SkillControlType.Passive)
+                    {
+                        __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillControlType));
+                    }
+                    else
+                    {
+                        __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillUtilityType));
+                    }
 
-        //    if (__instance._skillRankText)
-        //    {
-        //        // "rank" now is skill type
-        //        if (__instance._scriptSkill._skillControlType == SkillControlType.Passive)
-        //        {
-        //            __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillControlType));
-        //        }
-        //        else
-        //        {
-        //            __instance._skillRankText.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._skillUtilityType));
-        //        }
-        //    }
-        //}
+                }
+            }
+            else
+            {
+                //__instance._skillRankText.text = $"Point Cost: {__instance._scriptSkill._skillRankParams._skillPointCost}";
+                __instance._skillRankText.text = string.Format(
+                    Localyssation.GetString(I18nKeys.SkillMenu.SKILL_POINT_COST_FORMAT),
+                    __instance._scriptSkill._skillRankParams._skillPointCost
+                );
+            }
+            
+        }
 
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillStats))]
         [HarmonyPostfix]
@@ -187,39 +201,41 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> SkillToolTip_Apply_SkillDecriptorInfo_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-                //{ "\n<color=white><i>[Next Rank]</i></color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_NEXT_RANK" },
-                //{ "\n<color=white><i>[Rank {0}]</i></color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CURRENT_RANK" },
-                //{ "<color=red>\n(Requires Lv. {0})</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_REQUIRED_LEVEL" },
-                { "<color=yellow>{0} sec cooldown.</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_COOLDOWN" }, //有用
-                { "<color=yellow>{0} sec cast time.</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME" },
-                { "<color=yellow>instant cast time.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME_INSTANT" },
-            });
+            //return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
+            //    //{ "\n<color=white><i>[Next Rank]</i></color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_NEXT_RANK" },
+            //    //{ "\n<color=white><i>[Rank {0}]</i></color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CURRENT_RANK" },
+            //    //{ "<color=red>\n(Requires Lv. {0})</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_REQUIRED_LEVEL" },
+            //    { "<color=yellow>{0} sec cooldown.</color>", I18nKeys.SkillMenu.TOOLTIP_RANK_DESCRIPTOR_COOLDOWN }, //有用
+            //    { "<color=yellow>{0} sec cast time.</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME" },
+            //    { "<color=yellow>instant cast time.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME_INSTANT" },
+            //});
+            ;
+            return RTUtil.SimpleStringReplaceTranspiler(RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableList.Create(
+                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_COOLDOWN,
+                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME,
+                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME_INSTANT,
+                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_MANACOST,
+                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_HEALTHCOST,
+                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_STAMINACOST,
+
+                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_SHIELD
+            )), typeof(SkillToolTipRequirement).GetEnumValues().Cast<SkillToolTipRequirement>().ToDictionary(
+                x => string.Format(Localyssation.GetDefaultString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), Localyssation.GetDefaultString(KeyUtil.GetForAsset(x))), 
+                x => string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), Localyssation.GetString(KeyUtil.GetForAsset(x)))
+            ));
+        }
+        [HarmonyPatch(typeof(ScriptableStatusCondition), nameof(ScriptableStatusCondition.Generate_ConditionDescriptor))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ScriptableStatusCondition_Generate_ConditionDescriptor_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableList.Create(
+                I18nKeys.ScriptableStatusCondition.RATE_FORMAT,
+                I18nKeys.ScriptableStatusCondition.DURATION_FORMAT
+            ));
         }
 
-        //[HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillDescriptorInfo))]
-        //[HarmonyTranspiler]
-        //public static IEnumerable<CodeInstruction> SkillToolTip_Apply_SkillDecriptorInfo_Transpiler2(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    //var matcher = new CodeMatcher(instructions)
-        //    //    .MatchForward(true,
-        //    //        new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(SkillRanking), nameof(SkillRanking._rankDescriptor))));
-        //    //matcher.Advance(1);
-        //    ////matcher.MatchForward(true,
-        //    ////    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(SkillRanking), nameof(SkillRanking._rankDescriptor))));
-        //    //matcher.MatchForward(true,
-        //    //    new CodeMatch(x => x.IsStloc()));
-        //    //matcher.InsertAndAdvance(
-        //    //    new CodeInstruction(OpCodes.Ldarg, 0),
-        //    //    new CodeInstruction(OpCodes.Ldarg, 1),
-        //    //    Transpilers.EmitDelegate<Func<string, SkillToolTip, int, string>>((oldString, __instance, _rank) =>
-        //    //    {
-        //    //        var key = KeyUtil.GetForAsset(__instance._scriptSkill);
-        //    //        return Localyssation.GetString($"{key}_RANK_{_rank + 1}_DESCRIPTOR", oldString);
-        //    //    }));
-        //    //return matcher.InstructionEnumeration();
-        //    return instructions; //TODO
-        //}
+
+
 
         //[HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
         //[HarmonyTranspiler]

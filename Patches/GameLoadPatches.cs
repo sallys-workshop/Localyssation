@@ -167,6 +167,8 @@ namespace Localyssation.Patches
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(itemType), itemType.ToString());
             foreach (ZoneType item in Enum.GetValues(typeof(ZoneType)))
                 Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(item), item.ToString());
+            foreach (SkillToolTipRequirement skillToolTipRequirement in Enum.GetValues(typeof(SkillToolTipRequirement)))
+                Localyssation.defaultLanguage.RegisterKey(KeyUtil.GetForAsset(skillToolTipRequirement), skillToolTipRequirement.ToString());
 
             // scene-specific
             // this temporarily loads EVERY scene in the game to gather scene-specific keys, so we'll do it only when necessary
