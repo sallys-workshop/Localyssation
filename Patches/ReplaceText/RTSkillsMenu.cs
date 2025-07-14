@@ -68,9 +68,19 @@ namespace Localyssation.Patches.ReplaceText
                             KeyUtil.GetForAsset(pStats._class._playerClassTiers[pStats._syncClassTier - 1])
                         )
                     );
-                        //pStats._class._playerClassTiers[pStats._syncClassTier - 1]._classTierName + " Skills");
+                    //pStats._class._playerClassTiers[pStats._syncClassTier - 1]._classTierName + " Skills");
                     break;
             }
+        }
+
+        [HarmonyPatch(typeof(SkillsMenuCell), nameof(SkillsMenuCell.Handle_CellUpdate))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SkillsMenuCell_Handle_CellUpdate_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableArray.Create(
+                I18nKeys.TabMenu.PAGER_1_PAGE,
+                I18nKeys.TabMenu.PAGER_FORMAT
+            ));
         }
 
         [HarmonyPatch(typeof(SkillsMenuCell), nameof(SkillsMenuCell.Handle_CellUpdate))]
@@ -124,7 +134,7 @@ namespace Localyssation.Patches.ReplaceText
                 __instance._skillNameText.fontSize
             );
             SkillStruct _skillStruct = __instance._skillStruct;
-            
+
             if (_skillStruct._skillUnlocked)
             {
                 if (__instance._skillRankText)
@@ -151,7 +161,7 @@ namespace Localyssation.Patches.ReplaceText
                         skill._skillRankParams._skillPointCost
                     );
                 }
-                
+
             }
 
         }
@@ -163,7 +173,7 @@ namespace Localyssation.Patches.ReplaceText
             if (!Player._mainPlayer || !__instance._scriptSkill) return;
             var skill = __instance._scriptSkill;
             var key = KeyUtil.GetForAsset(__instance._scriptSkill);
-            __instance._toolTipName.text = Localyssation.GetString($"{key}_NAME",fontSize: __instance._toolTipName.fontSize);
+            __instance._toolTipName.text = Localyssation.GetString($"{key}_NAME", fontSize: __instance._toolTipName.fontSize);
 
 
             if (skill._skillControlType != SkillControlType.Passive)
@@ -175,7 +185,7 @@ namespace Localyssation.Patches.ReplaceText
                 __instance._toolTipSubName.text = Localyssation.GetString(KeyUtil.GetForAsset(SkillControlType.Passive));
             }
 
-            
+
 
             void NonPassiveSkillsTooltip()
             {
@@ -203,103 +213,191 @@ namespace Localyssation.Patches.ReplaceText
 
 
 
-        [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillDescriptorInfo))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> SkillToolTip_Apply_SkillDecriptorInfo_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            //return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-            //    //{ "\n<color=white><i>[Next Rank]</i></color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_NEXT_RANK" },
-            //    //{ "\n<color=white><i>[Rank {0}]</i></color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CURRENT_RANK" },
-            //    //{ "<color=red>\n(Requires Lv. {0})</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_REQUIRED_LEVEL" },
-            //    { "<color=yellow>{0} sec cooldown.</color>", I18nKeys.SkillMenu.TOOLTIP_RANK_DESCRIPTOR_COOLDOWN }, //有用
-            //    { "<color=yellow>{0} sec cast time.</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME" },
-            //    { "<color=yellow>instant cast time.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CAST_TIME_INSTANT" },
-            //});
-            return RTUtil.SimpleStringReplaceTranspiler(RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableList.Create(
-                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_COOLDOWN,
-                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME,
-                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME_INSTANT,
-                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_MANACOST,
-                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_HEALTHCOST,
-                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_STAMINACOST,
 
-                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_SHIELD
-            )), typeof(SkillToolTipRequirement).GetEnumValues().Cast<SkillToolTipRequirement>().ToDictionary(
-                x => string.Format(Localyssation.GetDefaultString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), x.ToString().ToLower()), 
-                x => string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT), Localyssation.GetString(KeyUtil.GetForAsset(x)))
-            ));
-        }
-
+        /// <summary>
+        /// Total rewrite
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <returns></returns>
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillDescriptorInfo))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> SkillToolTip_Apply_SkillDecriptorInfo_Transpiler2(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPrefix]
+        public static bool SkillToolTip_Apply_SkillDescriptorInfo_Prefix(SkillToolTip __instance)
         {
-            var matcher = new CodeMatcher(instructions)
-                .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableSkill), nameof(ScriptableSkill._skillDescription))));
-            matcher.Advance(1);
-            matcher.MatchForward(true,
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableSkill), nameof(ScriptableSkill._skillDescription))));
-            matcher.MatchForward(true,
-                new CodeMatch(x => x.IsStloc()));
-            matcher.InsertAndAdvance(
-                new CodeInstruction(OpCodes.Ldarg, 0),
-                new CodeInstruction(OpCodes.Ldarg, 1),
-                Transpilers.EmitDelegate<Func<string, SkillToolTip, int, string>>((oldString, __instance, _rank) =>
+            PlayerStats _pStats = Player._mainPlayer._pStats;
+            int _skillPower = 0;
+            switch (__instance._scriptSkill._skillDamageType)
+            {
+                case DamageType.Strength:
+                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._attackPower * GameManager._current._statLogics._attackPowerPercent);
+                    break;
+                case DamageType.Dexterity:
+                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._dexPower * GameManager._current._statLogics._rangePowerPercent);
+                    break;
+                case DamageType.Mind:
+                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._magicPower * GameManager._current._statLogics._magicPowerPercent);
+                    break;
+            }
+
+            if (__instance._scriptSkill._skillRankParams._useWeaponPower && (bool)_pStats._player._pCombat._equippedWeapon)
+            {
+                _skillPower += _pStats._player._pCombat._equippedWeapon.Get_BaseCeilingDamage();
+            }
+
+            if (__instance._skillConditionsListing.text != string.Empty)
+            {
+                __instance._skillConditionsListing.text += "\n";
+            }
+
+            Init_TermMacros();
+            __instance.Apply_ConditionRankInfo();
+            void Init_TermMacros()
+            {
+                if (!(__instance._scriptSkill._skillDescription == string.Empty))
                 {
-                    var key = KeyUtil.GetForAsset(__instance._scriptSkill);
-                    return Localyssation.GetString($"{key}_DESCRIPTOR", oldString);
-                }));
-            return matcher.InstructionEnumeration();
+                    __instance._toolTipDescription.gameObject.SetActive(value: true);
+                    string skillDescription = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill) + "_DESCRIPTION");
+                    ScriptableCondition scriptableCondition = null;
+                    ConditionSlot skillObjectCondition = __instance._scriptSkill._skillRankParams._skillObjectOutput._skillObjectCondition;
+                    int bonusPower = __instance._scriptSkill._skillRankParams._skillObjectOutput._skillObjectCondition._bonusPower;
+                    int bonusDuration = __instance._scriptSkill._skillRankParams._skillObjectOutput._skillObjectCondition._bonusDuration;
+                    if ((bool)skillObjectCondition._scriptableCondition)
+                    {
+                        scriptableCondition = skillObjectCondition._scriptableCondition;
+                    }
+
+                    skillDescription = skillDescription.Replace("$SKP", $"<color=yellow>{_skillPower}</color>");
+                    skillDescription = skillDescription.Replace("$DMG", $"<color=yellow>({_skillPower} - {_skillPower + 3})</color>");
+                    skillDescription = skillDescription.Replace("$COOLDWN", string.Format(
+                        Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_COOLDOWN), __instance._scriptSkill._skillRankParams._baseCooldown
+                    ));
+                    skillDescription = skillDescription.Replace("$MANACOST", string.Format(
+                        //$"<color=yellow>Costs {__instance._scriptSkill._skillRankParams._manaCost} Mana.</color>"
+                        Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_MANACOST),
+                        __instance._scriptSkill._skillRankParams._manaCost
+                    ));
+                    skillDescription = skillDescription.Replace("$HEALTHCOST", string.Format(
+                        //$"<color=yellow>Costs {__instance._scriptSkill._skillRankParams._healthCost} Health.</color>"
+                        Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_HEALTH_COST),
+                        __instance._scriptSkill._skillRankParams._healthCost
+                    ));
+                    skillDescription = skillDescription.Replace("$STAMINACOST", string.Format(
+                        //$"<color=yellow>Costs {__instance._scriptSkill._skillRankParams._staminaCost} Stamina.</color>"
+                        Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_STAMINA_COST),
+                        __instance._scriptSkill._skillRankParams._staminaCost
+                    ));
+                    skillDescription = (!(__instance._scriptSkill._skillRankParams._baseCastTime > 0.12f)) ?
+                        skillDescription.Replace("$CASTTIME", Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME_INSTANT)) :
+                        skillDescription.Replace("$CASTTIME", string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME), __instance._scriptSkill._skillRankParams._baseCastTime));
+                    skillDescription = skillDescription.Replace("$RECALLINPUT", "<color=yellow>[" + InputControlManager.current.Convert_KeyCodeName(InputControlManager.current._recall.ToString()) + "]</color>");
+                    skillDescription = skillDescription.Replace("$CHARGEATKINPUT", "<color=yellow>[" + InputControlManager.current.Convert_KeyCodeName(InputControlManager.current._chargeAttack.ToString()) + "]</color>");
+                    skillDescription = skillDescription.Replace("$DASHINPUT", "<color=yellow>[" + InputControlManager.current.Convert_KeyCodeName(InputControlManager.current._dash.ToString()) + "]</color>");
+                    if (__instance._scriptSkill._requireShield)
+                    {
+                        skillDescription += Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_REQUIRE_SHIELD);
+                    }
+
+                    if (__instance._scriptSkill._toolTipRequirement != SkillToolTipRequirement.NONE)
+                    {
+                        skillDescription += string.Format(
+                            Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_REQUIEMENT_FORMAT),
+                            Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptSkill._toolTipRequirement))
+                        );
+                    }
+
+                    if ((bool)scriptableCondition && !string.IsNullOrWhiteSpace(scriptableCondition._conditionDescription))
+                    {
+                        string text = scriptableCondition.Generate_ConditionDescriptor(_pStats._statStruct, bonusPower, bonusDuration);
+                        string text2 = $"\n\n<color=cyan>{Localyssation.GetString(KeyUtil.GetForAsset(scriptableCondition) + "_NAME")} - ({Localyssation.GetString(KeyUtil.GetForAsset(scriptableCondition._conditionGroup) + "_NAME")})";
+                        text2 += (!(skillObjectCondition._chance < 1f)) ? 
+                            ""
+                            :  string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CONDITION_CHANCE), skillObjectCondition._chance * 100f);
+                        text2 += "</color>\n" + text;
+                        skillDescription += text2;
+                    }
+
+                    __instance._toolTipDescription.text = skillDescription;
+                }
+            }
+            return false;
         }
+
 
         [HarmonyPatch(typeof(ScriptableStatusCondition), nameof(ScriptableStatusCondition.Generate_ConditionDescriptor))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> ScriptableStatusCondition_Generate_ConditionDescriptor_Transpiler(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPrefix]
+        public static bool ScriptableStatusCondition_Generate_ConditionDescriptor_Prefix(
+            ScriptableStatusCondition __instance,
+            StatStruct _parentStatStruct, int _bonusPower, int _bonusDuration,
+            ref string __result)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableList.Create(
-                I18nKeys.ScriptableStatusCondition.RATE_FORMAT,
-                I18nKeys.ScriptableStatusCondition.DURATION_FORMAT
-            ));
+
+            string conditionDescription = Localyssation.GetString(KeyUtil.GetForAsset(__instance) + "_DESCRIPTION");
+            int num = __instance.Get_ConditionPower(_parentStatStruct, _bonusPower);
+            __result = conditionDescription.Replace("$BASEPOWER", $"<color=yellow>{num}</color>").Replace("$APPLY_HEALTH", $"<color=yellow>{Mathf.Abs(num * __instance._applyHealth)}</color>").Replace("$STAT_MAXHEALTH", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._maxHealth, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_MAXMANA", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._maxMana, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_MAXSTAMINA", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._maxStamina, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_EXP", $"<color=yellow>{Mathf.Abs(__instance._statStruct._experience)}</color>")
+                .Replace("$STAT_ATTACKPOWER", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._attackPower, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_MAGICPOWER", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._magicPower, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_DEXPOWER", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._dexPower, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_DEFENSE", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._defense, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_MAGICDEFENSE", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._magicDefense, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_CRITRATE", "<color=yellow>" + Mathf.Abs(__instance.FloatStatCalculate(__instance._statStruct._criticalRate, _parentStatStruct, _bonusPower) * 100f).ToString("N2") + "%</color>")
+                .Replace("$STAT_MAGICCRITRATE", "<color=yellow>" + Mathf.Abs(__instance.FloatStatCalculate(__instance._statStruct._magicCriticalRate, _parentStatStruct, _bonusPower) * 100f).ToString("N2") + "%</color>")
+                .Replace("$STAT_EVASION", "<color=yellow>" + Mathf.Abs(__instance.FloatStatCalculate(__instance._statStruct._evasion, _parentStatStruct, _bonusPower) * 100f).ToString("N2") + "%</color>")
+                .Replace("$STAT_RESISTFIRE", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._fireResist, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_RESISTWATER", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._waterResist, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_RESISTNATURE", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._natureResist, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_RESISTEARTH", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._earthResist, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_RESISTHOLY", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._holyResist, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$STAT_RESISTSHADOW", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._statStruct._shadowResist, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$ABSORB", $"<color=yellow>{Mathf.Abs(__instance.StatCalculate(__instance._damageAbsorbtionAmount, _parentStatStruct, _bonusPower))}</color>")
+                .Replace("$MOVSPEED", $"<color=yellow>{Mathf.Abs(__instance._movSpeedPercentChange * 100f)}%</color>")
+                //.Replace("$DURATION", $"<color=yellow>Lasts for {__instance._duration + (float)_bonusDuration} sec</color>.")
+                .Replace("$DURATION", string.Format(Localyssation.GetString(I18nKeys.ScriptableStatusCondition.DURATION_FORMAT), __instance._duration + _bonusDuration))
+                //.Replace("$RATE", $"<color=yellow>every {__instance._repeatRate} sec</color>.");
+                .Replace("$RATE", string.Format(Localyssation.GetString(I18nKeys.ScriptableStatusCondition.RATE_FORMAT), __instance._repeatRate));
+            return false;
         }
 
 
 
 
-        //[HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
-        //[HarmonyTranspiler]
-        //public static IEnumerable<CodeInstruction> SkillToolTip_Apply_ConditionRankInfo_Transpiler(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-        //        { " <color=yellow>Cancels if hit.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_CANCEL_ON_HIT" },
-        //        { " <color=yellow>Permanent.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_PERMANENT" },
-        //        { " <color=yellow>Lasts for {0} seconds.</color>", "FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_DURATION" },
-        //        { " <color=yellow>Stackable.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_STACKABLE" },
-        //        { " <color=yellow>Refreshes when re-applied.</color>", "SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE" },
-        //    });
-        //}
+
+
 
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> SkillToolTip_Apply_ConditionRankInfo_Transpiler2(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPrefix]
+        public static bool SkillToolTip_Apply_ConditionRankInfo_Prefix(SkillToolTip __instance)
         {
-            var matcher = new CodeMatcher(instructions)
-                .MatchForward(true,
-                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableCondition), nameof(ScriptableCondition._conditionDescription))));
-            matcher.Advance(1);
-            matcher.InsertAndAdvance(
-                new CodeInstruction(OpCodes.Ldarg, 0),
-                new CodeInstruction(OpCodes.Ldarg, 1),
-                Transpilers.EmitDelegate<Func<string, SkillToolTip, int, string>>((oldString, __instance, _rank) =>
-                {
-                    var condition = __instance._scriptSkill._skillRankParams._selfConditionOutput;
-                    var key = KeyUtil.GetForAsset(condition);
-                    return Localyssation.GetString($"{key}_DESCRIPTION", oldString);
-                }));
-            return matcher.InstructionEnumeration();
-            //return instructions; //TODO
+            if (__instance._scriptSkill._skillRankParams._selfConditionOutput == null)
+            {
+                return false;
+            }
 
+            ScriptableCondition selfConditionOutput = __instance._scriptSkill._skillRankParams._selfConditionOutput;
+            if ((bool)selfConditionOutput && (bool)selfConditionOutput._conditionGroup)
+            {
+                __instance._skillConditionsListing.text += "\n";
+                //string text = "<color=cyan>" + selfConditionOutput._conditionName + " - (" + selfConditionOutput._conditionGroup._conditionGroupTag + ")</color>\n";
+                string text = string.Format("<color=cyan>{0} - ({1})</color>\n",
+                    Localyssation.GetString(KeyUtil.GetForAsset(selfConditionOutput) + "_NAME"),
+                    Localyssation.GetString(KeyUtil.GetForAsset(selfConditionOutput._conditionGroup) + "_NAME")
+                    );
+                text += selfConditionOutput.Generate_ConditionDescriptor(Player._mainPlayer._pStats._statStruct, 0, 0);
+                __instance._skillConditionsListing.text += text;
+                if (selfConditionOutput._isStackable)
+                {
+                    __instance._skillConditionsListing.text += Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CONDITION_IS_STACKABLE);
+                }
+
+                if (selfConditionOutput._cancelOnHit)
+                {
+                    __instance._skillConditionsListing.text += Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CONDITION_CANCEL_ON_HIT);
+                }
+            }
+            return false;
         }
 
     }
+
 }

@@ -22,6 +22,11 @@ namespace Localyssation
             return $"ITEM_{Normalize(asset._itemName)}";
         }
 
+        public static string GetForAsset(ScriptableConditionGroup asset)
+        {
+            return $"CONDITION_GROUP_{Normalize(asset._conditionGroupTag)}";
+        }
+
         public static string GetForAsset(WeaponAnimationSlot asset)
         {
             return $"WEAPON_TYPE_{Normalize(asset._weaponNameTag)}";

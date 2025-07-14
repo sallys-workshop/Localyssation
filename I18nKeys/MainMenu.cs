@@ -28,6 +28,9 @@ namespace Localyssation
                 = create("MAIN_MENU_BUTTON_QUIT", "Quit");
             public static readonly string BUTTON_QUIT_TOOLTIP
                 = create("MAIN_MENU_BUTTON_QUIT_TOOLTIP", "End The Application.");
+
+            public static readonly string PAGER
+                = create("MAIN_MENU_PAGER", "Page ( {0} / 15 )");
         }
 
     }

@@ -7,6 +7,13 @@ namespace Localyssation
         internal static class TabMenu
         {
             internal static void init() { }
+
+            public static readonly string PAGER_FORMAT
+                = create("PAGER_FORMAT", "Page ( {0} / {1} )");
+            public static readonly string PAGER_1_PAGE
+                = create("PAGER_1_PAGE", "Page ( 1 / 1 )");
+
+
             public static readonly string CELL_STATS_HEADER
                 = create("TAB_MENU_CELL_STATS_HEADER", "Stats");
 

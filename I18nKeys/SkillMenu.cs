@@ -58,16 +58,12 @@ namespace Localyssation
             public static readonly string TOOLTIP_REQUIRE_SHIELD
                 = create("SKILL_TOOLTIP_REQUIREMENT_SHIELD", " <color=yellow>Requires a shield.</color>");
 
-            //public static readonly string TOOLTIP_RANK_DESCRIPTOR_CONDITION_CANCEL_ON_HIT
-            //    = create("SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_CANCEL_ON_HIT", " <color=yellow>Cancels if hit.</color>");
-            //public static readonly string TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_PERMANENT
-            //    = create("SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_PERMANENT", " <color=yellow>Permanent.</color>");
-            //public static readonly string TOOLTIP_RANK_DESCRIPTOR_CONDITION_DURATION
-            //    = create("FORMAT_SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_DURATION", " <color=yellow>Lasts for {0} seconds.</color>");
-            //public static readonly string TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_STACKABLE
-            //    = create("SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_STACKABLE", " <color=yellow>Stackable.</color>");
-            //public static readonly string TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE
-            //    = create("SKILL_TOOLTIP_RANK_DESCRIPTOR_CONDITION_IS_REFRESHABLE", " <color=yellow>Refreshes when re-applied.</color>");
+            public static readonly string TOOLTIP_DESCRIPTOR_CONDITION_CANCEL_ON_HIT
+                = create("SKILL_TOOLTIP_DESCRIPTOR_CONDITION_CANCEL_ON_HIT", " <color=yellow>Cancels if hit.</color>");
+            public static readonly string TOOLTIP_DESCRIPTOR_CONDITION_IS_STACKABLE
+                = create("SKILL_TOOLTIO_DESCRIPTOR_CONDITION_IS_STACKABLE", " <color=yellow>Stackable.</color>");
+            public static readonly string TOOLTIP_DESCRIPTOR_CONDITION_CHANCE
+                = create("SKILL_TOOLTIP_DESCRIPTOR_CONDITION_CHANCE", "({0}% Chance)");
         }
 
     }

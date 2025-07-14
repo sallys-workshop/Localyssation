@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -169,7 +170,14 @@ namespace Localyssation.Patches.ReplaceText
                 { "Lobby Query", "CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY" },
             });
         }
-
+        [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Update))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> CharacterSelectManager_Update_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableArray.Create(
+                I18nKeys.MainMenu.PAGER
+            ));
+        }
         //[HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_CharacterSelectControl))]
         //[HarmonyTranspiler]
         //public static IEnumerable<CodeInstruction> CharacterSelectManager_Handle_CharacterSelectControl_Transpiler(IEnumerable<CodeInstruction> instructions)

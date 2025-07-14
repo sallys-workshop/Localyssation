@@ -50,7 +50,7 @@ namespace Localyssation.Patches
             {
                 var key = $"{KeyUtil.GetForAsset(condition)}";
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", condition._conditionName);
-                //Localyssation.defaultLanguage.RegisterKey($"{key}_{condition._conditionRank}_DESCRIPTION", condition._conditionDescription);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTION", condition._conditionDescription);
             }
             // stat modifiers
             foreach (var statModifier in __instance._cachedScriptableStatModifiers.Values)
@@ -102,6 +102,13 @@ namespace Localyssation.Patches
                 var key = KeyUtil.GetForAsset(statAttribute);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", statAttribute._attributeName);
                 Localyssation.defaultLanguage.RegisterKey($"{key}_DESCRIPTOR", statAttribute._attributeDescriptor);
+            }
+
+            // condition group
+            foreach (var conditionGroup in GameManager._current._cachedScriptableConditionGroups.Values)
+            {
+                var key = KeyUtil.GetForAsset(conditionGroup);
+                Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", conditionGroup._conditionGroupTag);
             }
 
             // uncached scriptables
