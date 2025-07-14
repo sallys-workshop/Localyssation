@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Localyssation.Exporter;
 using Localyssation.Patches.ReplaceText;
 using System;
 using System.Collections;
@@ -153,6 +154,12 @@ namespace Localyssation.Patches
                         Localyssation.defaultLanguage.RegisterKey(quickSentenceKey, quickSentence);
                     }
                 }
+
+                // export quest info
+                if (dialogData._scriptableQuests.Length > 0)
+                {
+                    new ScriptableQuestExporter(dialogData._nameTag).Export(dialogData._scriptableQuests);
+                }
             }
 
             // enums
@@ -183,8 +190,8 @@ namespace Localyssation.Patches
             // misc
             Localyssation.defaultLanguage.strings["FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY"] = $"{{0}} {GameManager._current._statLogics._currencyName}";
 
+            new ScriptableItemExporter().Export(GameManager._current._cachedScriptableItems.Values);
 
-            
 
             if (Localyssation.configTranslatorMode.Value && Localyssation.configCreateDefaultLanguageFiles.Value)
                 Localyssation.defaultLanguage.WriteToFileSystem();

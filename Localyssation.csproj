@@ -56,6 +56,10 @@
             <HintPath>$(ATLYSS_MANAGED)\UnityEngine.AudioModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule">
+          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="UnityEngine.JSONSerializeModule">
             <HintPath>$(ATLYSS_MANAGED)\UnityEngine.JSONSerializeModule.dll</HintPath>
             <Private>False</Private>

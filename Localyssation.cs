@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using Localyssation.Exporter;
 using Localyssation.Patches.ReplaceFont;
 using Localyssation.Patches.ReplaceText;
 using Newtonsoft.Json;
@@ -99,6 +100,7 @@ namespace Localyssation
             RegisterLanguage(defaultLanguage);
             ChangeLanguage(defaultLanguage);
             LoadLanguagesFromFileSystem();
+            ExportUtil.InitExports();
             LoadFontBundlesFromFileSystem();
 
             configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
