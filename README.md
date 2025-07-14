@@ -3,8 +3,12 @@ A work-in-progress localisation library mod for the video game [ATLYSS](https://
 Originally created by [TheMysticSword](https://github.com/TheMysticSword/Localyssation).
 This fork is mainly maintained by TowardtheStars, as a part of CHS translation project, but should be applicable to other languages.
 
+## Requirements
+- BepInEx 5
+- EasySettings
+
 ## :warning: Important note :warning:
-This mod is not finished yet! The pre-release versions you see are unfinished versions of the mod intended for translators to make their own languages early.
+~~This mod is not finished yet!~~ This mod is mostly finished. The pre-release versions you see are unfinished versions of the mod intended for translators to make their own languages early.
 
 ## Current features
 * New "Language" option in the "Interface" settings tab
@@ -12,6 +16,9 @@ This mod is not finished yet! The pre-release versions you see are unfinished ve
   * A language consists of the following files:
     * `localyssationLanguage.json` with information about the language
     * `strings.tsv` with text keys and corresponding translated text
+* Exporting game data for translators' convenience
+  * Item icons, translation keys and names
+  * Quest givers, translation keys, types, subtypes, and names
 * Some in-game text gets translated according to the selected language:
   * Main menu
   * Settings
@@ -19,11 +26,15 @@ This mod is not finished yet! The pre-release versions you see are unfinished ve
   * Character creation menu
   * Equipment tooltips
   * Tab menu:
+    * ESC menu
     * Stats
-    * Skills (partially)
-    * Quests (partially)
+    * Skills
+    * Items
+    * Quests
+    * Who
   * Quests
   * Dialogues
+  * Map splash titles
 
 ## For translators
 You do not have to ask me if you can make a translation. This mod is a library that lets others easily make their own translations. It is not intended to include translations on its own.  
