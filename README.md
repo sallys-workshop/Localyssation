@@ -1,5 +1,7 @@
 # Localyssation
 A work-in-progress localisation library mod for the video game [ATLYSS](https://store.steampowered.com/app/2768430/ATLYSS/).
+Originally created by [TheMysticSword](https://github.com/TheMysticSword/Localyssation).
+This fork is mainly maintained by TowardtheStars, as a part of CHS translation project, but should be applicable to other languages.
 
 ## :warning: Important note :warning:
 This mod is not finished yet! The pre-release versions you see are unfinished versions of the mod intended for translators to make their own languages early.
