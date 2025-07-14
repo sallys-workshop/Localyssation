@@ -14,15 +14,17 @@ namespace Localyssation.Patches.ReplaceText
     internal static partial class RTReplacer
     {
 
-        private static void replaceStatTags(EquipToolTip __instance)
+        [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Awake))]
+        [HarmonyPostfix]
+        public static void replaceStatTags(EquipToolTip __instance)
         {
-            const string TAG_NAME_REGEX = @"_(\w*)Tag";
-            FieldInfo[] fieldInfos = typeof(EquipToolTip).GetFields();
-            foreach (var field in fieldInfos.ToList().Where(field => Regex.IsMatch(field.Name, TAG_NAME_REGEX) && field.FieldType == typeof(Text)))
+            const string TAG_NAME_REGEX = @"_statCell_(\w*)Tag";
+            foreach (var tag in __instance.transform.GetComponentsInChildren<Text>(true).Where(text => Regex.IsMatch(text.transform.name, TAG_NAME_REGEX)))
             {
-                Text tag = (Text)field.GetValue(__instance);
-                string name = Regex.Match(field.Name, TAG_NAME_REGEX).Groups[1].Value;
-                
+                string statName = Regex.Match(tag.transform.name, TAG_NAME_REGEX).Groups[1].Value;
+                string key = I18nKeys.Equipment.statDisplayKey(statName);
+                Localyssation.logger.LogDebug($"public static readonly string {key.Replace("ITEM_", "")}\n\t= create(statDisplayKey(\"{statName}\"), \"{tag.text}\");");
+                tag.text = Localyssation.GetString(key);
             }
         }
 
@@ -32,7 +34,6 @@ namespace Localyssation.Patches.ReplaceText
         public static void EquipToolTip_Apply_EquipStats(EquipToolTip __instance, ScriptableEquipment _scriptEquip, ItemData _itemData)
         {
 
-            replaceStatTags(__instance);
             if (_scriptEquip && !__instance._isGambleItem)
             {
                 var key = KeyUtil.GetForAsset(_scriptEquip);
@@ -79,18 +80,37 @@ namespace Localyssation.Patches.ReplaceText
                                 weapon._weaponConditionSlot._scriptableCondition._conditionName, __instance._toolTipDescription.fontSize)
                             );
                     }
+                    DamageType combatType = weapon.weaponType._combatType;
+                    __instance._weaponTypeText.text = string.Format(
+                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_DAMAGE_TYPE), 
+                        Localyssation.GetString(KeyUtil.GetForAsset(combatType))
+                    );
 
-                    if (Enum.TryParse<DamageType>(__instance._weaponTypeText.text, out var damageType))
-                        __instance._weaponTypeText.text = __instance._weaponTypeText.text.Replace(
-                            damageType.ToString(), Localyssation.GetString(KeyUtil.GetForAsset(damageType),
-                            damageType.ToString(), __instance._weaponTypeText.fontSize)
-                        );
+                    //_weaponDamageTransmuteText.text = $"Damage Transmute: {_overrideType}"
+                    DamageType _overrideType = weapon.weaponType._combatType;
+                    PlayerCombat _pCombat = Player._mainPlayer._pCombat;
+                    if (_pCombat._useDamageTypeOverride && _itemData._isEquipped && ((_pCombat._isUsingAltWeapon && _itemData._isAltWeapon) || (!_pCombat._isUsingAltWeapon && !_itemData._isAltWeapon)))
+                    {
+                        _overrideType = _pCombat._damageTypeOverride;
+                    }
+
+                    if (_itemData._useDamageTypeOverride)
+                    {
+                        _overrideType = _itemData._damageTypeOverride;
+                    }
+                    __instance._weaponDamageTransmuteText.text = string.Format(
+                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_TRANSMUTE_TYPE),
+                        Localyssation.GetString(KeyUtil.GetForAsset(_overrideType))
+                    );
+                        
 
                     //__instance._equipToolTipType.text = $"{weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]._weaponNameTag} (Weapon)";
                     __instance._equipToolTipType.text = string.Format(
                         Localyssation.GetString(I18nKeys.Equipment.FORMAT_TOOLTIP_TYPE_WEAPON),
                         Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]))
                     );
+
+                    
 
                     if (weapon._combatElement)
                     {
@@ -102,9 +122,9 @@ namespace Localyssation.Patches.ReplaceText
                                     weapon._combatElement._elementName,
                                     __instance._equipStatsDisplay.fontSize
                                 )
-                            );
-                        
-
+                            )
+                                .Replace("Base Damage", Localyssation.GetString(I18nKeys.Equipment.STATS_BASE_DAMAGE))
+                                .Replace("Damage", Localyssation.GetString(I18nKeys.Equipment.STATS_DAMAGE));
                     }
                     else
                     {
@@ -116,7 +136,12 @@ namespace Localyssation.Patches.ReplaceText
             //return false;
         }
 
-
+        [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Update))]
+        [HarmonyPostfix]
+        public static void EquipToolTip_Update_Postfix(EquipToolTip __instance)
+        {
+            __instance._compareDisplayText.text = __instance._compareDisplayText.text.Replace("Compare", Localyssation.GetString(I18nKeys.Equipment.COMPARE));
+        }
         
         [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
         [HarmonyTranspiler]
@@ -134,9 +159,7 @@ namespace Localyssation.Patches.ReplaceText
                 { "Cape (Armor)", "EQUIP_TOOLTIP_TYPE_CAPE" },
                 { "Ring (Armor)", "EQUIP_TOOLTIP_TYPE_RING" },
                 { "Shield", "EQUIP_TOOLTIP_TYPE_SHIELD" },
-                { "<color=#efcc00>({0} - {1})</color> Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED_POWERFUL" },
-                { "<color=#c5e384>({0} - {1})</color> Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED" },
-                { "\n<color=grey>(Base Damage: {0} - {1})</color>", "FORMAT_EQUIP_STATS_DAMAGE_COMPARE_BASE" },
+                { "<color=#efcc00>({0} - {1})</color> {2}Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED_POWERFUL" },
                 { "({0} - {1}) Damage", "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED" },
                 { "Block threshold: {0} damage", "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD" }
             });

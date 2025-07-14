@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Localyssation
@@ -34,6 +35,7 @@ namespace Localyssation
                 = create("ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY", "Recovers {0} Stamina.");
             public static readonly string TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN
                 = create("ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN", "Gain {0} Experience on use.");
+
         }
 
     }
