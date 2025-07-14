@@ -33,6 +33,7 @@ namespace Localyssation
                 = create("EQUIP_TOOLTIP_TYPE_CAPE", "Cape (Armor)");
             public static readonly string TOOLTIP_TYPE_RING
                 = create("EQUIP_TOOLTIP_TYPE_RING", "Ring (Armor)");
+
             public static readonly string FORMAT_TOOLTIP_TYPE_WEAPON
                 = create("FORMAT_EQUIP_TOOLTIP_TYPE_WEAPON", "{0} (Weapon)");
             public static readonly string TOOLTIP_TYPE_SHIELD

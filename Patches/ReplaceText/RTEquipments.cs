@@ -50,8 +50,8 @@ namespace Localyssation.Patches.ReplaceText
                         modifier._modifierTag, Localyssation.GetString(KeyUtil.GetForAsset(modifier) + "_TAG")
                     );
                 }
-
                 
+
                 __instance._toolTipSubName.text = string.Format(
                     Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_RARITY, __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
                     Localyssation.GetString(KeyUtil.GetForAsset(shownRarity), _scriptEquip._itemRarity.ToString(), __instance._toolTipSubName.fontSize));
@@ -86,6 +86,12 @@ namespace Localyssation.Patches.ReplaceText
                             damageType.ToString(), __instance._weaponTypeText.fontSize)
                         );
 
+                    //__instance._equipToolTipType.text = $"{weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]._weaponNameTag} (Weapon)";
+                    __instance._equipToolTipType.text = string.Format(
+                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_TOOLTIP_TYPE_WEAPON),
+                        Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]))
+                    );
+
                     if (weapon._combatElement)
                     {
                         if (!string.IsNullOrEmpty(weapon._combatElement._elementName))
@@ -97,6 +103,8 @@ namespace Localyssation.Patches.ReplaceText
                                     __instance._equipStatsDisplay.fontSize
                                 )
                             );
+                        
+
                     }
                     else
                     {

@@ -22,9 +22,9 @@ namespace Localyssation
             return $"ITEM_{Normalize(asset._itemName)}";
         }
 
-        public static string GetForAsset(ScriptableWeaponType asset)
+        public static string GetForAsset(WeaponAnimationSlot asset)
         {
-            return $"WEAPON_TYPE_{Normalize(asset._weaponTypeClassTag)}";
+            return $"WEAPON_TYPE_{Normalize(asset._weaponNameTag)}";
         }
 
         public static string GetForAsset(ScriptableCreep asset)
