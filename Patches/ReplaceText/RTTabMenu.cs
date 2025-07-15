@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Reflection;
 using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
@@ -34,6 +37,23 @@ namespace Localyssation.Patches.ReplaceText
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>() {
                 { "_text_itemHeader", I18nKeys.TabMenu.CELL_ITEMS_HEADER }
             });
+        }
+
+        [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Init_ItemPromptWindow))]
+        [HarmonyPostfix]
+        public static void ItemMenuCell_Init_ItemPromptWindow(ItemMenuCell __instance, ItemListDataEntry _listEntry)
+        {
+            
+            
+            foreach (var kvPair in I18nKeys.TabMenu.CELL_ITEMS_PROMPT_BUTTONS)
+            {
+                string key = $"_{kvPair.Key}Button";
+                Localyssation.logger.LogDebug(key);
+                key = key.Replace("transmogrify", "transmog");
+                var info = typeof(ItemMenuCell).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance);
+                Button button = (Button)(info.GetValue(__instance));
+                button.GetComponentInChildren<Text>().text = Localyssation.GetString(kvPair.Value);
+            }
         }
 
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Handle_CellUpdate))]

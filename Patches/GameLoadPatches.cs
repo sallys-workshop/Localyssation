@@ -17,6 +17,10 @@ namespace Localyssation.Patches
         [HarmonyPostfix]
         public static void GameManager_Cache_ScriptableAssets(GameManager __instance)
         {
+            if (Localyssation.configExportExtra.Value)
+            {
+                ExportUtil.InitExports();
+            }
             // cached scriptables
             // items
             foreach (var item in __instance._cachedScriptableItems.Values)

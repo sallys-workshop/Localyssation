@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Immutable;
+
 namespace Localyssation
 {
     internal static partial class I18nKeys
@@ -116,8 +117,17 @@ namespace Localyssation
                 = create("TAB_MENU_CELL_OPTIONS_BUTTON_HOST_CONSOLE", "Host Console");
             public static readonly string CELL_OPTIONS_BUTTON_SAVE_AND_QUIT
                 = create("TAB_MENU_CELL_OPTIONS_BUTTON_SAVE_AND_QUIT", "Save & Quit");
+            public static readonly string CELL_OPTIONS_CONFIRM_QUIT_HEADER
+                = create("TAB_MENU_CELL_OPTIONS_CONFIRM_QUIT_HEADER", "Save and Quit Game?");
+            public static readonly string CELL_OPTIONS_CONFIRM_QUIT_CONFIRM
+                = create("TAB_MENU_CELL_OPTIONS_CONFIRM_QUIT_CONFIRM", "Confirm");
+            public static readonly string CELL_OPTIONS_CONFIRM_QUIT_CANCEL
+                = create("TAB_MENU_CELL_OPTIONS_CONFIRM_QUIT_CANCEL", "Cancel");
 
-
+            private static string createCellItems(string key, string value="")
+            {
+                return create($"TAB_MENU_CELL_ITEMS_{key}", value);
+            }
             public static readonly string CELL_ITEMS_HEADER
                 = create("TAB_MENU_CELL_ITEMS_HEADER", "Items");
             public static readonly string CELL_ITEMS_EQUIP_TAB_HEADER_EQUIPMENT
@@ -126,6 +136,14 @@ namespace Localyssation
                 = create("TAB_MENU_CELL_ITEMS_EQUIP_TAB_HEADER_VANITY", "Vanity");
             public static readonly string CELL_ITEMS_EQUIP_TAB_HEADER_STAT
                 = create("TAB_MENU_CELL_ITEMS_EQUIP_TAB_HEADER_STAT", "Stats");
+
+            public static readonly ImmutableDictionary<string, string> CELL_ITEMS_PROMPT_BUTTONS
+                = ImmutableArray.Create(
+                    "equip", "transmogrify", "remove", "use", "split", "drop", "cancel"
+                ).ToImmutableDictionary(
+                    x => x,
+                    x => createCellItems($"PROMPT_BUTTON_{x.ToUpper()}", char.ToUpper(x[0]) + x.Substring(1))
+                );
 
             public static readonly string CELL_QUESTS_HEADER
                 = create("TAB_MENU_CELL_QUESTS_HEADER", "Quests");

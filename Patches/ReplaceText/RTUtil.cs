@@ -93,10 +93,11 @@ namespace Localyssation.Patches.ReplaceText
         /// <param name="parentTransform">The Transform to find Text instances under.</param>
         /// <param name="textRemaps">Key-value pairs of GameObject paths to find and language keys to replace their text with.</param>
         /// <param name="onRemap">A method called on a successful remap.</param>
-        public static void RemapChildTextsByPath(Transform parentTransform, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
+        public static void RemapChildTextsByPath(Transform parentTransform, IDictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
         {
             foreach (var textRemap in textRemaps)
             {
+                Localyssation.logger.LogDebug(textRemap);
                 var foundTransform = parentTransform.Find(textRemap.Key);
                 if (foundTransform)
                 {
@@ -105,6 +106,10 @@ namespace Localyssation.Patches.ReplaceText
                     {
                         LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(textRemap.Value, text.text));
                         if (onRemap != null) onRemap(foundTransform, textRemap.Value);
+                    }
+                    else
+                    {
+                        Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap}` but no Text component is found.");
                     }
                 }
                 else

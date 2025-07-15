@@ -124,7 +124,9 @@ namespace Localyssation
 
         public static string GetForMapRegionTag(string regionTag)
         {
-            return $"MAP_REGION_TAG_{KeyUtil.Normalize(regionTag)}";
+            if (!string.IsNullOrEmpty(regionTag))
+                return $"MAP_REGION_TAG_{Normalize(regionTag)}";
+            return "";
         }
 
         public static string GetForAsset(SkillToolTipRequirement asset)

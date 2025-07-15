@@ -101,7 +101,7 @@ namespace Localyssation
             RegisterLanguage(defaultLanguage);
             ChangeLanguage(defaultLanguage);
             LoadLanguagesFromFileSystem();
-            ExportUtil.InitExports();
+            //ExportUtil.InitExports();
             LoadFontBundlesFromFileSystem();
 
             configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
