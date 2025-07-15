@@ -131,7 +131,12 @@ namespace Localyssation
 
         public static string GetForAsset(SkillToolTipRequirement asset)
         {
-            return $"SKILL_TOOLTIP_REQUIREMENT_{asset.ToString()}";
+            return $"SKILL_TOOLTIP_REQUIREMENT_{Normalize(asset.ToString())}";
+        }
+
+        public static string GetForMapName(string name)
+        {
+            return $"MAP_NAME_{Normalize(name)}";
         }
     }
 }

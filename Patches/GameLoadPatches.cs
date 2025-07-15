@@ -263,9 +263,21 @@ namespace Localyssation.Patches
 
                         foreach (var mapVisualOverrideTrigger in GameObject.FindObjectsOfType<MapVisualOverrideTrigger>(true))
                         {
-                            string regionTag = mapVisualOverrideTrigger._reigonName;
+                            if (mapVisualOverrideTrigger.gameObject.scene.name == sceneName)
+                            {
+                                string regionTag = mapVisualOverrideTrigger._reigonName;
+                                Localyssation.defaultLanguage.RegisterKey(
+                                    KeyUtil.GetForMapRegionTag(regionTag), regionTag
+                                );
+                            }
+                        }
+
+                        foreach (var mapInstance in GameObject.FindObjectsOfType<MapInstance>(true).Where(o => o.gameObject.scene.name == sceneName))
+                        {
+                            string mapName = mapInstance._mapName;
                             Localyssation.defaultLanguage.RegisterKey(
-                                KeyUtil.GetForMapRegionTag(regionTag), regionTag
+                                KeyUtil.GetForMapName(mapName),
+                                mapName
                             );
                         }
 
