@@ -5,6 +5,7 @@ namespace Localyssation
     {
         internal static class Feedback
         {
+            internal static void init() { }
             private static string create(string key, string defaultString)
             {
                 if (!key.StartsWith("FEEDBACK_"))
