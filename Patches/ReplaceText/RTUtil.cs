@@ -64,7 +64,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 stringReplacements.Add(I18nKeys.getDefaulted(key), key);
             }
-            return SimpleStringReplaceTranspiler(instructions, stringReplacements, allowRepeat);
+            return SimpleStringReplaceTranspiler(instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
         }
 
         /// <summary>

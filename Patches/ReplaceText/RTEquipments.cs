@@ -243,7 +243,6 @@ namespace Localyssation.Patches.ReplaceText
     //        Type = typeof(EquipToolTip)
     //    };
     //    public static readonly string[] REPLACEMENT = new[] {
-    //        I18nKeys.Equipment.TOOLTIP_TYPE_SHIELD
     //    };
     //}
 }
