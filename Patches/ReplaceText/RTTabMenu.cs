@@ -77,5 +77,18 @@ namespace Localyssation.Patches.ReplaceText
                 I18nKeys.TabMenu.CELL_ITEMS_EQUIP_TAB_HEADER_STAT
             });
         }
+
+        [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Init_InventoryTooltip))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ItemMenuCell_Init_InventoryTooltip_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>()
+            {
+                I18nKeys.TabMenu.CELL_ITEMS_INVENTORY_SORT_ITEMS,
+                I18nKeys.TabMenu.CELL_ITEMS_INVENTORY_TYPE_CONSUMABLE,
+                I18nKeys.TabMenu.CELL_ITEMS_INVENTORY_TYPE_EQUIPMENT,
+                I18nKeys.TabMenu.CELL_ITEMS_INVENTORY_TYPE_TRADE_ITEM
+            });
+        }
     }
 }

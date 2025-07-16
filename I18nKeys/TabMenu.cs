@@ -137,6 +137,15 @@ namespace Localyssation
             public static readonly string CELL_ITEMS_EQUIP_TAB_HEADER_STAT
                 = create("TAB_MENU_CELL_ITEMS_EQUIP_TAB_HEADER_STAT", "Stats");
 
+            public static readonly string CELL_ITEMS_INVENTORY_TYPE_EQUIPMENT
+                = createCellItems("INVENTORY_TYPE_EQUIPMENT", "Equipment");
+            public static readonly string CELL_ITEMS_INVENTORY_TYPE_CONSUMABLE
+                = createCellItems("INVENTORY_TYPE_CONSUMABLE", "Consumables");
+            public static readonly string CELL_ITEMS_INVENTORY_TYPE_TRADE_ITEM
+                = createCellItems("INVENTORY_TYPE_TRADE_TYPE", "Trade Items");
+            public static readonly string CELL_ITEMS_INVENTORY_SORT_ITEMS
+                = createCellItems("INVENTORY_SORT_ITEMS", "Sort Items");
+
             public static readonly ImmutableDictionary<string, string> CELL_ITEMS_PROMPT_BUTTONS
                 = ImmutableArray.Create(
                     "equip", "transmogrify", "remove", "use", "split", "drop", "cancel"
@@ -147,6 +156,8 @@ namespace Localyssation
 
             public static readonly string CELL_QUESTS_HEADER
                 = create("TAB_MENU_CELL_QUESTS_HEADER", "Quests");
+            public static readonly string CELL_QUESTS_BUTTON_ABANDON
+                = create("TAB_MENU_CELL_QUESTS_BUTTON_ABANDON", "Abandon Quest");
 
 
 

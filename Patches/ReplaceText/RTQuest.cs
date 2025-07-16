@@ -15,7 +15,8 @@ namespace Localyssation.Patches.ReplaceText
         public static void QuestMenu_Cell_OnAwake_Postfix(QuestMenuCell __instance)
         {
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>() {
-                { "_text_questsHeader", I18nKeys.TabMenu.CELL_QUESTS_HEADER }
+                { "_text_questsHeader", I18nKeys.TabMenu.CELL_QUESTS_HEADER },
+                { "_questListPanel/_dolly_questCellList/_abandonQuestPanel/_button_abandonQuest/_buttonText_abandonQuest", I18nKeys.TabMenu.CELL_QUESTS_BUTTON_ABANDON }
             });
         }
         // quests
@@ -207,13 +208,13 @@ namespace Localyssation.Patches.ReplaceText
             {
                 if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_{requirement}"))
                     creepKey = $"{creepKey}_VARIANT_{requirement}";
-                else if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_MANY"))
-                    creepKey = $"{creepKey}_VARIANT_MANY";
+                else if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_PLURAL"))
+                    creepKey = $"{creepKey}_PLURAL";
 
                 if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_VARIANT_{requirement}"))
                     formatKey = $"{formatKey}_VARIANT_{requirement}";
-                else if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_VARIANT_MANY"))
-                    formatKey = $"{formatKey}_VARIANT_MANY";
+                else if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_PLURAL"))
+                    formatKey = $"{formatKey}_PLURAL";
             }
             if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_QUEST_KILLED"))
                 creepKey = $"{creepKey}_VARIANT_QUEST_KILLED";
