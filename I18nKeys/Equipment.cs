@@ -39,7 +39,7 @@ namespace Localyssation
             public static readonly string FORMAT_TOOLTIP_TYPE_WEAPON
                 = create("FORMAT_EQUIP_TOOLTIP_TYPE_WEAPON", "{0} (Weapon)");
             public static readonly string TOOLTIP_TYPE_SHIELD
-                = create("EQUIP_TOOLTIP_TYPE_SHIELD", "Shield");
+                = create("EQUIP_TOOLTIP_TYPE_SHIELD", "Shield (Off Hand)");
             public static readonly string STATS_DAMAGE
                 = create("EQUIP_TOOLTIP_STATS_DAMAGE", "Damage");
             public static readonly string STATS_BASE_DAMAGE

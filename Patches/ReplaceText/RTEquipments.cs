@@ -23,7 +23,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 string statName = Regex.Match(tag.transform.name, TAG_NAME_REGEX).Groups[1].Value;
                 string key = I18nKeys.Equipment.statDisplayKey(statName);
-                Localyssation.logger.LogDebug($"public static readonly string {key.Replace("ITEM_", "")}\n\t= create(statDisplayKey(\"{statName}\"), \"{tag.text}\");");
+                //Localyssation.logger.LogDebug($"public static readonly string {key.Replace("ITEM_", "")}\n\t= create(statDisplayKey(\"{statName}\"), \"{tag.text}\");");
                 tag.text = Localyssation.GetString(key);
             }
         }
@@ -128,8 +128,9 @@ namespace Localyssation.Patches.ReplaceText
                     }
                     else
                     {
-                        __instance._equipStatsDisplay.text = __instance._equipStatsDisplay.text.Replace(
-                            "Normal", Localyssation.GetString(I18nKeys.Lore.COMBAT_ELEMENT_NORMAL_NAME, "Normal", __instance._equipStatsDisplay.fontSize));
+                        __instance._equipStatsDisplay.text = __instance._equipStatsDisplay.text
+                            .Replace("Base Damage", Localyssation.GetString(I18nKeys.Equipment.STATS_BASE_DAMAGE))
+                            .Replace("Damage", Localyssation.GetString(I18nKeys.Equipment.STATS_DAMAGE));
                     }
                 }
             }
@@ -140,6 +141,18 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void EquipToolTip_Update_Postfix(EquipToolTip __instance)
         {
+            if (TabMenu._current._itemTradeMode)
+            {
+                if ((bool)__instance._specialCurrencyItem)
+                {
+                    //__instance._vendorValueCounter.text = $"{__instance._vendorValue} {__instance._specialCurrencyItem._itemName}s";
+                    __instance._vendorValueCounter.text = $"{__instance._vendorValue} {Localyssation.GetString(KeyUtil.GetForAsset(__instance._specialCurrencyItem) + "_NAME")}";
+                }
+                else
+                {
+                    __instance._vendorValueCounter.text = $"{__instance._vendorValue} {GameManager._current._statLogics._currencyName}";
+                }
+            }
             __instance._compareDisplayText.text = __instance._compareDisplayText.text.Replace("Compare", Localyssation.GetString(I18nKeys.Equipment.COMPARE));
         }
         
@@ -147,23 +160,79 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> EquipToolTip_Apply_EquipStats_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-                { "Mystery Gear", "EQUIP_TOOLTIP_GAMBLE_ITEM_NAME" },
-                { "[Unknown]", "EQUIP_TOOLTIP_GAMBLE_ITEM_RARITY" },
-                { "???", "EQUIP_TOOLTIP_GAMBLE_ITEM_TYPE" },
-                { "You can't really see what this is until you buy it.", "EQUIP_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
-                { "Lv-{0}", "FORMAT_EQUIP_LEVEL_REQUIREMENT" },
-                { "Helm (Armor)", "EQUIP_TOOLTIP_TYPE_HELM" },
-                { "Chestpiece (Armor)", "EQUIP_TOOLTIP_TYPE_CHESTPIECE" },
-                { "Leggings (Armor)", "EQUIP_TOOLTIP_TYPE_LEGGINGS" },
-                { "Cape (Armor)", "EQUIP_TOOLTIP_TYPE_CAPE" },
-                { "Ring (Armor)", "EQUIP_TOOLTIP_TYPE_RING" },
-                { "Shield", "EQUIP_TOOLTIP_TYPE_SHIELD" },
-                { "<color=#efcc00>({0} - {1})</color> {2}Damage", "FORMAT_EQUIP_STATS_DAMAGE_SCALED_POWERFUL" },
-                { "({0} - {1}) Damage", "FORMAT_EQUIP_STATS_DAMAGE_UNSCALED" },
-                { "Block threshold: {0} damage", "FORMAT_EQUIP_STATS_BLOCK_THRESHOLD" }
-            });
+            return RTUtil.Wrap(instructions)
+                .ReplaceStrings(new string[] {
+                    I18nKeys.Equipment.FORMAT_LEVEL_REQUIREMENT,
+                    I18nKeys.Equipment.TOOLTIP_TYPE_HELM,
+                    I18nKeys.Equipment.TOOLTIP_TYPE_CHESTPIECE,
+                    I18nKeys.Equipment.TOOLTIP_TYPE_LEGGINGS,
+                    I18nKeys.Equipment.TOOLTIP_TYPE_CAPE,
+                    I18nKeys.Equipment.TOOLTIP_TYPE_RING,
+                    I18nKeys.Equipment.FORMAT_STATS_DAMAGE_UNSCALED,
+                    //I18nKeys.Equipment.
+                })
+                .Unwrap();
         }
 
     }
+
+    [HarmonyPatch(typeof(EquipToolTip))]
+    internal class EquipToolTip__Apply_EquipStats__Display_GambleEquipTooltip
+    {
+        /// <summary>
+        /// Config here when game code change
+        /// <para InnerMethodName>Nested method name.</para>
+        /// <para ParentMethodName>The method your target nested in.</para>
+        /// <para Type>Type where your parent method is declared.</para>
+        /// </summary>
+        private static readonly TargetInnerMethod __CONDITION = new TargetInnerMethod()
+        {
+            InnerMethodName = "Display_GambleEquipTooltip",
+            ParentMethodName = nameof(EquipToolTip.Apply_EquipStats),
+            Type = typeof(EquipToolTip)
+        };
+
+        /// Keys to replace, must be registered in <see cref="I18nKeys.TR_KEYS"/>
+        public static string[] REPLACEMENT = new string[] {
+                I18nKeys.Equipment.TOOLTIP_GAMBLE_ITEM_NAME,
+                I18nKeys.Equipment.TOOLTIP_GAMBLE_ITEM_DESCRIPTION,
+                I18nKeys.Equipment.TOOLTIP_GAMBLE_ITEM_TYPE,
+                I18nKeys.Equipment.TOOLTIP_GAMBLE_ITEM_RARITY,
+            };
+
+        public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__CONDITION);
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => RTUtil.SimpleStringReplaceTranspiler(instructions, REPLACEMENT);
+
+    }
+
+    [HarmonyPatch(typeof(EquipToolTip))]
+    internal class EquipToolTip__Apply_EquipStats__Init_ShieldToolTip
+    {
+        private static readonly TargetInnerMethod __CONDITION = new TargetInnerMethod()
+        {
+            InnerMethodName = "Init_ShieldToolTip",
+            ParentMethodName = nameof(EquipToolTip.Apply_EquipStats),
+            Type = typeof(EquipToolTip)
+        };
+        public static readonly string[] REPLACEMENT = new[] {
+            I18nKeys.Equipment.TOOLTIP_TYPE_SHIELD
+        }; 
+
+        public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__CONDITION);
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => RTUtil.SimpleStringReplaceTranspiler(instructions, REPLACEMENT);
+    }
+
+    //[HarmonyPatch(typeof(EquipToolTip))]
+    //internal class EquipToolTip__Apply_EquipStats__Init_WeaponTooltip
+    //{
+    //    private static readonly TargetInnerMethod __CONDITION = new TargetInnerMethod()
+    //    {
+    //        InnerMethodName = "Init_WeaponTooltip",
+    //        ParentMethodName = nameof(EquipToolTip.Apply_EquipStats),
+    //        Type = typeof(EquipToolTip)
+    //    };
+    //    public static readonly string[] REPLACEMENT = new[] {
+    //        I18nKeys.Equipment.TOOLTIP_TYPE_SHIELD
+    //    };
+    //}
 }

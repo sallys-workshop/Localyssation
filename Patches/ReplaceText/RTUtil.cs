@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
+
 namespace Localyssation.Patches.ReplaceText
 {
     internal static class RTUtil
@@ -17,11 +20,21 @@ namespace Localyssation.Patches.ReplaceText
         /// <param name="instructions">IEnumerable provided by the Harmony transpiler.</param>
         /// <param name="stringReplacements">Key-value pairs of in-game strings to replace and language keys to replace with.</param>
         /// <returns>The generated CodeMatcher.</returns>
-        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, Dictionary<string, string> stringReplacements)
+        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(
+            IEnumerable<CodeInstruction> instructions, 
+            IDictionary<string, string> stringReplacements, 
+            bool allowRepeat=false, bool supressNotfoundWarnings = false
+        )
         {
             var replacedStrings = new List<string>();
-            return new CodeMatcher(instructions).MatchForward(false,
-                new CodeMatch((instr) => instr.opcode == OpCodes.Ldstr && stringReplacements.ContainsKey((string)instr.operand) && !replacedStrings.Contains((string)instr.operand)))
+            
+            var result = new CodeMatcher(instructions).MatchForward(false,
+                new CodeMatch(
+                    (instr) => 
+                        instr.opcode == OpCodes.Ldstr 
+                        && stringReplacements.ContainsKey((string)instr.operand) 
+                        && (allowRepeat || !replacedStrings.Contains((string)instr.operand))
+                ))
                 .Repeat(matcher =>
                 {
                     var key = (string)matcher.Instruction.operand;
@@ -31,10 +44,19 @@ namespace Localyssation.Patches.ReplaceText
                         return Localyssation.GetString(stringReplacements[key], key);
                     }));
                     replacedStrings.Add(key);
+                    
                 }).InstructionEnumeration();
+            var notReplaced = stringReplacements.Keys.Cast<string>().Except(replacedStrings).ToList();
+            if (notReplaced.Count > 0 && !supressNotfoundWarnings)
+                Localyssation.logger.LogWarning("Some strings are not found during transpiler replacing:\n\t" + string.Join("\n\t", notReplaced));
+            return result;
         }
 
-        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(IEnumerable<CodeInstruction> instructions, IEnumerable<string> keyReplacement)
+        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(
+            IEnumerable<CodeInstruction> instructions, 
+            IEnumerable<string> keyReplacement, 
+            bool allowRepeat = false, bool supressNotfoundWarnings = false
+        )
         {
             Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
             
@@ -42,7 +64,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 stringReplacements.Add(I18nKeys.getDefaulted(key), key);
             }
-            return SimpleStringReplaceTranspiler(instructions, stringReplacements);
+            return SimpleStringReplaceTranspiler(instructions, stringReplacements, allowRepeat);
         }
 
         /// <summary>
@@ -97,7 +119,7 @@ namespace Localyssation.Patches.ReplaceText
         {
             foreach (var textRemap in textRemaps)
             {
-                Localyssation.logger.LogDebug(textRemap);
+                //Localyssation.logger.LogDebug(textRemap);
                 var foundTransform = parentTransform.Find(textRemap.Key);
                 if (foundTransform)
                 {
@@ -109,14 +131,29 @@ namespace Localyssation.Patches.ReplaceText
                     }
                     else
                     {
-                        Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap}` but no Text component is found.");
+                        Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap.Key}` but no Text component is found.");
                     }
                 }
                 else
                 {
-                    Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Cannot find path `{textRemap}`.");
+                    Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Cannot find path `{textRemap.Key}` in `{GetPath(parentTransform)}`.");
                 }
             }
+        }
+
+        private static string GetPath(Transform transform)
+        {
+            string path = transform.name;
+            Transform current = transform;
+
+            // 从当前节点向上遍历到根节点
+            while (current.parent != null)
+            {
+                current = current.parent;
+                path = current.name + "/" + path; // 从根向子节点拼接
+            }
+
+            return "/" + path; // 添加根路径斜杠
         }
 
         /// <summary>
@@ -163,6 +200,51 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
+        public static string Capitalize(string text)
+        {
+            return text[0].ToString().ToUpper() + text.Substring(1);
+        }
+
+        public static RTTransplierCodeInstructionsWrapper Wrap(IEnumerable<CodeInstruction> instructions)
+        {
+            return new RTTransplierCodeInstructionsWrapper(instructions);
+        }
+
     }
 
+    /// <summary>
+    /// For chained usage
+    /// </summary>
+    internal class RTTransplierCodeInstructionsWrapper
+    {
+        private IEnumerable<CodeInstruction> __instructions;
+        public RTTransplierCodeInstructionsWrapper(IEnumerable<CodeInstruction> instructions)
+        {
+            __instructions = instructions;
+        }
+
+        public RTTransplierCodeInstructionsWrapper ReplaceStrings(
+            IDictionary<string, string> stringReplacements,
+            bool allowRepeat = false, bool supressNotfoundWarnings = false
+        )
+        {
+            this.__instructions = RTUtil.SimpleStringReplaceTranspiler(__instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
+            return this;
+        }
+
+        public RTTransplierCodeInstructionsWrapper ReplaceStrings(
+            IEnumerable<string> stringReplacements,
+            bool allowRepeat = false, bool supressNotfoundWarnings = false
+        )
+        {
+            __instructions = RTUtil.SimpleStringReplaceTranspiler(__instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
+            return this;
+        }
+
+        public IEnumerable<CodeInstruction> Unwrap()
+        { 
+            return __instructions;
+        }
+
+    }
 }
