@@ -28,6 +28,8 @@ namespace Localyssation
         public const string PLUGIN_VERSION = "202507.07.1.1";
 
         public static Localyssation instance;
+        public static Harmony harmony = new Harmony(PLUGIN_GUID);
+         
 
         internal static System.Reflection.Assembly assembly;
         internal static string dllPath;
@@ -125,7 +127,7 @@ namespace Localyssation
 
             });
 
-            Harmony harmony = new Harmony(PLUGIN_GUID);
+            
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
             FRUtil.PatchAll(harmony);

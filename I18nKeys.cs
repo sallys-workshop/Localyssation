@@ -14,16 +14,19 @@ namespace Localyssation
         // In case of lazy loading (experience from Java)
         public static void Init()
         {
+            CharacterCreation.init();
+            CharacterSelect.init();
+            Enums.init();
+            Equipment.init();
+            Feedback.init();
             Item.init();
             Lore.init();
-            Equipment.init();
-            Quest.init(); 
             MainMenu.init();
-            CharacterSelect.init();
-            CharacterCreation.init();
-            TabMenu.init();
-            SkillMenu.init();
+            Quest.init();
+            ScriptableStatusCondition.init();
             Settings.init();
+            SkillMenu.init();
+            TabMenu.init();
         }
 
         internal static readonly Dictionary<string, string> TR_KEYS = new Dictionary<string, string>();

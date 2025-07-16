@@ -138,5 +138,16 @@ namespace Localyssation
         {
             return $"MAP_NAME_{Normalize(name)}";
         }
+        
+        public static string GetForAsset(ScriptableShopkeep asset)
+        {
+            return $"SHOP_KEEP_{Normalize(asset._shopName)}";
+        }
+
+        public static string GetForAsset(ShopTab shopTab)
+        {
+            return $"SHOP_TAB_{Normalize(shopTab.ToString())}";
+        }
+
     }
 }
