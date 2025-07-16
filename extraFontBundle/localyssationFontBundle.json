@@ -1,0 +1,9 @@
+{
+  "bundleName": "unifont",
+  "fontInfos": [
+    {
+      "name": "unifont",
+      "sizeMultiplier": 0.8
+    }
+  ]
+}
