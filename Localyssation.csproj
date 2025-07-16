@@ -158,6 +158,12 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+      <None Update="extraFontBundle\localyssationFontBundle.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="extraFontBundle\unifont">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="icon.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
