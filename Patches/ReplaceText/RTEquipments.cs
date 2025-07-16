@@ -141,6 +141,10 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void EquipToolTip_Update_Postfix(EquipToolTip __instance)
         {
+            if (!TabMenu._current || !TabMenu._current._isOpen)
+            {
+                return;
+            }
             if (TabMenu._current._itemTradeMode)
             {
                 if ((bool)__instance._specialCurrencyItem)
@@ -150,7 +154,14 @@ namespace Localyssation.Patches.ReplaceText
                 }
                 else
                 {
-                    __instance._vendorValueCounter.text = $"{__instance._vendorValue} {GameManager._current._statLogics._currencyName}";
+                    if (__instance._vendorValue > 1)
+                    {
+                        __instance._vendorValueCounter.text = $"{__instance._vendorValue} {Localyssation.GetString(I18nKeys.Lore.CROWN_PLURAL)}";
+                    }
+                    else
+                    {
+                        __instance._vendorValueCounter.text = $"{__instance._vendorValue} {Localyssation.GetString(I18nKeys.Lore.CROWN)}";
+                    }
                 }
             }
             __instance._compareDisplayText.text = __instance._compareDisplayText.text.Replace("Compare", Localyssation.GetString(I18nKeys.Equipment.COMPARE));
