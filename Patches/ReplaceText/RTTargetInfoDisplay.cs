@@ -35,7 +35,7 @@ namespace Localyssation.Patches.ReplaceText
                     //    = creep._scriptStatModifier._modifierTag + " " 
                     //    + creep._scriptCreep._creepName;
                     __instance._targetNameField.text
-                        = Localyssation.GetString(KeyUtil.GetForAsset(creep._scriptStatModifier))
+                        = Localyssation.GetString(KeyUtil.GetForAsset(creep._scriptStatModifier) + "_TAG")
                         + " "
                         + Localyssation.GetString(KeyUtil.GetForAsset(creep._scriptCreep) + "_NAME");
                 }

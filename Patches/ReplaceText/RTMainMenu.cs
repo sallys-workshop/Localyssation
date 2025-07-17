@@ -59,6 +59,16 @@ namespace Localyssation.Patches.ReplaceText
                             }
                         });
                     }
+                    var obj_menuBackdrop = parent.Find("_gameStartMenu/Canvas_gameStart/_dolly_multiplayerMenu/_menuBackdrop");
+                    if (obj_menuBackdrop != null)
+                    {
+                        RTUtil.RemapAllTextUnderObject(obj_menuBackdrop.gameObject, new Dictionary<string, string>() {
+                            { "_button_joinServer", I18nKeys.MainMenu.BUTTON_JOIN_SERVER },
+                            { "_button_hostServer", I18nKeys.MainMenu.BUTTON_HOST_SERVER },
+                            { "_button_return", I18nKeys.MainMenu.BUTTON_RETURN }
+                        
+                        });
+                    }
                 }
 
                 var obj_Canvas_characterSelect = parent.Find("_characterSelectMenu/Canvas_characterSelect");

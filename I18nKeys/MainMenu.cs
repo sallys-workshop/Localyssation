@@ -31,6 +31,13 @@ namespace Localyssation
 
             public static readonly string PAGER
                 = create("MAIN_MENU_PAGER", "Page ( {0} / 15 )");
+
+            public static readonly string BUTTON_JOIN_SERVER
+                = create("MAIN_MENU_" + nameof(BUTTON_JOIN_SERVER), "Join");
+            public static readonly string BUTTON_HOST_SERVER
+                = create("MAIN_MENU_" + nameof(BUTTON_HOST_SERVER), "Host");
+            public static readonly string BUTTON_RETURN
+                = create("MAIN_MENU_" + nameof(BUTTON_RETURN), "Return");
         }
 
     }

@@ -4,7 +4,7 @@
         <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
         <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
         <Configurations>Debug;Release</Configurations>
-		<MSBuildFileVersion>202507.06.0.4</MSBuildFileVersion>
+		<MSBuildFileVersion>202507.07.1.2</MSBuildFileVersion>
     </PropertyGroup>
 
     <PropertyGroup>

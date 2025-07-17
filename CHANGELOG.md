@@ -1,3 +1,38 @@
+## 202507.07.1.2
+* Fixed an issue that "enchanted" creeps cannot display their "enchantment" correctly.
+* Added multiplayer "Join" "Host" and "Return" to translation
+
+
+## 202507.07.1.1
+* Update mod to ATLYSS 72025.a7
+	* UI translation for shops, enchanter and more
+	* Fixed non-element weapon damage text
+	* Fixed shield type descriptor in tooltip
+	* Fixed gamble item tooltips
+	* Fixed and map splash text
+	* Added some tool classes and methods for better transpilers
+	* Added portal caption and interaction tooltip translations
+
+
+## 202507.06.1.0
+* Update mod to ATLYSS 72025.a6
+	* Total rework for items and skills
+	* Added hundreds of translation keys
+	* Made more UI element translatable
+	* Fixed erros caused by quest condition descriptors
+* Replace extra font bundle with `unifont`. It contains most of unicode characters.
+	* `localyssationLanguage.json` now includes 1 more new field `fontReplacementLibrationSans`:
+		* Same as `fontReplacementCentaur` and `fontReplacementTerminalGrotesque`
+		* Mostly used in chat box
+* Restructurized code, separate codes to more files, easier for updating.
+	* `ReplaceText.cs => ReplaceText/*.cs`
+		* Moved most of utility methods to `Localyssation.Patches.ReplaceText.RTUtil`
+			* Make generalized port of utility methods
+		* Most patchers are under class `Localyssation.Patches.ReplaceText.RTReplacer`
+		* Use symbols instead of constant strings as translation keys for static cases. No more typos. Symbols stored in `Localyssation.I18nKeys`
+	* `PatcherUtil.cs` for parametric locating nested methods
+	* Translation key registers for `Enum`s in `GameLoadPatches.cs` moved to `Localyssation.I18nKeys.Enums`, making them reachable during static loading.
+
 ## 0.0.4
 * Added custom font support:
 	* In addition to creating custom languages, you can now create "font bundles"
