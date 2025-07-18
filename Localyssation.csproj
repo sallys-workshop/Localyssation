@@ -2,9 +2,11 @@
     <PropertyGroup>
         <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
         <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
-        <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+        <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
         <Configurations>Debug;Release</Configurations>
 		<MSBuildFileVersion>202507.07.1.2</MSBuildFileVersion>
+		<BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
+		<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\</IntermediateOutputPath>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -12,11 +14,28 @@
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     </PropertyGroup>
 
+
     <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
     <ItemGroup>
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" ExcludeAssets="runtime" />
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.7" />
+		<PackageReference Include="System.Collections.Immutable" Version="9.0.7">
+			<Private>true</Private>
+		</PackageReference>
     </ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<PropertyGroup>
+			<OutputLibDir>$(TargetDir)libs</OutputLibDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(OutputLibDir)" />
+		<ItemGroup>
+
+			<DllsToMove Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(AssemblyName).dll" />
+		</ItemGroup>
+		<Move SourceFiles="@(DllsToMove)" DestinationFolder="$(OutputLibDir)" />
+		<Exec Command="xcopy &quot;$(TargetDir)*.dll&quot; &quot;$(ATLYSS_BEPINEX_PLUGINS)\Localyssation\&quot; /Y" />
+		
+	</Target>
 
     <!-- ATLYSS_Data/Managed assemblies. -->
     <ItemGroup>
@@ -38,9 +57,6 @@
         <Reference Include="Mirror">
             <HintPath>$(ATLYSS_MANAGED)\Mirror.dll</HintPath>
             <Private>False</Private>
-        </Reference>
-        <Reference Include="System.Collections.Immutable">
-          <HintPath>C:\Users\TowardTheStars\.nuget\packages\system.collections.immutable\9.0.7\lib\net462\System.Collections.Immutable.dll</HintPath>
         </Reference>
 
         <!-- Unity. Add any other assemblies as needed, not all of them were listed here. -->
@@ -157,7 +173,19 @@
           <Private>False</Private>
         </Reference>
     </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy &quot;$(TargetDir)*.dll&quot; &quot;C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins\Localyssation\&quot; /Y" />
-    </Target>
+    <ItemGroup>
+      <None Update="CHANGELOG.md">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="icon.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="LICENSE">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="README.md">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+	
 </Project>
