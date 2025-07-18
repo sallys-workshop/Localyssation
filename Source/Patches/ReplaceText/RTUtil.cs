@@ -146,7 +146,7 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        private static string GetPath(Transform transform)
+        public static string GetPath(Transform transform)
         {
             string path = transform.name;
             Transform current = transform;

@@ -79,7 +79,6 @@ namespace Localyssation
             public int orig_resizeTextMaxSize;
             public int orig_resizeTextMinSize;
 
-            public static List<string> USED_FONTS = new List<string>();
 
             public void Awake()
             {
@@ -111,11 +110,6 @@ namespace Localyssation
                         if (text.font == loadedFont.uguiFont) return true;
                         if (text.font.name == originalFontName)
                         {
-                            if (!USED_FONTS.Contains(text.font.name))
-                            {
-                                Localyssation.logger.LogInfo(text.font.name);
-                                USED_FONTS.Add(text.font.name);
-                            }
                             text.font = loadedFont.uguiFont;
                             text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
                             text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;

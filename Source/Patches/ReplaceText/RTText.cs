@@ -1,11 +1,12 @@
 using HarmonyLib;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText  
 {
     internal static partial class RTReplacer
     {
-        
+        private static List<string> USED_FONT_NAME = new List<string>();
         [HarmonyPatch(typeof(Text), nameof(Text.text), MethodType.Setter)]
         [HarmonyPrefix]
         public static void Text_set_text(Text __instance, ref string value)
@@ -26,7 +27,15 @@ namespace Localyssation.Patches.ReplaceText
             {
                 LangAdjustables.RegisterText(__instance);
             }
-            
+            if (__instance.font != null && !USED_FONT_NAME.Contains(__instance.font.name))
+            {
+                USED_FONT_NAME.Add(__instance.font.name);
+                Localyssation.logger.LogDebug($"Using font: `{__instance.font.name}`");
+            }
+            if (__instance.font != null && __instance.font.name == "MSGOTHIC")
+            {
+                Localyssation.logger.LogDebug($"MSGOTHIC usage @ `{RTUtil.GetPath(__instance.transform)}`");
+            }
         }
 
     }
