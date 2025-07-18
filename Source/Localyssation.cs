@@ -25,7 +25,7 @@ namespace Localyssation
     {
         public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
         public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "202507.07.1.2";
+        public const string PLUGIN_VERSION = "1.2.2";
 
         public static Localyssation instance;
         public static Harmony harmony = new Harmony(PLUGIN_GUID);
