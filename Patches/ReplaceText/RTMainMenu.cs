@@ -45,8 +45,10 @@ namespace Localyssation.Patches.ReplaceText
                                     {
                                         if (call.methodName == "set_text" && call.arguments.stringArgument != "" && call.target == tooltipText)
                                         {
-                                            var newTrigger = new EventTrigger.Entry();
-                                            newTrigger.eventID = trigger.eventID;
+                                            var newTrigger = new EventTrigger.Entry
+                                            {
+                                                eventID = trigger.eventID
+                                            };
                                             newTrigger.callback.AddListener((_) =>
                                             {
                                                 tooltipText.text = Localyssation.GetString($"{key}_TOOLTIP", call.arguments.stringArgument, tooltipText.fontSize);

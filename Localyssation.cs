@@ -43,7 +43,7 @@ namespace Localyssation
         public static readonly List<FontBundle> fontBundlesList = new List<FontBundle>();
 
         public event System.Action<Language> onLanguageChanged;
-        internal void CallOnLanguageChanged(Language newLanguage) { if (onLanguageChanged != null) onLanguageChanged.Invoke(newLanguage); }
+        internal void CallOnLanguageChanged(Language newLanguage) { onLanguageChanged?.Invoke(newLanguage); }
 
         internal static BepInEx.Logging.ManualLogSource logger;
         internal static BepInEx.Configuration.ConfigFile config;
@@ -88,6 +88,7 @@ namespace Localyssation
             public static string HOBOSTD = "HoboStd";
         }
 
+#pragma warning disable IDE0051 // Unused private method
         private void Awake()
         {
             instance = this;
@@ -135,7 +136,7 @@ namespace Localyssation
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
-
+#pragma warning restore IDE0051
         private static void TrySetupSettingsTab()
         {
             if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
@@ -218,8 +219,10 @@ namespace Localyssation
             {
                 var langPath = Path.GetDirectoryName(filePath);
 
-                var loadedLanguage = new Language();
-                loadedLanguage.fileSystemPath = langPath;
+                var loadedLanguage = new Language
+                {
+                    fileSystemPath = langPath
+                };
                 if (loadedLanguage.LoadFromFileSystem())
                     RegisterLanguage(loadedLanguage);
             }
@@ -235,8 +238,10 @@ namespace Localyssation
             {
                 var fontBundlePath = Path.GetDirectoryName(filePath);
 
-                var loadedFontBundle = new FontBundle();
-                loadedFontBundle.fileSystemPath = fontBundlePath;
+                var loadedFontBundle = new FontBundle
+                {
+                    fileSystemPath = fontBundlePath
+                };
                 if (loadedFontBundle.LoadFromFileSystem())
                     RegisterFontBundle(loadedFontBundle);
             }
@@ -281,14 +286,13 @@ namespace Localyssation
         public const string GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED = "SAME_AS_KEY";
         public static string GetStringRaw(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
-            string result;
-            if (currentLanguage.strings.TryGetValue(key, out result)) return result;
+            if (currentLanguage.strings.TryGetValue(key, out string result)) return result;
             if (defaultLanguage.strings.TryGetValue(key, out result)) return result;
             return (defaultValue == GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED ? key : defaultValue);
         }
 
         private delegate string TextEditTagFunc(string str, string arg, int fontSize);
-        private static Dictionary<string, TextEditTagFunc> textEditTags = new Dictionary<string, TextEditTagFunc>()
+        private static readonly Dictionary<string, TextEditTagFunc> textEditTags = new Dictionary<string, TextEditTagFunc>()
         {
             {
                 "firstupper",
@@ -349,7 +353,7 @@ namespace Localyssation
                 }
             }
         };
-        private static List<string> defaultAppliedTextEditTags = new List<string>() {
+        private static readonly List<string> defaultAppliedTextEditTags = new List<string>() {
             "firstupper", "firstlower", "scale"
         };
         public static string ApplyTextEditTags(string str, int fontSize = -1, List<string> appliedTextEditTags = null)
@@ -419,8 +423,7 @@ namespace Localyssation
 
         public static string GetDefaultString(string key)
         {
-            string result;
-            if (!defaultLanguage.strings.TryGetValue(key, out result))
+            if (!defaultLanguage.strings.TryGetValue(key, out string result))
                 result = "";
             return result;
         }
@@ -505,183 +508,8 @@ namespace Localyssation
         }
     }
 
-    public class FontBundle
-    {
-        public class FontBundleInfo
-        {
-            public string bundleName = "";
-            public FontInfo[] fontInfos = new FontInfo[] { };
-        }
-
-        public class FontInfo
-        {
-            public string name = "";
-            public float sizeMultiplier = 1;
-        }
-
-        public class LoadedFont
-        {
-            public Font uguiFont;
-            public TMPro.TMP_FontAsset tmpFont;
-            public FontInfo info;
-        }
-
-        public FontBundleInfo info = new FontBundleInfo();
-        public string fileSystemPath;
-        public AssetBundle bundle;
-        public Dictionary<string, LoadedFont> loadedFonts = new Dictionary<string, LoadedFont>();
-
-        public bool LoadFromFileSystem()
-        {
-            if (string.IsNullOrEmpty(fileSystemPath)) return false;
-
-            var infoFilePath = Path.Combine(fileSystemPath, "localyssationFontBundle.json");
-            try
-            {
-                info = JsonConvert.DeserializeObject<FontBundleInfo>(File.ReadAllText(infoFilePath));
-                
-                var bundleFilePath = Path.Combine(fileSystemPath, info.bundleName);
-                if (!File.Exists(bundleFilePath)) return false;
-                bundle = AssetBundle.LoadFromFile(bundleFilePath);
-                foreach (var fontInfo in info.fontInfos)
-                {
-                    var loadedUGUIFont = bundle.LoadAsset<Font>(fontInfo.name);
-                    var loadedTMPFont = bundle.LoadAsset<TMPro.TMP_FontAsset>($"{fontInfo.name} SDF");
-                    if (loadedUGUIFont && loadedTMPFont)
-                    {
-                        loadedFonts[fontInfo.name] = new LoadedFont
-                        {
-                            uguiFont = loadedUGUIFont,
-                            tmpFont = loadedTMPFont,
-                            info = fontInfo
-                        };
-                    }
-                }
-
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Localyssation.logger.LogError(e);
-                return false;
-            }
-        }
-    }
-
-    public static class TSVUtil
-    {
-        public static string makeTsv(List<List<string>> rows, string delimeter = "\t")
-        {
-            var rowStrs = new List<string>();
-            List<string> headerRow = null;
-            for (var i = 0; i < rows.Count; i++)
-            {
-                var row = rows[i];
-                for (var j = 0; j < row.Count; j++)
-                {
-                    row[j] = row[j].Replace("\n", "\\n").Replace("\t", "\\t");
-                }
-
-                var rowStr = string.Join(delimeter, row);
-
-                if (headerRow == null)
-                {
-                    headerRow = row;
-                }
-                else if (headerRow.Count != row.Count)
-                {
-                    Localyssation.logger.LogError($"Row {i} has {row.Count} columns, which does not match header column count (${headerRow.Count})");
-                    Localyssation.logger.LogError($"Row content: {rowStr}");
-                    return string.Join(delimeter, headerRow);
-                }
-                rowStrs.Add(rowStr);
-            }
-            return string.Join("\n", rowStrs);
-        }
-
-        public static List<List<string>> parseTsv(string tsv, string delimeter = "\t")
-        {
-            var parsedTsv = new List<List<string>>();
-            List<string> headerRow = null;
-            var splitTsv = tsv.Split(new[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-            for (var i = 0; i < splitTsv.Length; i++)
-            {
-                var rowStr = splitTsv[i];
-                if (rowStr.EndsWith("\r")) rowStr = rowStr.Substring(0, rowStr.Length - 2); // convert CRLF to LF
-                
-                var row = new List<string>(Split(rowStr, delimeter));
-                for (var j = 0; j < row.Count; j++)
-                {
-                    row[j] = row[j].Replace("\\n", "\n").Replace("\\t", "\t");
-                }
-
-                if (headerRow == null)
-                {
-                    headerRow = row;
-                }
-                else if (headerRow.Count != row.Count)
-                {
-                    Localyssation.logger.LogError($"Row {i} has {row.Count} columns, which does not match header column count (${headerRow.Count})");
-                    Localyssation.logger.LogError($"Row content: {rowStr}");
-                    return new List<List<string>>() { headerRow };
-                }
-                parsedTsv.Add(row);
-            }
-            return parsedTsv;
-        }
-
-        public static List<Dictionary<string, string>> parseTsvWithHeaders(string tsv, string delimeter = "\t")
-        {
-            var parsedTsv = parseTsv(tsv, delimeter);
-            var withHeaders = new List<Dictionary<string, string>>();
-            if (parsedTsv.Count <= 0) return withHeaders;
-
-            var headerRow = parsedTsv[0];
-            for (var i = 1; i < parsedTsv.Count; i++)
-            {
-                var dict = parsedTsv[i]
-                    .Select((x, y) => new KeyValuePair<string, string>(headerRow[y], x))
-                    .ToDictionary(x => x.Key, x => x.Value);
-                withHeaders.Add(dict);
-            }
-            return withHeaders;
-        }
-
-        public static List<string> Split(string str, string delimeter)
-        {
-            var result = new List<string>();
-
-            var delimeterIsEscape = delimeter.StartsWith("\\");
-
-            var splitStartIndex = 0;
-            var searchIndex = 0;
-            while (true)
-            {
-                var delimIndex = str.IndexOf(delimeter, searchIndex);
-                if (delimIndex == -1)
-                {
-                    result.Add(str.Substring(splitStartIndex, str.Length - splitStartIndex));
-                    break;
-                }
-
-                searchIndex = delimIndex + delimeter.Length;
-                if (!delimeterIsEscape || (delimIndex > 0 && str[delimIndex - 1] != '\\'))
-                {
-                    result.Add(str.Substring(splitStartIndex, delimIndex - splitStartIndex));
-                    splitStartIndex = searchIndex;
-                }
-
-                if (searchIndex >= str.Length)
-                {
-                    result.Add(str.Substring(splitStartIndex, str.Length - splitStartIndex));
-                    break;
-                }
-            }
-
-            return result;
-        }
-    }
-
+   
+    
     public static class Util
     {
         public static string GetChildTransformPath(Transform transform, int depth = 0)

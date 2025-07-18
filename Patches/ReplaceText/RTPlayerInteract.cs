@@ -24,8 +24,9 @@ namespace Localyssation.Patches.ReplaceText
             if (!NetworkClient.active)
                 return;
             InGameUI._current.PortalCaptionPrompt(
-                Localyssation.GetString(KeyUtil.GetForMapName(_foundPortal._scenePortal._portalCaptionTitle))
-            ?? "");
+                _foundPortal?._scenePortal?._portalCaptionTitle != null ? 
+                Localyssation.GetString(KeyUtil.GetForMapName(_foundPortal._scenePortal._portalCaptionTitle)):""
+            );
         }
 
         [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.Handle_InteractControl))]
