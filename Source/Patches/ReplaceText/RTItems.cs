@@ -96,7 +96,7 @@ namespace Localyssation.Patches.ReplaceText
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
                 { "Mystery Item", "ITEM_TOOLTIP_GAMBLE_ITEM_NAME" },
                 { "[Unknown]", "ITEM_TOOLTIP_GAMBLE_ITEM_RARITY" },
-                { "You can't really see what __instance is until you buy it.", "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
+                { "You can't really see what this is until you buy it.", "ITEM_TOOLTIP_GAMBLE_ITEM_DESCRIPTION" },
                 { "Recovers {0} Health.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY" },
                 { "Recovers {0} Mana.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY" },
                 { "Recovers {0} Stamina.", "ITEM_TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY" },

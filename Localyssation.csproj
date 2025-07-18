@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup Label="Project">
         <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
-        <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
-        <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+		<ATLYSS_PROFILE>LocalyssationTest</ATLYSS_PROFILE>
+        <ATLYSS_BEPINEX>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\core</ATLYSS_BEPINEX>
+        <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
 		<TARGET_ATLYSS_VERSION>72025.a7</TARGET_ATLYSS_VERSION>
 		<VersionPrefix>1.2.1</VersionPrefix>
 		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
@@ -75,10 +76,14 @@
 			<TargetTestDir>$(ATLYSS_BEPINEX_PLUGINS)\Localyssation</TargetTestDir>
 		</PropertyGroup>
 		<ItemGroup>
-			<FilesToCopy Include="$(TargetDir)*.*" />
+			<FilesToCopy Include="$(TargetDir)**\*"/>
 		</ItemGroup>
 		<MakeDir Directories="$(TargetTestDir)" />
-		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(TargetTestDir)" />
+		<Copy 
+			SourceFiles="@(FilesToCopy)" 
+			DestinationFiles="@(FilesToCopy->'$(TargetTestDir)\%(RecursiveDir)%(Filename)%(Extension)')" 
+			SkipUnchangedFiles="true"
+		/>
 	</Target>
 	
 	<Target Name="GenerateZip" AfterTargets="CopyToTest" Condition="'$(Configuration)' == 'Release'">

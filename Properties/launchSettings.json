@@ -1,9 +1,9 @@
 {
   "profiles": {
     "Mod": {
-      "commandName": "Executable",
-      "executablePath": "G:\\SteamLibrary\\steamapps\\common\\ATLYSS\\ATLYSS.exe",
-      "commandLineArgs": "--doorstop-enabled true --doorstop-target-assembly \"C:\\Users\\TowardTheStars\\AppData\\Roaming\\r2modmanPlus-local\\ATLYSS\\profiles\\Default\\BepInEx\\core\\BepInEx.Preloader.dll\""
+        "commandName": "Executable",
+        "executablePath": "G:\\SteamLibrary\\steamapps\\common\\ATLYSS\\ATLYSS.exe",
+        "commandLineArgs": "--doorstop-enabled true --doorstop-target-assembly \"C:\\Users\\TowardTheStars\\AppData\\Roaming\\r2modmanPlus-local\\ATLYSS\\profiles\\Localyssation Test\\BepInEx\\core\\BepInEx.Preloader.dll\""
     }
   }
 }
