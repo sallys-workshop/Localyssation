@@ -12,20 +12,43 @@ namespace Localyssation.Patches.ReplaceText
         {
             if (!NetworkClient.active)
                 return;
+            string key = "";
+            if (_foundPortal != null)
+            {
+                if (_foundPortal._scenePortal != null)
+                {
+                    if (_foundPortal._scenePortal._portalCaptionTitle != null)
+                    {
+                        key = _foundPortal._scenePortal._portalCaptionTitle;
+                    }
+                }
+            }
             InGameUI._current.PortalCaptionPrompt(
-                Localyssation.GetString(KeyUtil.GetForMapName(_foundPortal._scenePortal._portalCaptionTitle))
-            ?? "");
+                !string.IsNullOrEmpty(key) ?
+                Localyssation.GetString(KeyUtil.GetForMapName(key)) : ""
+            );
         }
 
         [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.InteractQueue_RecallPortal))]
         [HarmonyPostfix]
-        public static void PlayerInteract__InteractQueue_RecallPortal__Postfix(PlayerInteract __instance, Portal _foundPortal)
+        public static void PlayerInteract__InteractQueue_RecallPortal__Postfix(PlayerInteract __instance, RecallPortal _foundPortal)
         {
             if (!NetworkClient.active)
                 return;
+            string key = "";
+            if (_foundPortal != null)
+            {
+                if (_foundPortal._scenePortal != null)
+                {
+                    if (_foundPortal._scenePortal._portalCaptionTitle != null)
+                    {
+                        key = _foundPortal._scenePortal._portalCaptionTitle;
+                    }
+                }
+            }
             InGameUI._current.PortalCaptionPrompt(
-                _foundPortal?._scenePortal?._portalCaptionTitle != null ? 
-                Localyssation.GetString(KeyUtil.GetForMapName(_foundPortal._scenePortal._portalCaptionTitle)):""
+                !string.IsNullOrEmpty(key) ?
+                Localyssation.GetString(KeyUtil.GetForMapName(key)) : ""
             );
         }
 
