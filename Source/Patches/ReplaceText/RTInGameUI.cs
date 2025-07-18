@@ -58,7 +58,7 @@ namespace Localyssation.Patches.ReplaceText
                     "altW",
                     "01",
                     "02"
-            ), supressNotfoundWarnings: false, rawText: true);
+            ), supressNotfoundWarnings: true, rawText: true);
         }
     }
 }
