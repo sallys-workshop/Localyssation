@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -61,7 +62,9 @@ namespace Localyssation.Exporter
                 // "myTexture2D"是可读纹理，并且和”texture”拥有相同的像素值
                 File.WriteAllBytes(GetExportAssetPath(name + ".png"), myTexture2D.EncodeToPNG());
             }
-            return $"![{name}]({Path.Combine("asset", Name(), name + ".png")})";
+
+            string uri = new Uri(Path.Combine("asset", Name(), name + ".png")).ToString();
+            return $"![{name}]({uri})";
         }
 
         public Exporter()

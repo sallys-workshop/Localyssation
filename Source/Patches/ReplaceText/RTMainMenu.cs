@@ -179,7 +179,7 @@ namespace Localyssation.Patches.ReplaceText
                 { "Host Game (Friends)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_FRIENDS" },
                 { "Host Game (Private)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_PRIVATE" },
                 { "Join Game", "CHARACTER_SELECT_HEADER_GAME_MODE_JOIN_MULTIPLAYER" },
-                { "Lobby Query", "CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY" },
+                //{ "Lobby Query", "CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY" },
             });
         }
         [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Update))]

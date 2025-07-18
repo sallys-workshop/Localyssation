@@ -14,12 +14,13 @@ namespace Localyssation.Patches.ReplaceText
     internal static partial class RTReplacer
     {
 
-        [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Awake))]
+        [HarmonyPatch(typeof(TooltipElement), nameof(TooltipElement.Awake))]
         [HarmonyPostfix]
-        public static void replaceStatTags(EquipToolTip __instance)
+        public static void replaceStatTags(TooltipElement __instance)
         {
             const string TAG_NAME_REGEX = @"_statCell_(\w*)Tag";
-            foreach (var tag in __instance.transform.GetComponentsInChildren<Text>(true).Where(text => Regex.IsMatch(text.transform.name, TAG_NAME_REGEX)))
+            if (__instance is EquipToolTip equipToolTip)
+            foreach (var tag in equipToolTip.transform.GetComponentsInChildren<Text>(true).Where(text => Regex.IsMatch(text.transform.name, TAG_NAME_REGEX)))
             {
                 string statName = Regex.Match(tag.transform.name, TAG_NAME_REGEX).Groups[1].Value;
                 string key = I18nKeys.Equipment.statDisplayKey(statName);

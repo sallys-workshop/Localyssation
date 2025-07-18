@@ -115,7 +115,7 @@ namespace Localyssation.Patches.ReplaceText
         /// <param name="parentTransform">The Transform to find Text instances under.</param>
         /// <param name="textRemaps">Key-value pairs of GameObject paths to find and language keys to replace their text with.</param>
         /// <param name="onRemap">A method called on a successful remap.</param>
-        public static void RemapChildTextsByPath(Transform parentTransform, IDictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
+        public static void RemapChildTextsByPath(Transform parentTransform, IDictionary<string, string> textRemaps, Action<Transform, string> onRemap = null, bool supressNotfoundWarnings = false, bool rawText = false)
         {
             foreach (var textRemap in textRemaps)
             {
@@ -126,17 +126,22 @@ namespace Localyssation.Patches.ReplaceText
                     var text = foundTransform.GetComponent<Text>();
                     if (text)
                     {
-                        LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(textRemap.Value, text.text));
+                        if (!rawText)
+                            LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(textRemap.Value, text.text));
+                        else
+                            text.text = textRemap.Value;
                         if (onRemap != null) onRemap(foundTransform, textRemap.Value);
                     }
                     else
                     {
-                        Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap.Key}` but no Text component is found.");
+                        if (!supressNotfoundWarnings)
+                            Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap.Key}` but no Text component is found.");
                     }
                 }
                 else
                 {
-                    Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Cannot find path `{textRemap.Key}` in `{GetPath(parentTransform)}`.");
+                    if (!supressNotfoundWarnings)
+                        Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Cannot find path `{textRemap.Key}` in `{GetPath(parentTransform)}`.");
                 }
             }
         }
