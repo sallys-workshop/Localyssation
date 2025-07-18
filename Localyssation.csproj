@@ -1,20 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
+    <PropertyGroup Label="Project">
         <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
-        <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\Thunderstore Mod Manager\DataFolder\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
+        <ATLYSS_BEPINEX>C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\core</ATLYSS_BEPINEX>
         <ATLYSS_BEPINEX_PLUGINS>C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\Default\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+		<TARGET_ATLYSS_VERSION>72025.a7</TARGET_ATLYSS_VERSION>
+		<VersionPrefix>1.2.1</VersionPrefix>
+		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
+		<Version>$(VersionPrefix)-$(VersionSuffix)</Version>
+		<FileVersion>$(Version)</FileVersion>
+	</PropertyGroup>
+	
+	<PropertyGroup Label="MSBuild">
         <Configurations>Debug;Release</Configurations>
-		<MSBuildFileVersion>202507.07.1.2</MSBuildFileVersion>
+		<MSBuildFileVersion>1.3</MSBuildFileVersion>
 		<BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\</IntermediateOutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup>
         <TargetFramework>net481</TargetFramework>
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     </PropertyGroup>
 
+	<PropertyGroup Label="Output">
+		<ZipOutputFileName>$(AssemblyName)-v$(FileVersion).zip</ZipOutputFileName>
+		<ZipOutputPath>$(MSBuildProjectDirectory)\dist\</ZipOutputPath>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Release No PDB">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
 
+	<ItemGroup Label="Extra Resources">
+		<None Update="CHANGELOG.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="extraFontBundle\localyssationFontBundle.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="extraFontBundle\unifont">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="LICENSE">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="README.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
     <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
     <ItemGroup>
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" ExcludeAssets="runtime" />
@@ -23,19 +58,34 @@
 		</PackageReference>
     </ItemGroup>
 	
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<!-- Targets for automatic process -->
+	<Target Name="ManageResources" AfterTargets="PostBuildEvent">
 		<PropertyGroup>
 			<OutputLibDir>$(TargetDir)libs</OutputLibDir>
 		</PropertyGroup>
 		<MakeDir Directories="$(OutputLibDir)" />
 		<ItemGroup>
-
 			<DllsToMove Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(AssemblyName).dll" />
 		</ItemGroup>
 		<Move SourceFiles="@(DllsToMove)" DestinationFolder="$(OutputLibDir)" />
-		<Exec Command="xcopy &quot;$(TargetDir)*.dll&quot; &quot;$(ATLYSS_BEPINEX_PLUGINS)\Localyssation\&quot; /Y" />
-		
 	</Target>
+	
+	<Target Name="CopyToTest" AfterTargets="ManageResources">
+		<PropertyGroup>
+			<TargetTestDir>$(ATLYSS_BEPINEX_PLUGINS)\Localyssation</TargetTestDir>
+		</PropertyGroup>
+		<ItemGroup>
+			<FilesToCopy Include="$(TargetDir)*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(TargetTestDir)" />
+		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(TargetTestDir)" />
+	</Target>
+	
+	<Target Name="GenerateZip" AfterTargets="CopyToTest" Condition="'$(Configuration)' == 'Release'">
+		<MakeDir Directories="$(ZipOutputPath)" />
+		<ZipDirectory SourceDirectory="$(TargetDir)" DestinationFile="$(ZipOutputPath)$(ZipOutputFileName)" Overwrite="true" />
+	</Target>
+	
 
     <!-- ATLYSS_Data/Managed assemblies. -->
     <ItemGroup>
@@ -174,18 +224,8 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-      <None Update="CHANGELOG.md">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="icon.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="LICENSE">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="README.md">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+      <Folder Include="dist\" />
     </ItemGroup>
+    
 	
 </Project>
