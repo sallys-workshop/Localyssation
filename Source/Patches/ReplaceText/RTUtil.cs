@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using Localyssation;
+using Localyssation.LangAdjutable;
 
 namespace Localyssation.Patches.ReplaceText
 {

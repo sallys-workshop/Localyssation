@@ -1,5 +1,5 @@
 using HarmonyLib;
-using Localyssation;
+using Localyssation.LangAdjutable;
 using System.Collections.Generic;
 using UnityEngine.UI;
 

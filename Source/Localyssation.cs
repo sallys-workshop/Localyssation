@@ -3,6 +3,7 @@ using HarmonyLib;
 using Localyssation.Exporter;
 using Localyssation.Patches.ReplaceFont;
 using Localyssation.Patches.ReplaceText;
+using Localyssation.LangAdjutable;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

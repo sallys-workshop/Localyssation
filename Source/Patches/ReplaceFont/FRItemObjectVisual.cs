@@ -1,18 +1,15 @@
 ﻿using HarmonyLib;
+using Localyssation.LangAdjutable;
 
 namespace Localyssation.Patches.ReplaceFont
 {
     internal static class FRItemObjectVisual
     {
-        [HarmonyPatch(typeof(ItemObjectVisual), nameof(ItemObjectVisual.Apply_ItemObjectVisual))]
+        [HarmonyPatch(typeof(ItemObjectVisual), nameof(ItemObjectVisual.OnEnable))]
         [HarmonyPostfix]
-        public static void modifyItemObjectVisualFont(ItemObjectVisual __instance)
+        public static void ItemObjectVisual__OnEnable__Postfix(ItemObjectVisual __instance)
         {
-            if (__instance != null && __instance._itemNametagTextMesh.enabled)
-            {
-                FRUtil.replaceTmpFont(__instance._itemNametagTextMesh, Localyssation.currentLanguage.info.fontReplacementLibrationSans);
-            }
-
+            LangAdjustables.RegisterTextMeshPro(__instance._itemNametagTextMesh);
         }
     }
 }

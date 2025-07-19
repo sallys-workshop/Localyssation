@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Localyssation;
+using Localyssation.LangAdjutable;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

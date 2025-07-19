@@ -1,0 +1,169 @@
+﻿
+
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static Localyssation.LangAdjutable.LangAdjustables;
+
+namespace Localyssation.LangAdjutable
+{
+    internal class LangAdjustableTextMeshPro
+        : MonoBehaviour, ILangAdjustable
+    {
+
+        public TextMeshPro text { get; private set; }
+        public System.Func<int, string> newTextFunc;
+
+        public bool fontReplaced = false;
+        public float orig_fontSize;
+        public float orig_lineSpacing;
+        public TMP_FontAsset orig_font;
+
+        public bool textAutoShrinkable = true;
+        public bool textAutoShrunk = false;
+        public bool orig_resizeTextForBestFit = false;
+        public float orig_resizeTextMaxSize;
+        public float orig_resizeTextMinSize;
+
+        private void onLanguageChanged(Language newLanguage)
+        {
+            AdjustToLanguage(newLanguage);
+        }
+        public void Awake()
+        {
+            text = GetComponent<TextMeshPro>();
+            //text.verticalOverflow = VerticalWrapMode.Overflow;
+            Localyssation.instance.onLanguageChanged += onLanguageChanged;
+        }
+
+        public void Start()
+        {
+            AdjustToLanguage(Localyssation.currentLanguage);
+        }
+
+        private bool ReplaceFontIfMatch(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if (
+                        replacementFontLookupInfo != null &&
+                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+            {
+                if (text.font == loadedFont.tmpFont) return true;
+                if (text.font.name == originalFontName)
+                {
+                    text.font = loadedFont.tmpFont;
+                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    fontReplaced = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool ReplaceFontForPath(string path, Language.BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if (Util.GetPath(text.transform) == path)
+            {
+                if (
+                    replacementFontLookupInfo != null &&
+                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                {
+                    if (text.font == loadedFont.tmpFont) return true;
+                    text.font = loadedFont.tmpFont;
+                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    fontReplaced = true;
+                    return true;
+
+                }
+            }
+            return false;
+        }
+
+        public void AdjustToLanguage(Language newLanguage)
+        {
+            bool TryReplaceFont()
+            {
+                return newLanguage.info.fontReplacement.Select(kvPair =>
+                {
+                    string originalFontName = kvPair.Key;
+                    Language.BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                    return ReplaceFontIfMatch(originalFontName, replacementFontLookupInfo);
+                })
+                    .Concat(
+                        newLanguage.info.componentSpecifiedFontReplacement.Select(kvPair =>
+                        {
+                            string path = kvPair.Key;
+                            Language.BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                            return ReplaceFontForPath(path, replacementFontLookupInfo);
+                        })
+
+                    )
+                    .Any(b => b);
+
+            }
+
+            var fontReplacedThisTime = false;
+            if (!fontReplaced)
+            {
+                orig_font = text.font;
+                orig_fontSize = text.fontSize;
+                orig_lineSpacing = text.lineSpacing;
+            }
+            if (TryReplaceFont())
+            {
+                fontReplacedThisTime = true;
+            }
+            if (!fontReplacedThisTime && fontReplaced)
+            {
+                fontReplaced = false;
+                text.font = orig_font;
+                text.fontSize = orig_fontSize;
+                text.lineSpacing = orig_lineSpacing;
+            }
+
+            if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
+            {
+                if (newLanguage.info.autoShrinkOverflowingText)
+                {
+                    if (textAutoShrinkable)
+                    {
+                        orig_resizeTextForBestFit = text.enableAutoSizing;
+                        orig_resizeTextMaxSize = text.fontSizeMax;
+                        orig_resizeTextMinSize = text.fontSizeMin;
+
+                        text.fontSizeMax = text.fontSize;
+                        text.fontSizeMin = System.Math.Min(2, text.fontSizeMin);
+                        text.enableAutoSizing = true;
+
+                        textAutoShrunk = true;
+                    }
+                }
+                else
+                {
+                    text.enableAutoSizing = orig_resizeTextForBestFit;
+                    text.fontSizeMax = orig_resizeTextMaxSize;
+                    text.fontSizeMin = orig_resizeTextMinSize;
+
+                    textAutoShrunk = false;
+                }
+            }
+
+            if (newTextFunc != null)
+            {
+                text.text = newTextFunc((int)text.fontSize);
+            }
+        }
+
+        public void OnDestory()
+        {
+            Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+            registeredTextMeshPro.Remove(text);
+        }
+    }
+}

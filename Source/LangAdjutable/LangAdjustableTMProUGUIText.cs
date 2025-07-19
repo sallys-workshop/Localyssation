@@ -1,0 +1,157 @@
+﻿
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using static Localyssation.Language;
+using static Localyssation.LangAdjutable.LangAdjustables;
+
+namespace Localyssation.LangAdjutable
+{
+    public class LangAdjustableTMProUGUIText : MonoBehaviour, ILangAdjustable
+    {
+        public TMPro.TextMeshProUGUI text;
+        public System.Func<int, string> newTextFunc;
+
+        public bool fontReplaced = false;
+        public float orig_fontSize;
+        public float orig_lineSpacing;
+        public TMPro.TMP_FontAsset orig_font;
+
+        public bool textAutoShrinkable = true;
+        public bool textAutoShrunk = false;
+        public bool orig_resizeTextForBestFit = false;
+        public float orig_resizeTextMaxSize;
+        public float orig_resizeTextMinSize;
+
+        public static List<string> FONT_NAMES = new List<string>();
+
+        public void Awake()
+        {
+            text = GetComponent<TMPro.TextMeshProUGUI>();
+            Localyssation.instance.onLanguageChanged += onLanguageChanged;
+        }
+
+        public void Start()
+        {
+            AdjustToLanguage(Localyssation.currentLanguage);
+        }
+
+        private void onLanguageChanged(Language newLanguage)
+        {
+            AdjustToLanguage(newLanguage);
+        }
+
+        public void AdjustToLanguage(Language newLanguage)
+        {
+            bool TryReplaceFont()
+            {
+                return newLanguage.info.fontReplacement.Select(kvPair =>
+                {
+                    string originalFontName = kvPair.Key;
+                    BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                    if (
+                        replacementFontLookupInfo != null &&
+                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                    {
+                        if (text.font == loadedFont.tmpFont) return true;
+                        if (text.font.name == originalFontName)
+                        {
+                            text.font = loadedFont.tmpFont;
+                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                            fontReplaced = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                    .Concat(
+                        newLanguage.info.componentSpecifiedFontReplacement.Select(kvPair =>
+                        {
+                            string path = kvPair.Key;
+                            BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                            if (Util.GetPath(text.transform) == path)
+                            {
+                                if (
+                                    replacementFontLookupInfo != null &&
+                                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                                {
+                                    if (text.font == loadedFont.tmpFont) return true;
+                                    text.font = loadedFont.tmpFont;
+                                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                                    fontReplaced = true;
+                                    return true;
+
+                                }
+                            }
+                            return false;
+                        })
+
+                    )
+                    .Any(b => b);
+
+            }
+
+            var fontReplacedThisTime = false;
+            if (!fontReplaced)
+            {
+                orig_font = text.font;
+                orig_fontSize = text.fontSize;
+                orig_lineSpacing = text.lineSpacing;
+            }
+            if (TryReplaceFont())
+            {
+                fontReplacedThisTime = true;
+            }
+            if (!fontReplacedThisTime && fontReplaced)
+            {
+                fontReplaced = false;
+                text.font = orig_font;
+                text.fontSize = orig_fontSize;
+                text.lineSpacing = orig_lineSpacing;
+            }
+
+            if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
+            {
+                if (newLanguage.info.autoShrinkOverflowingText)
+                {
+                    if (textAutoShrinkable)
+                    {
+                        orig_resizeTextForBestFit = text.enableAutoSizing;
+                        orig_resizeTextMaxSize = text.fontSizeMax;
+                        orig_resizeTextMinSize = text.fontSizeMin;
+
+                        text.fontSizeMax = text.fontSize;
+                        text.fontSizeMin = System.Math.Min(2, text.fontSizeMin);
+                        text.enableAutoSizing = true;
+
+                        textAutoShrunk = true;
+                    }
+                }
+                else
+                {
+                    text.enableAutoSizing = orig_resizeTextForBestFit;
+                    text.fontSizeMax = orig_resizeTextMaxSize;
+                    text.fontSizeMin = orig_resizeTextMinSize;
+
+                    textAutoShrunk = false;
+                }
+            }
+
+            if (newTextFunc != null)
+            {
+                text.text = newTextFunc((int)text.fontSize);
+            }
+        }
+
+        public void OnDestroy()
+        {
+            Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+            registeredTMProUGUITexts.Remove(text);
+        }
+    }
+
+}
