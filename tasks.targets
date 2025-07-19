@@ -1,0 +1,82 @@
+﻿<!-- tasks.targets -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup Label="Output">
+		<ZipOutputFileName>$(AssemblyName)-v$(FileVersion).zip</ZipOutputFileName>
+		<ZipOutputPath>$(MSBuildProjectDirectory)\dist\</ZipOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Release No PDB">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+	<!-- Targets for automatic process -->
+	<!-- 定义内联替换任务 -->
+
+	<UsingTask TaskName="RegexReplaceText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<FilePath ParameterType="System.String" Required="true" />
+			<Pattern ParameterType="System.String" Required="true" />
+			<Replacement ParameterType="System.String" Required="true" />
+			<RegexOption ParameterType="System.String" Required="false" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+string content = File.ReadAllText(FilePath);
+
+RegexOptions options = RegexOptions.None;
+if (!string.IsNullOrEmpty(RegexOption)) {
+    if (RegexOption.Contains("IgnoreCase")) options |= RegexOptions.IgnoreCase;
+    if (RegexOption.Contains("Multiline")) options |= RegexOptions.Multiline;
+    if (RegexOption.Contains("Singleline")) options |= RegexOptions.Singleline;
+}
+
+content = Regex.Replace(content, Pattern, Replacement, options);
+File.WriteAllText(FilePath, content);
+]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Target Name="ManageResources" AfterTargets="PostBuildEvent">
+		<PropertyGroup>
+			<OutputLibDir>$(TargetDir)libs</OutputLibDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(OutputLibDir)" />
+		<ItemGroup>
+			<DllsToMove Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(AssemblyName).dll" />
+		</ItemGroup>
+		<Move SourceFiles="@(DllsToMove)" DestinationFolder="$(OutputLibDir)" />
+	</Target>
+
+	<Target Name="CopyToTest" AfterTargets="ManageResources">
+		<PropertyGroup>
+			<TargetTestDir>$(ATLYSS_BEPINEX_PLUGINS)\Localyssation</TargetTestDir>
+		</PropertyGroup>
+		<ItemGroup>
+			<FilesToCopy Include="$(TargetDir)**\*"/>
+		</ItemGroup>
+		<MakeDir Directories="$(TargetTestDir)" />
+		<Copy
+			SourceFiles="@(FilesToCopy)"
+			DestinationFiles="@(FilesToCopy->'$(TargetTestDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+		/>
+	</Target>
+
+	<Target Name="GenerateZip" AfterTargets="CopyToTest" Condition="'$(Configuration)' == 'Release'">
+		<MakeDir Directories="$(ZipOutputPath)" />
+		<ZipDirectory SourceDirectory="$(TargetDir)" DestinationFile="$(ZipOutputPath)$(ZipOutputFileName)" Overwrite="true" />
+	</Target>
+
+	<Target Name="ReplaceVersionText" BeforeTargets="BeforeBuild">
+		<RegexReplaceText
+			FilePath="$(ProjectDir)Source/PluginInfo.cs"
+			Pattern="public\s+const\s+string\s+PLUGIN_VERSION\s*=\s*&quot;[^&quot;]*&quot;\s*;"
+			Replacement = "public const string PLUGIN_VERSION = &quot;$(Version)&quot;;"
+		/>
+	</Target>
+
+</Project>

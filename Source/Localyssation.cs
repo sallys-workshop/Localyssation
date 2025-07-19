@@ -20,15 +20,12 @@ using UnityEngine;
 namespace Localyssation
 {
     [BepInDependency(Nessie.ATLYSS.EasySettings.MyPluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
+    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     public class Localyssation : BaseUnityPlugin
     {
-        public const string PLUGIN_GUID = "org.sallys-workshop.localyssation";
-        public const string PLUGIN_NAME = "Localyssation";
-        public const string PLUGIN_VERSION = "1.2.2";
 
         public static Localyssation instance;
-        public static Harmony harmony = new Harmony(PLUGIN_GUID);
+        public static Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
          
 
         internal static System.Reflection.Assembly assembly;
