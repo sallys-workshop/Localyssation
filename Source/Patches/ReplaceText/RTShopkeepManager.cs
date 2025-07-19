@@ -1,10 +1,11 @@
 ﻿using HarmonyLib;
+using Localyssation;
 using System;
 using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceText
 {
-    
+
     internal static partial class RTReplacer
     {
         [HarmonyPatch(typeof(ShopkeepManager), nameof(ShopkeepManager.Handle_ShopkeepUIBehavior))]

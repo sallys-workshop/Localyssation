@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using Localyssation;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -146,20 +147,7 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        public static string GetPath(Transform transform)
-        {
-            string path = transform.name;
-            Transform current = transform;
-
-            // 从当前节点向上遍历到根节点
-            while (current.parent != null)
-            {
-                current = current.parent;
-                path = current.name + "/" + path; // 从根向子节点拼接
-            }
-
-            return "/" + path; // 添加根路径斜杠
-        }
+        public static string GetPath(Transform transform) => Util.GetPath(transform);
 
         /// <summary>
         /// Remaps all UnityEngine.UI.InputField instances' placeholder texts found in this object, and under all of its children, with localised variants if the in-game strings match remap keys.

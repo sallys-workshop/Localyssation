@@ -1,8 +1,9 @@
 using HarmonyLib;
+using Localyssation;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace Localyssation.Patches.ReplaceText  
+namespace Localyssation.Patches.ReplaceText
 {
     internal static partial class RTReplacer
     {

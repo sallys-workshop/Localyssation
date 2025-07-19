@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation;
 using Steamworks;
 using System;
 using System.Collections.Generic;

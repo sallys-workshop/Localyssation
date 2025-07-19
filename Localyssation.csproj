@@ -4,8 +4,12 @@
 		<ATLYSS_PROFILE>LocalyssationTest</ATLYSS_PROFILE>
         <ATLYSS_BEPINEX>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\core</ATLYSS_BEPINEX>
         <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+		
+		
 		<TARGET_ATLYSS_VERSION>72025.a7</TARGET_ATLYSS_VERSION>
-		<VersionPrefix>1.2.2</VersionPrefix>
+		<VersionPrefix>1.3.0</VersionPrefix>
+		
+		
 		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
 		<Version>$(VersionPrefix)</Version>
 		<FileVersion>$(Version)-$(VersionSuffix)</FileVersion>
@@ -29,7 +33,7 @@
 		<None Update="extraFontBundle\localyssationFontBundle.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="extraFontBundle\unifont">
+		<None Update="extraFontBundle\unifont.assetbundle">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="icon.png">
@@ -51,7 +55,7 @@
 		</PackageReference>
     </ItemGroup>
 
-	<Import Project="tasks.targets"/>
+	<Import Project="tasks.targets" />
 
     <!-- ATLYSS_Data/Managed assemblies. -->
     <ItemGroup>

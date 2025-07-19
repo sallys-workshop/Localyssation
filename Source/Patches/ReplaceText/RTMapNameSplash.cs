@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 using System.Collections;
+using Localyssation;
 
 namespace Localyssation.Patches.ReplaceText
 {

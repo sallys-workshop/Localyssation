@@ -6,6 +6,7 @@ using Localyssation.Patches.ReplaceText;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -57,35 +58,29 @@ namespace Localyssation
         internal static bool settingsTabSetup = false;
         internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
-        public static class GameAssetCache
-        {
-            public static Font uguiFontCentaur;
-            public static TMPro.TMP_FontAsset tmpFontCentaur;
-            public static Font uguiFontTerminalGrotesque;
-            public static TMPro.TMP_FontAsset tmpFontTerminalGrotesque;
-            public static Font uguiFontLibrationSans;
-            public static TMPro.TMP_FontAsset tmpFontLibrationSans;
+        //public static class GameAssetCache
+        //{
+        //    public static Font uguiFontCentaur;
+        //    public static TMPro.TMP_FontAsset tmpFontCentaur;
+        //    public static Font uguiFontTerminalGrotesque;
+        //    public static TMPro.TMP_FontAsset tmpFontTerminalGrotesque;
+        //    public static Font uguiFontLibrationSans;
+        //    public static TMPro.TMP_FontAsset tmpFontLibrationSans;
 
-            internal static void Load()
-            {
-                uguiFontCentaur = Resources.Load<Font>("_graphic/_font/centaur");
-                tmpFontCentaur = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/centaur sdf");
-                uguiFontTerminalGrotesque = Resources.Load<Font>("_graphic/_font/terminal-grotesque");
-                tmpFontTerminalGrotesque = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/terminal-grotesque sdf");
-                uguiFontLibrationSans = Resources.Load<Font>("_graphic/_font/libration sans");
-                tmpFontLibrationSans = Resources.Load<TMPro.TMP_FontAsset>("LiberationSans SDF_2");
-            }
-        }
+        //    internal static void Load()
+        //    {
+        //        uguiFontCentaur = Resources.Load<Font>("_graphic/_font/centaur");
+        //        tmpFontCentaur = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/centaur sdf");
+        //        uguiFontTerminalGrotesque = Resources.Load<Font>("_graphic/_font/terminal-grotesque");
+        //        tmpFontTerminalGrotesque = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/terminal-grotesque sdf");
+        //        uguiFontLibrationSans = Resources.Load<Font>("_graphic/_font/libration sans");
+        //        tmpFontLibrationSans = Resources.Load<TMPro.TMP_FontAsset>("LiberationSans SDF_2");
+        //    }
+        //}
 
-        public static class VanillaFonts
-        {
-            public static string CENTAUR = "CENTAUR";
-            public static string TERMINAL_GROTESQUE = "terminal-grotesque";
-            public static string LIBRATION_SANS = "LiberationSans";
-            public static string HOBOSTD = "HoboStd";
-        }
+        
 
-#pragma warning disable IDE0051 // Unused private method
+#pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Awake()
         {
             instance = this;
@@ -95,7 +90,7 @@ namespace Localyssation
             assembly = System.Reflection.Assembly.GetExecutingAssembly();
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
 
-            GameAssetCache.Load();
+            //GameAssetCache.Load();
 
             defaultLanguage = CreateDefaultLanguage();
             RegisterLanguage(defaultLanguage);
@@ -197,6 +192,7 @@ namespace Localyssation
             }
         }
 
+#pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Update()
         {
             if (configTranslatorMode.Value)
@@ -208,6 +204,7 @@ namespace Localyssation
                 }
             }
         }
+#pragma warning restore IDE0051
 
         public static void LoadLanguagesFromFileSystem()
         {
@@ -426,85 +423,6 @@ namespace Localyssation
         }
     }
 
-    public class Language
-    {
-        public class LanguageInfo
-        {
-            public string code = "";
-            public string name = "";
-            public bool autoShrinkOverflowingText = false;
-            public BundledFontLookupInfo fontReplacementCentaur = new BundledFontLookupInfo();
-            public BundledFontLookupInfo fontReplacementTerminalGrotesque = new BundledFontLookupInfo();
-            public BundledFontLookupInfo fontReplacementLibrationSans = new BundledFontLookupInfo();
-        }
-
-        public class BundledFontLookupInfo
-        {
-            public string bundleName = "";
-            public string fontName = "";
-        }
-
-        public LanguageInfo info = new LanguageInfo();
-        public string fileSystemPath;
-        public Dictionary<string, string> strings = new Dictionary<string, string>();
-
-        public void RegisterKey(string key, string defaultValue)
-        {
-            if (strings.ContainsKey(key)) return;
-            strings[key] = defaultValue;
-        }
-
-        public bool LoadFromFileSystem(bool forceOverwrite = false)
-        {
-            if (string.IsNullOrEmpty(fileSystemPath)) return false;
-
-            var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
-            var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
-            try
-            {
-                info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
-
-                foreach (var tsvRow in TSVUtil.parseTsvWithHeaders(File.ReadAllText(stringsFilePath)))
-                {
-                    if (!forceOverwrite) RegisterKey(tsvRow["key"], tsvRow["value"]);
-                    else strings[tsvRow["key"]] = tsvRow["value"];
-                }
-
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Localyssation.logger.LogError(e);
-                return false;
-            }
-        }
-
-        public bool WriteToFileSystem()
-        {
-            if (string.IsNullOrEmpty(fileSystemPath)) return false;
-
-            try
-            {
-                Directory.CreateDirectory(fileSystemPath);
-
-                var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
-                File.WriteAllText(infoFilePath, JsonConvert.SerializeObject(info, Formatting.Indented));
-
-                var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
-                var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
-                tsvRows.Insert(0, new List<string>() { "key", "value" });
-                File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
-
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Localyssation.logger.LogError(e);
-                return false;
-            }
-        }
-    }
-
    
     
     public static class Util
@@ -521,6 +439,20 @@ namespace Localyssation
                 }
             }
             return str;
+        }
+        public static string GetPath(Transform transform)
+        {
+            string path = transform.name;
+            Transform current = transform;
+
+            // 从当前节点向上遍历到根节点
+            while (current.parent != null)
+            {
+                current = current.parent;
+                path = current.name + "/" + path; // 从根向子节点拼接
+            }
+
+            return "/" + path; // 添加根路径斜杠
         }
     }
 

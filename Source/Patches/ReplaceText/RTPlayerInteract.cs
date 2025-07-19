@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation;
 using Mirror;
 using System.Collections.Generic;
 

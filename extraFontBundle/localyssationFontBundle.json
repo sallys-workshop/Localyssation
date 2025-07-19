@@ -1,9 +1,15 @@
 {
-  "bundleName": "unifont",
-  "fontInfos": [
-    {
-      "name": "unifont",
-      "sizeMultiplier": 0.8
-    }
-  ]
+    "bundleName": "unifont",
+    "fontBundles": [
+        {
+            "bundleFile": "unifont.assetbundle",
+            "fontInfos": [
+                {
+                    "name": "unifont",
+                    "sizeMultiplier": 0.8
+                }
+            ]
+        }
+    ]
+  
 }

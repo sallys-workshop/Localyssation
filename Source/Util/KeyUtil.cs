@@ -138,7 +138,7 @@ namespace Localyssation
         {
             return $"MAP_NAME_{Normalize(name)}";
         }
-        
+
         public static string GetForAsset(ScriptableShopkeep asset)
         {
             return $"SHOP_KEEP_{Normalize(asset._shopName)}";

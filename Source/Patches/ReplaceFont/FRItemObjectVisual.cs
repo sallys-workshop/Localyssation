@@ -12,7 +12,7 @@ namespace Localyssation.Patches.ReplaceFont
             {
                 FRUtil.replaceTmpFont(__instance._itemNametagTextMesh, Localyssation.currentLanguage.info.fontReplacementLibrationSans);
             }
-            
+
         }
     }
 }

@@ -1,5 +1,8 @@
+using HarmonyLib;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static Localyssation.Language;
 
 namespace Localyssation
 {
@@ -34,7 +37,7 @@ namespace Localyssation
             LangAdjustableUIText adjustable;
             if (!registeredTexts.TryGetValue(text, out adjustable))
                 adjustable = registeredTexts[text] = text.gameObject.AddComponent<LangAdjustableUIText>();
-            
+
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
 
@@ -99,25 +102,55 @@ namespace Localyssation
 
             public void AdjustToLanguage(Language newLanguage)
             {
-                bool TryReplaceFont(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
+                bool TryReplaceFont()
                 {
-                    
-                    if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
-                    {
-                        if (text.font == loadedFont.uguiFont) return true;
-                        if (text.font.name == originalFontName)
+                    return newLanguage.info.fontReplacement.Select(kvPair => {
+                        string originalFontName = kvPair.Key;
+                        BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                        if (
+                            replacementFontLookupInfo != null &&
+                            Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                            fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                         {
-                            text.font = loadedFont.uguiFont;
-                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
-                            fontReplaced = true;
-                            return true;
+                            if (text.font == loadedFont.uguiFont) return true;
+                            if (text.font.name == originalFontName)
+                            {
+                                text.font = loadedFont.uguiFont;
+                                text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                                text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                                fontReplaced = true;
+                                return true;
+                            }
                         }
-                    }
-                    return false;
+                        return false;
+                    })
+                        .Concat(
+                            newLanguage.info.componentSpecifiedFontReplacement.Select( kvPair =>
+                            {
+                                string path = kvPair.Key;
+                                BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                                if (Util.GetPath(text.transform) == path)
+                                {
+                                    if (
+                                        replacementFontLookupInfo != null &&
+                                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                                    {
+                                        if (text.font == loadedFont.uguiFont) return true;
+                                        text.font = loadedFont.uguiFont;
+                                        text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                                        text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                                        fontReplaced = true;
+                                        return true;
+                                        
+                                    }
+                                }
+                                return false;
+                            })
+                        
+                        )
+                        .Any(b=>b);
+                    
                 }
 
                 var fontReplacedThisTime = false;
@@ -127,20 +160,7 @@ namespace Localyssation
                     orig_fontSize = text.fontSize;
                     orig_lineSpacing = text.lineSpacing;
                 }
-                if (
-                    TryReplaceFont(
-                        Localyssation.VanillaFonts.CENTAUR, 
-                        Localyssation.currentLanguage.info.fontReplacementCentaur
-                        ) 
-                    || TryReplaceFont(
-                        Localyssation.VanillaFonts.TERMINAL_GROTESQUE, 
-                        Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque
-                        )
-                    || TryReplaceFont(
-                        Localyssation.VanillaFonts.LIBRATION_SANS,
-                        Localyssation.currentLanguage.info.fontReplacementLibrationSans
-                        )
-                    )
+                if (TryReplaceFont())
                 {
                     fontReplacedThisTime = true;
                 }
@@ -228,25 +248,55 @@ namespace Localyssation
 
             public void AdjustToLanguage(Language newLanguage)
             {
-                bool TryReplaceFont(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
+                bool TryReplaceFont()
                 {
-                    if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
-                    {
-                        
-                        if (text.font == loadedFont.tmpFont) return true;
-                        if (text.font.name == originalFontName)
+                    return newLanguage.info.fontReplacement.Select(kvPair => {
+                        string originalFontName = kvPair.Key;
+                        BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                        if (
+                            replacementFontLookupInfo != null &&
+                            Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                            fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                         {
-                            text.font = loadedFont.tmpFont;
-                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
-                            fontReplaced = true;
-                            return true;
+                            if (text.font == loadedFont.tmpFont) return true;
+                            if (text.font.name == originalFontName)
+                            {
+                                text.font = loadedFont.tmpFont;
+                                text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                                text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                                fontReplaced = true;
+                                return true;
+                            }
                         }
-                    }
-                    return false;
+                        return false;
+                    })
+                        .Concat(
+                            newLanguage.info.componentSpecifiedFontReplacement.Select(kvPair =>
+                            {
+                                string path = kvPair.Key;
+                                BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
+                                if (Util.GetPath(text.transform) == path)
+                                {
+                                    if (
+                                        replacementFontLookupInfo != null &&
+                                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                                    {
+                                        if (text.font == loadedFont.tmpFont) return true;
+                                        text.font = loadedFont.tmpFont;
+                                        text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                                        text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                                        fontReplaced = true;
+                                        return true;
+
+                                    }
+                                }
+                                return false;
+                            })
+
+                        )
+                        .Any(b => b);
+
                 }
 
                 var fontReplacedThisTime = false;
@@ -256,20 +306,7 @@ namespace Localyssation
                     orig_fontSize = text.fontSize;
                     orig_lineSpacing = text.lineSpacing;
                 }
-                if (
-                    TryReplaceFont(
-                        Localyssation.VanillaFonts.CENTAUR, 
-                        Localyssation.currentLanguage.info.fontReplacementCentaur
-                        ) 
-                    || TryReplaceFont(
-                        Localyssation.VanillaFonts.TERMINAL_GROTESQUE, 
-                        Localyssation.currentLanguage.info.fontReplacementTerminalGrotesque
-                        )
-                    || TryReplaceFont(
-                        Localyssation.VanillaFonts.LIBRATION_SANS,
-                        Localyssation.currentLanguage.info.fontReplacementLibrationSans
-                        )
-                    )
+                if (TryReplaceFont())
                 {
                     fontReplacedThisTime = true;
                 }

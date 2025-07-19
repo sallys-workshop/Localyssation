@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Localyssation.Exporter;
 using Localyssation.Patches.ReplaceText;
+using Localyssation;
 using System;
 using System.Collections;
 using System.Collections.Generic;

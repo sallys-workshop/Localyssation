@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Localyssation;
 using static Localyssation.I18nKeys;
 
 namespace Localyssation
