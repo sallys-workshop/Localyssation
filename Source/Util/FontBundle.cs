@@ -43,8 +43,8 @@ namespace Localyssation
 
         public string fileSystemPath;
         public MetaFontBundleInfo info;
-        public Dictionary<string, LoadedFont> loadedFonts = null;
-        public Dictionary<FontBundleInfo, AssetBundle> bundles = null;
+        public Dictionary<string, LoadedFont> loadedFonts = new Dictionary<string, LoadedFont>();
+        public Dictionary<FontBundleInfo, AssetBundle> bundles = new Dictionary<FontBundleInfo, AssetBundle>();
 
         public static void LoadFontBundles()
         {
@@ -69,60 +69,52 @@ namespace Localyssation
                 return false;
             }
 
-
             // infos valid
-            bundles = info.fontBundles.ToDictionary(info => info,
-                info =>
+            info.fontBundles.Do(info =>
+            {
+                try
                 {
-                    try
+                    string bundlePath = Path.Combine(fileSystemPath, info.bundleFile);
+                    if (!File.Exists(bundlePath))
                     {
-                        string bundlePath = Path.Combine(fileSystemPath, info.bundleFile);
-                        if (!File.Exists(bundlePath))
-                        {
-                            Localyssation.logger.LogWarning($"Cannot find assetBundle `{info.bundleFile}` in folder `{fileSystemPath}`.");
-                            return null;
-                        }
-                        return AssetBundle.LoadFromFile(bundlePath);
+                        Localyssation.logger.LogWarning($"Cannot find assetBundle `{info.bundleFile}` in folder `{fileSystemPath}`.");
+                        return;
                     }
-                    catch (Exception e)
-                    {
-                        Localyssation.logger.LogError(e);
-                        return null;
-                    }
+                    bundles.Add(info, AssetBundle.LoadFromFile(bundlePath));
                 }
-            );
+                catch (Exception e)
+                {
+                    Localyssation.logger.LogError(e);
+                    return;
+                }
+            });
 
-            // Remove errored bundle
-            bundles = bundles.Where(kv => kv.Value != null).ToDictionary(kv => kv.Key, kv => kv.Value);
 
-            IEnumerable<KeyValuePair<string, LoadedFont>> loadedFontBuffer = new Dictionary<string, LoadedFont>();
             bundles.Do(kvPair =>
             {
                 var bundleInfo = kvPair.Key;
                 var bundle = kvPair.Value;
-                loadedFontBuffer = loadedFontBuffer.Concat(bundleInfo.fontInfos.ToDictionary(fontInfo => fontInfo.name,
-                    fontInfo =>
+                bundleInfo.fontInfos.Do(fontInfo =>
+                {
+                    try
                     {
-                        try
+                        loadedFonts.Add(fontInfo.name, new LoadedFont()
                         {
-                            return new LoadedFont()
-                            {
-                                info = fontInfo,
-                                uguiFont = bundle.LoadAsset<Font>(fontInfo.name),
-                                tmpFont = bundle.LoadAsset<TMP_FontAsset>(string.IsNullOrWhiteSpace(fontInfo.tmpVariant) ? fontInfo.name + " SDF" : fontInfo.tmpVariant)
-                            };
-                        }
-                        catch (Exception e)
-                        {
-                            Localyssation.logger.LogError(e);
-                            return null;
-                        }
+                            info = fontInfo,
+                            uguiFont = bundle.LoadAsset<Font>(fontInfo.name),
+                            tmpFont = bundle.LoadAsset<TMP_FontAsset>(
+                                string.IsNullOrWhiteSpace(fontInfo.tmpVariant) ? fontInfo.name + " SDF" : fontInfo.tmpVariant
+                                )
+                        });
                     }
-                ));
+                    catch (Exception e)
+                    {
+                        Localyssation.logger.LogError(e);
+                    }
+                });
 
                 Localyssation.logger.LogInfo($"Loaded font bundle `{bundleInfo.bundleFile}`");
             });
-            loadedFonts = loadedFontBuffer.Where(kv => kv.Value.isValid()).ToDictionary(kv => kv.Key, kv => kv.Value);
 
             return true;
         }
