@@ -43,9 +43,9 @@ namespace Localyssation.Patches.ReplaceText
                 RTUtil.RemapChildTextsByPath(__instance._altLoadoutIcon.transform, new Dictionary<string, string> { { "Text (Legacy)", "II" } }, rawText: true);
         }
 
-        [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Awake))]
+        [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Start))]
         [HarmonyPostfix]
-        public static void ItemMenuCell__Awake__Postfix(ItemMenuCell __instance)
+        public static void ItemMenuCell__Start__Postfix(ItemMenuCell __instance)
         {
             RTUtil.RemapChildTextsByPath(__instance.transform, WeaponSlotReplacer(
                 "_equipmentTab/_dolly_equipCells/_dolly_lowerColumn/GameObject/_equipcell_{0}eapon/_quickWepSlot_numIco_{1}/Text (Legacy)",

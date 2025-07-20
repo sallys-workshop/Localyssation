@@ -202,14 +202,13 @@ namespace Localyssation
 
         public static void LoadFontBundlesFromFileSystem()
         {
-            var filePaths = Directory.GetFiles(Paths.PluginPath, "localyssationFontBundle.json", SearchOption.AllDirectories);
+            string[] filePaths = Directory.GetFiles(Paths.PluginPath, "*.fontbundle", SearchOption.AllDirectories);
+            logger.LogInfo($"Found {filePaths.Length} fontBundles");
             foreach (var filePath in filePaths)
             {
-                var fontBundlePath = Path.GetDirectoryName(filePath);
-
                 var loadedFontBundle = new FontBundle
                 {
-                    fileSystemPath = fontBundlePath
+                    fileSystemPath = filePath
                 };
                 if (loadedFontBundle.LoadFromFileSystem())
                     RegisterFontBundle(loadedFontBundle);
@@ -226,9 +225,9 @@ namespace Localyssation
 
         public static void RegisterFontBundle(FontBundle fontBundle)
         {
-            if (fontBundles.ContainsKey(fontBundle.info.bundleName)) return;
+            //if (fontBundles.ContainsKey(fontBundle.info.bundleName)) return;
 
-            fontBundles[fontBundle.info.bundleName] = fontBundle;
+            //fontBundles[fontBundle.info.bundleName] = fontBundle;
             fontBundlesList.Add(fontBundle);
         }
 

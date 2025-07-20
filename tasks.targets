@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup Label="Output">
 		<ZipOutputFileName>$(AssemblyName)-v$(ZipFileVersion).zip</ZipOutputFileName>
-		<ZipOutputPath>$(MSBuildProjectDirectory)\dist\</ZipOutputPath>
+		<ZipOutputPath>$(MSBuildProjectDirectory)/dist/</ZipOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Release No PDB">
@@ -53,15 +53,15 @@ File.WriteAllText(FilePath, content);
 
 	<Target Name="CopyToTest" AfterTargets="ManageResources">
 		<PropertyGroup>
-			<TargetTestDir>$(ATLYSS_BEPINEX_PLUGINS)\Localyssation</TargetTestDir>
+			<TargetTestDir>$(ATLYSS_BEPINEX_PLUGINS)/Localyssation</TargetTestDir>
 		</PropertyGroup>
 		<ItemGroup>
-			<FilesToCopy Include="$(TargetDir)**\*"/>
+			<FilesToCopy Include="$(TargetDir)**/*" Exclude="$(TargetDir)**/*.pdb"/>
 		</ItemGroup>
 		<MakeDir Directories="$(TargetTestDir)" />
 		<Copy
 			SourceFiles="@(FilesToCopy)"
-			DestinationFiles="@(FilesToCopy->'$(TargetTestDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+			DestinationFiles="@(FilesToCopy->'$(TargetTestDir)/%(RecursiveDir)%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true"
 		/>
 	</Target>

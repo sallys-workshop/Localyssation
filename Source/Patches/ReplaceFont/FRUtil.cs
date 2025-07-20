@@ -18,8 +18,8 @@ namespace Localyssation.Patches.ReplaceFont
                     float orig_fontSize = text.fontSize;
                     float orig_lineSpacing = text.lineSpacing;
                     text.font = loadedFont.tmpFont;
-                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    text.fontSize = (int)(orig_fontSize);
+                    text.lineSpacing = orig_lineSpacing;
 
                 }
             }

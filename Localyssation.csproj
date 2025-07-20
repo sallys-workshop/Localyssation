@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup Label="Project">
         <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
-		<ATLYSS_PROFILE>LocalyssationTest</ATLYSS_PROFILE>
+		<ATLYSS_PROFILE>test2</ATLYSS_PROFILE>
         <ATLYSS_BEPINEX>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\core</ATLYSS_BEPINEX>
         <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
 		
@@ -33,7 +33,7 @@
 		<None Update="extraFontBundle\localyssationFontBundle.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="extraFontBundle\unifont.assetbundle">
+		<None Update="extraFontBundle\unifont.fontbundle">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="icon.png">

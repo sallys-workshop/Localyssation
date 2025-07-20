@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
-#pragma warning restore IDE0130
 {
     public interface ILangAdjustable
     {

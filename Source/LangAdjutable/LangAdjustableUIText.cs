@@ -3,9 +3,9 @@ using System.Linq;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
 using static Localyssation.Language;
+
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
-#pragma warning restore IDE0130
 {
 
     public class LangAdjustableUIText : MonoBehaviour, ILangAdjustable
@@ -53,8 +53,8 @@ namespace Localyssation.LangAdjutable
                 if (text.font.name == originalFontName)
                 {
                     text.font = loadedFont.uguiFont;
-                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    text.fontSize = (int)orig_fontSize;
+                    text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;
                     return true;
                 }
@@ -73,8 +73,8 @@ namespace Localyssation.LangAdjutable
                 {
                     if (text.font == loadedFont.uguiFont) return true;
                     text.font = loadedFont.uguiFont;
-                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    text.fontSize = (int)orig_fontSize;
+                    text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;
                     return true;
                 }

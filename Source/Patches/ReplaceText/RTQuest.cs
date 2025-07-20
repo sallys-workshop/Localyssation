@@ -127,15 +127,15 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        [HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Clear_DisplayQuestData))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> QuestMenuCell_Clear_DisplayQuestData_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-                { "No Quests in Quest Log.", "QUEST_MENU_SUMMARY_NO_QUESTS" },
-                { "Select a Quest.", "QUEST_MENU_HEADER_UNSELECTED" },
-            });
-        }
+        //[HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Clear_DisplayQuestData))]
+        //[HarmonyTranspiler]
+        //public static IEnumerable<CodeInstruction> QuestMenuCell_Clear_DisplayQuestData_Transpiler(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
+        //        { "No Quests in Quest Log.", "QUEST_MENU_SUMMARY_NO_QUESTS" },
+        //        { "Select a Quest.", "QUEST_MENU_HEADER_UNSELECTED" },
+        //    });
+        //}
 
         [HarmonyPatch(typeof(QuestMenuCellSlot), nameof(QuestMenuCellSlot.Update))]
         [HarmonyPostfix]
@@ -170,14 +170,6 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.Update))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> QuestSelectionManager_Handle_Expbar_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-                { "MAX", "EXP_COUNTER_MAX" },
-            });
-        }
 
         [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.Handle_QuestSelectionConditions))]
         [HarmonyTranspiler]
@@ -369,7 +361,6 @@ namespace Localyssation.Patches.ReplaceText
                     var questTriggerRequirementIndex = Array.IndexOf(quest._questObjective._questTriggerRequirements, questTriggerRequirement);
                     return string.Format(
                         Localyssation.GetString(
-                            //"FORMAT_QUEST_PROGRESS",
                             I18nKeys.Quest.FORMAT_PROGRESS,
                             $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}"),
                         $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}",
@@ -433,5 +424,23 @@ namespace Localyssation.Patches.ReplaceText
 
             return matcher.InstructionEnumeration();
         }
+    }
+
+    [HarmonyPatch]
+    public class QuestSelectionManager__Update
+    {
+        private static readonly TargetInnerMethod __TARGET = new TargetInnerMethod()
+        {
+            Type = typeof(QuestSelectionManager),
+            ParentMethodName = nameof(QuestSelectionManager.Update),
+            InnerMethodName = "Handle_Expbar"
+        };
+
+        private static readonly string[] REPLACEMENT = new string[] {
+            I18nKeys.Lore.EXP_COUNTER_MAX,
+        };
+        
+        public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__TARGET);
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => RTUtil.SimpleStringReplaceTranspiler(instructions, REPLACEMENT);
     }
 }

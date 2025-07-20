@@ -6,7 +6,6 @@ using static Localyssation.LangAdjutable.LangAdjustables;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
-#pragma warning restore IDE0130
 {
     internal class LangAdjustableTextMeshPro
         : MonoBehaviour, ILangAdjustable
@@ -53,8 +52,8 @@ namespace Localyssation.LangAdjutable
                 if (Regex.IsMatch(text.font.name, originalFontName + @"\s*SDF\w*"))
                 {
                     text.font = loadedFont.tmpFont;
-                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    text.fontSize = (int)(orig_fontSize);
+                    text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;
                     return true;
                 }
@@ -73,8 +72,8 @@ namespace Localyssation.LangAdjutable
                 {
                     if (text.font == loadedFont.tmpFont) return true;
                     text.font = loadedFont.tmpFont;
-                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    text.fontSize = (int)(orig_fontSize);
+                    text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;
                     return true;
                 }
