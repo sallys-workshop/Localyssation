@@ -4,7 +4,9 @@ using TMPro;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
 
+#pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
+#pragma warning restore IDE0130
 {
     internal class LangAdjustableTextMeshPro
         : MonoBehaviour, ILangAdjustable
@@ -75,7 +77,6 @@ namespace Localyssation.LangAdjutable
                     text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
                     fontReplaced = true;
                     return true;
-
                 }
             }
             return false;
@@ -101,7 +102,6 @@ namespace Localyssation.LangAdjutable
 
                     )
                     .Any(b => b);
-
             }
 
             var fontReplacedThisTime = false;

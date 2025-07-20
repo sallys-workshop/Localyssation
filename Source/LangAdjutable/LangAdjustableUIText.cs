@@ -3,8 +3,9 @@ using System.Linq;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
 using static Localyssation.Language;
-
+#pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
+#pragma warning restore IDE0130
 {
 
     public class LangAdjustableUIText : MonoBehaviour, ILangAdjustable

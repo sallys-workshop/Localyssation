@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
-
+#pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
+#pragma warning restore IDE0130
 {
     public class LangAdjustableUIDropdown : MonoBehaviour, ILangAdjustable
     {
