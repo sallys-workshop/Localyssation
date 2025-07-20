@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Localyssation;
 using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText

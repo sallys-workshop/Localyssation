@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Localyssation;
-using static Localyssation.I18nKeys;
 
 namespace Localyssation
 {
@@ -13,8 +11,8 @@ namespace Localyssation
         internal static class Enums
         {
             internal static void init() { }
-            private static ImmutableDictionary<string, string> CreateEnumKeys<TEnum>(Func<TEnum, string> keyOverride = null, Func<TEnum, string> valueOverride = null) 
-                where TEnum: Enum
+            private static ImmutableDictionary<string, string> CreateEnumKeys<TEnum>(Func<TEnum, string> keyOverride = null, Func<TEnum, string> valueOverride = null)
+                where TEnum : Enum
             {
                 string defaultGetString(TEnum item)
                 {
@@ -31,12 +29,12 @@ namespace Localyssation
                 {
                     keyOverride = defaultGetString;
                 }
-                if (valueOverride == null) 
+                if (valueOverride == null)
                 {
                     valueOverride = item => item.ToString();
                 }
                 return Enum.GetValues(typeof(TEnum)).OfType<TEnum>().ToImmutableDictionary(
-                    item => create(keyOverride(item), valueOverride(item)),
+                    item => Create(keyOverride(item), valueOverride(item)),
                     valueOverride
                 );
             }
@@ -67,11 +65,11 @@ namespace Localyssation
             };
             public static readonly ImmutableDictionary<string, string> SHOP_TAB
                 = __SHOP_TABS.ToImmutableDictionary(
-                    kv => create(KeyUtil.GetForAsset(kv.Key)),
+                    kv => Create(KeyUtil.GetForAsset(kv.Key)),
                     kv => kv.Value
                 );
 
         }
-        
+
     }
 }

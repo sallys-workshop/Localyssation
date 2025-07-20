@@ -1,10 +1,10 @@
 ﻿
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using static Localyssation.Language;
-using static Localyssation.LangAdjutable.LangAdjustables;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using static Localyssation.LangAdjutable.LangAdjustables;
+using static Localyssation.Language;
 
 namespace Localyssation.LangAdjutable
 {

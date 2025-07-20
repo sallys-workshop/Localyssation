@@ -1,6 +1,4 @@
-﻿
-using Localyssation.Patches.ReplaceText;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Localyssation
 {
@@ -8,9 +6,9 @@ namespace Localyssation
     {
         internal static class Enchanter
         {
-            private static string create(string key, string value="")
+            private static string create(string key, string value = "")
             {
-                return I18nKeys.create($"ENCHANTER_GUI_{key.ToUpper()}", value);
+                return I18nKeys.Create($"ENCHANTER_GUI_{key.ToUpper()}", value);
             }
 
             public static readonly string HEADER
@@ -27,7 +25,7 @@ namespace Localyssation
             {
                 return create(
                     TransmuteButtonKey(type, free),
-                    (type == DamageType.Mind && free ? "Apply Flux Stone (Free)" : $"Transmute {type.ToString()} " + (free ? "(Free)": "(x{0})"))
+                    (type == DamageType.Mind && free ? "Apply Flux Stone (Free)" : $"Transmute {type.ToString()} " + (free ? "(Free)" : "(x{0})"))
                 );
             }
             public static readonly string[] BUTTON_TRANSMUTE = new[] { DamageType.Dexterity, DamageType.Strength, DamageType.Mind }

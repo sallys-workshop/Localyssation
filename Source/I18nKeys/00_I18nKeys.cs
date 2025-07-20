@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Localyssation
 {
@@ -15,23 +12,23 @@ namespace Localyssation
         public static void Init()
         {
             CharacterCreation.init();
-            CharacterSelect.init();
+            CharacterSelect.Init();
             Enums.init();
             Equipment.init();
-            Feedback.init();
-            Item.init();
-            Lore.init();
+            Feedback.Init();
+            Item.Init();
+            Lore.Init();
             MainMenu.init();
             Quest.init();
             ScriptableStatusCondition.init();
             Settings.init();
             SkillMenu.init();
-            TabMenu.init();
+            TabMenu.Init();
         }
 
         internal static readonly Dictionary<string, string> TR_KEYS = new Dictionary<string, string>();
 
-        private static string create(string key, string defaultString = "")
+        private static string Create(string key, string defaultString = "")
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException("key is empty"); }
             if (string.IsNullOrEmpty(defaultString))
@@ -46,7 +43,7 @@ namespace Localyssation
             return key;
         }
 
-        public static string getDefaulted(string key)
+        public static string GetDefaulted(string key)
         {
             bool success = TR_KEYS.TryGetValue(key, out string value);
             if (success)
@@ -57,10 +54,10 @@ namespace Localyssation
         }
 
 
-        
 
 
-      
+
+
 
     }
 }

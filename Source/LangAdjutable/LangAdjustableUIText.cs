@@ -1,8 +1,8 @@
 ﻿
 using System.Linq;
 using UnityEngine;
-using static Localyssation.Language;
 using static Localyssation.LangAdjutable.LangAdjustables;
+using static Localyssation.Language;
 
 namespace Localyssation.LangAdjutable
 {
@@ -43,7 +43,7 @@ namespace Localyssation.LangAdjutable
 
         private bool ReplaceFontIfMatch(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
         {
-            if(
+            if (
                 replacementFontLookupInfo != null &&
                 Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
                 fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))

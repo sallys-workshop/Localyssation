@@ -1,15 +1,10 @@
 ﻿using BepInEx;
 using HarmonyLib;
-using Localyssation.Exporter;
+using Localyssation.LangAdjutable;
 using Localyssation.Patches.ReplaceFont;
 using Localyssation.Patches.ReplaceText;
-using Localyssation.LangAdjutable;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
@@ -28,7 +23,7 @@ namespace Localyssation
 
         public static Localyssation instance;
         public static Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
-         
+
 
         internal static System.Reflection.Assembly assembly;
         internal static string dllPath;
@@ -79,7 +74,7 @@ namespace Localyssation
         //    }
         //}
 
-        
+
 
 #pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Awake()
@@ -121,7 +116,7 @@ namespace Localyssation
 
             });
 
-            
+
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
             FRUtil.PatchAll(harmony);
@@ -424,8 +419,8 @@ namespace Localyssation
         }
     }
 
-   
-    
+
+
     public static class Util
     {
         public static string GetChildTransformPath(Transform transform, int depth = 0)

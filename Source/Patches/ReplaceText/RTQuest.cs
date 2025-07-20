@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Localyssation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -159,10 +158,10 @@ namespace Localyssation.Patches.ReplaceText
                     case QuestSubType.CLASS:
                         __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_CLASS", null, fontSize)}</color>";
                         break;
-                    // No more QuestSubType.MASTERY
-                    //case QuestSubType.MASTERY:
-                    //    __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_MASTERY", null, fontSize)}</color>";
-                    //    break;
+                        // No more QuestSubType.MASTERY
+                        //case QuestSubType.MASTERY:
+                        //    __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_MASTERY", null, fontSize)}</color>";
+                        //    break;
                 }
             }
             else
@@ -426,7 +425,7 @@ namespace Localyssation.Patches.ReplaceText
                         ),
                         Localyssation.GetString(KeyUtil.GetForAsset(questCreepRequirement._questCreep) + "_NAME"),
                         Math.Min(
-                            __instance._questProgressData[questIndex]._creepKillProgressValues[questCreepRequirementIndex] + 1, 
+                            __instance._questProgressData[questIndex]._creepKillProgressValues[questCreepRequirementIndex] + 1,
                             questCreepRequirement._creepsKilled
                         ),
                         questCreepRequirement._creepsKilled);

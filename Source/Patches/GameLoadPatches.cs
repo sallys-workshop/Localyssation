@@ -1,11 +1,8 @@
 using HarmonyLib;
 using Localyssation.Exporter;
 using Localyssation.Patches.ReplaceText;
-using Localyssation;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -84,7 +81,7 @@ namespace Localyssation.Patches
                 Localyssation.defaultLanguage.RegisterKey($"{key}_NAME", combatElement._elementName);
             }
             Localyssation.defaultLanguage.RegisterKey($"PLAYER_CLASS_EMPTY_NAME", GameManager._current._statLogics._emptyClassName);
-            
+
             // player classes
             foreach (var playerClass in __instance._cachedScriptablePlayerClasses.Values)
             {
@@ -96,7 +93,7 @@ namespace Localyssation.Patches
                     Localyssation.defaultLanguage.RegisterKey($"{KeyUtil.GetForAsset(playerClassTier)}_NAME", playerClassTier._classTierName);
                 }
             }
-            
+
             // skills
             foreach (var skill in __instance._cachedScriptableSkills.Values)
             {
@@ -128,7 +125,7 @@ namespace Localyssation.Patches
             // weapon type
             foreach (var weaponType in Resources.LoadAll<ScriptableWeaponType>(""))
             {
-                foreach(var animationSlot in weaponType._weaponAnimSlots)
+                foreach (var animationSlot in weaponType._weaponAnimSlots)
                 {
                     string key = KeyUtil.GetForAsset(animationSlot);
                     Localyssation.defaultLanguage.RegisterKey(key, animationSlot._weaponNameTag);

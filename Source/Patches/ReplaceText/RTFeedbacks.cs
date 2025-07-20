@@ -1,8 +1,6 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using HarmonyLib;
-using Mono.Cecil.Cil;
 
 namespace Localyssation.Patches.ReplaceText
 {

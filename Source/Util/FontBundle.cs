@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -35,7 +34,7 @@ namespace Localyssation
             public TMP_FontAsset tmpFont;
             public FontBundleInfo.FontInfo info;
 
-            public bool isValid()
+            public bool IsValid()
             {
                 return uguiFont != null && tmpFont != null && info != null;
             }
@@ -91,7 +90,7 @@ namespace Localyssation
             });
 
 
-            
+
             bundles.Do(kvPair =>
             {
                 var bundleInfo = kvPair.Key;

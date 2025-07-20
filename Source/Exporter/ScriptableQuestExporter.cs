@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Localyssation.Exporter
 {
     internal class ScriptableQuestExporter : Exporter<ScriptableQuest>
     {
         public readonly string _questGiverName;
-        public ScriptableQuestExporter(string questGiverName) : base() 
+        public ScriptableQuestExporter(string questGiverName) : base()
         {
             _questGiverName = questGiverName;
         }
@@ -29,7 +25,7 @@ namespace Localyssation.Exporter
             return new StringBuilder()
                 .AppendLine($"# {_questGiverName}")
                 .AppendLine("|Quest Name|Quest Type|Quest Subtype|Quest Level|")
-                .Append    ("|----------|----------|-------------|-----------|")
+                .Append("|----------|----------|-------------|-----------|")
                 .ToString();
         }
 

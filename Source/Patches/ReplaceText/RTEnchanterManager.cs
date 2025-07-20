@@ -1,10 +1,6 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HarmonyLib;
-using Localyssation;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -18,7 +14,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 return $"Canvas_DialogSystem/_dolly_enchanterBox/_backdrop_enchantItem/_button_{name}/_button_{name}Text";
             }
-            RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>() 
+            RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
                 { "Canvas_DialogSystem/_dolly_enchanterBox/_backdrop_header/_text_header", I18nKeys.Enchanter.HEADER },
                 { controllerButton("clearEnchant"), I18nKeys.Enchanter.BUTTON_CLEAR_SELECTION }
@@ -30,7 +26,7 @@ namespace Localyssation.Patches.ReplaceText
         public static IEnumerable<CodeInstruction> EnchanterManager_Handle_EnchanterBehavior_Transpiler
             (IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new string[] { 
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new string[] {
                     I18nKeys.Enchanter.BUTTON_ENCHANT_ENCHANT,
                     I18nKeys.Enchanter.BUTTON_ENCHANT_REROLL,
                     I18nKeys.Enchanter.BUTTON_ENCHANT_UNABLE,
@@ -38,7 +34,7 @@ namespace Localyssation.Patches.ReplaceText
                     I18nKeys.Enchanter.STATUS_UNABLE_TO_ENCHANT,
                     I18nKeys.Enchanter.BUTTON_ENCHANT_INSERT_ITEM
                 }
-                .Concat(I18nKeys.Enchanter.BUTTON_TRANSMUTE), allowRepeat:true
+                .Concat(I18nKeys.Enchanter.BUTTON_TRANSMUTE), allowRepeat: true
             );
         }
 
@@ -71,14 +67,14 @@ namespace Localyssation.Patches.ReplaceText
                             .Where(item => item._itemName == _scriptEquipment._statModifierCost._scriptItem._itemName)
                             .Aggregate(0, (sum, itemdata) => sum + itemdata._quantity);
 
-                        __instance._tradeItemPriceText.text = $"{_foundTradeQuantity}/{_scriptEquipment._statModifierCost._scriptItemQuantity} " 
+                        __instance._tradeItemPriceText.text = $"{_foundTradeQuantity}/{_scriptEquipment._statModifierCost._scriptItemQuantity} "
                             + Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquipment._statModifierCost._scriptItem) + "_NAME");
                     }
                 }
                 if (__instance._setItemData._modifierID > 0)
                 {
                     ScriptableStatModifier scriptableStatModifier = GameManager._current.Locate_StatModifier(__instance._setItemData._modifierID);
-                    __instance._currentEnchantmentText.text = Localyssation.GetString(I18nKeys.Enchanter.STATUS_CURRENT_ENCHANTMENT) 
+                    __instance._currentEnchantmentText.text = Localyssation.GetString(I18nKeys.Enchanter.STATUS_CURRENT_ENCHANTMENT)
                         + Localyssation.GetString(KeyUtil.GetForAsset(scriptableStatModifier) + "_TAG");
                 }
             }

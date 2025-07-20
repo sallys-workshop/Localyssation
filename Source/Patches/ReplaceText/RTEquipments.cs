@@ -1,13 +1,8 @@
 ﻿using HarmonyLib;
-using Localyssation;
-using Steamworks;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
@@ -21,13 +16,13 @@ namespace Localyssation.Patches.ReplaceText
         {
             const string TAG_NAME_REGEX = @"_statCell_(\w*)Tag";
             if (__instance is EquipToolTip equipToolTip)
-            foreach (var tag in equipToolTip.transform.GetComponentsInChildren<Text>(true).Where(text => Regex.IsMatch(text.transform.name, TAG_NAME_REGEX)))
-            {
-                string statName = Regex.Match(tag.transform.name, TAG_NAME_REGEX).Groups[1].Value;
-                string key = I18nKeys.Equipment.statDisplayKey(statName);
-                //Localyssation.logger.LogDebug($"public static readonly string {key.Replace("ITEM_", "")}\n\t= create(statDisplayKey(\"{statName}\"), \"{tag.text}\");");
-                tag.text = Localyssation.GetString(key);
-            }
+                foreach (var tag in equipToolTip.transform.GetComponentsInChildren<Text>(true).Where(text => Regex.IsMatch(text.transform.name, TAG_NAME_REGEX)))
+                {
+                    string statName = Regex.Match(tag.transform.name, TAG_NAME_REGEX).Groups[1].Value;
+                    string key = I18nKeys.Equipment.statDisplayKey(statName);
+                    //Localyssation.logger.LogDebug($"public static readonly string {key.Replace("ITEM_", "")}\n\t= create(statDisplayKey(\"{statName}\"), \"{tag.text}\");");
+                    tag.text = Localyssation.GetString(key);
+                }
         }
 
         // equipment
@@ -49,11 +44,11 @@ namespace Localyssation.Patches.ReplaceText
                 {
                     shownRarity += 1;
                     ScriptableStatModifier modifier = GameManager._current.Locate_StatModifier(_itemData._modifierID);
-                    __instance._toolTipName.text = __instance._toolTipName.text.Replace( 
+                    __instance._toolTipName.text = __instance._toolTipName.text.Replace(
                         modifier._modifierTag, Localyssation.GetString(KeyUtil.GetForAsset(modifier) + "_TAG")
                     );
                 }
-                
+
 
                 __instance._toolTipSubName.text = string.Format(
                     Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_RARITY, __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
@@ -84,7 +79,7 @@ namespace Localyssation.Patches.ReplaceText
                     }
                     DamageType combatType = weapon.weaponType._combatType;
                     __instance._weaponTypeText.text = string.Format(
-                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_DAMAGE_TYPE), 
+                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_DAMAGE_TYPE),
                         Localyssation.GetString(KeyUtil.GetForAsset(combatType))
                     );
 
@@ -104,7 +99,7 @@ namespace Localyssation.Patches.ReplaceText
                         Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_TRANSMUTE_TYPE),
                         Localyssation.GetString(KeyUtil.GetForAsset(_overrideType))
                     );
-                        
+
 
                     //__instance._equipToolTipType.text = $"{weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]._weaponNameTag} (Weapon)";
                     __instance._equipToolTipType.text = string.Format(
@@ -112,7 +107,7 @@ namespace Localyssation.Patches.ReplaceText
                         Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]))
                     );
 
-                    
+
 
                     if (weapon._combatElement)
                     {
@@ -168,7 +163,7 @@ namespace Localyssation.Patches.ReplaceText
             }
             __instance._compareDisplayText.text = __instance._compareDisplayText.text.Replace("Compare", Localyssation.GetString(I18nKeys.Equipment.COMPARE));
         }
-        
+
         [HarmonyPatch(typeof(EquipToolTip), nameof(EquipToolTip.Apply_EquipStats))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> EquipToolTip_Apply_EquipStats_Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -229,7 +224,7 @@ namespace Localyssation.Patches.ReplaceText
         };
         public static readonly string[] REPLACEMENT = new[] {
             I18nKeys.Equipment.TOOLTIP_TYPE_SHIELD
-        }; 
+        };
 
         public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__CONDITION);
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => RTUtil.SimpleStringReplaceTranspiler(instructions, REPLACEMENT);

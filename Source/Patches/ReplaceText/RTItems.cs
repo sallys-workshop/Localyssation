@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Localyssation;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -12,7 +11,7 @@ namespace Localyssation.Patches.ReplaceText
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY,
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY,
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN
-        );  
+        );
         // Note: use dictionary if possible, depends on kissoft's code
 
         private static string generateConsumableDescString(ScriptableStatusConsumable consumable)
@@ -31,7 +30,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 if (effects[i] > 0)
                 {
-                    consumableDescItems.Add( string.Format(
+                    consumableDescItems.Add(string.Format(
                         Localyssation.GetString(consumableEffectDescKeys[i]),
                         effects[i]
                     ));
@@ -59,7 +58,7 @@ namespace Localyssation.Patches.ReplaceText
                             Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_TOOLTIP_VENDOR_VALUE_COUNTER_MULTIPLE, __instance._vendorValueCounter.text, __instance._vendorValueCounter.fontSize),
                             __instance._vendorValue,
                             __instance._vendorValue * __instance._setItemQuantity);
-                    
+
                 }
 
                 //if (__instance._isGambleItem) {
@@ -80,10 +79,10 @@ namespace Localyssation.Patches.ReplaceText
                 __instance._toolTipSubName.text = string.Format(
                     Localyssation.GetString(I18nKeys.Item.FORMAT_ITEM_RARITY, __instance._toolTipSubName.text, __instance._toolTipSubName.fontSize),
                     Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptItem._itemRarity),
-                    __instance._scriptItem._itemRarity.ToString(), 
+                    __instance._scriptItem._itemRarity.ToString(),
                     __instance._toolTipSubName.fontSize)
                     );
-                
+
                 if (__instance._scriptItem._itemType != ItemType.GEAR)
                     __instance._itemToolTipType.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._scriptItem._itemType));
             }
@@ -119,7 +118,7 @@ namespace Localyssation.Patches.ReplaceText
             void Apply_CurrencyVisual()
             {
                 int currencyDropAmount = __instance._itemObject._currencyDropAmount;
-                __instance._itemNametagTextMesh.text = string.Format("{0:n0} ", currencyDropAmount) + 
+                __instance._itemNametagTextMesh.text = string.Format("{0:n0} ", currencyDropAmount) +
                     Localyssation.GetString(currencyDropAmount > 1 ? I18nKeys.Lore.CROWN_PLURAL : I18nKeys.Lore.CROWN);
             }
 

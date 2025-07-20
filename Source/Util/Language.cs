@@ -17,7 +17,7 @@ namespace Localyssation
             //public BundledFontLookupInfo fontReplacementTerminalGrotesque = new BundledFontLookupInfo();
             //public BundledFontLookupInfo fontReplacementLibrationSans = new BundledFontLookupInfo();
             public BundledFontLookupInfo chatFont = new BundledFontLookupInfo();
-            public Dictionary<string, BundledFontLookupInfo> fontReplacement 
+            public Dictionary<string, BundledFontLookupInfo> fontReplacement
                 = Enum.GetValues(typeof(VanillaFonts)).Cast<VanillaFonts>()
                 .ToDictionary(
                     vanillaFont => vanillaFont.GetDescription(),

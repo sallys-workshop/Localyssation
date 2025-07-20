@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Localyssation;
 using Mirror;
 using System.Collections.Generic;
 
@@ -74,7 +73,7 @@ namespace Localyssation.Patches.ReplaceText
                 I18nKeys.Lore.INTERACT_TELEPORT,
                 I18nKeys.Lore.INTERACT_OPEN,
                 I18nKeys.Lore.INTERACT_PICK_UP
-            }, supressNotfoundWarnings:true);
+            }, supressNotfoundWarnings: true);
         }
 
     }

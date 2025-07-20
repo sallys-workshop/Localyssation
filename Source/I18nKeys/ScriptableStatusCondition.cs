@@ -7,9 +7,9 @@ namespace Localyssation
         {
             internal static void init() { }
             public static readonly string DURATION_FORMAT
-                = create("SCRIPTABLE_STATUS_CONDITION_DURATION_FORMAT", "<color=yellow>Lasts for {0} sec</color>.");
+                = Create("SCRIPTABLE_STATUS_CONDITION_DURATION_FORMAT", "<color=yellow>Lasts for {0} sec</color>.");
             public static readonly string RATE_FORMAT
-                = create("SCRIPTABLE_STATUS_CONDITION_RATE_FORMAT", "<color=yellow>every {0} sec</color>.");
+                = Create("SCRIPTABLE_STATUS_CONDITION_RATE_FORMAT", "<color=yellow>every {0} sec</color>.");
         }
     }
 }

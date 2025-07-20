@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HarmonyLib;
-using Localyssation;
+﻿using HarmonyLib;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -45,6 +39,6 @@ namespace Localyssation.Patches.ReplaceText
                     __instance._targetNameField.text = Localyssation.GetString(KeyUtil.GetForAsset(creep._scriptCreep) + "_NAME");
                 }
             }
-        } 
+        }
     }
 }

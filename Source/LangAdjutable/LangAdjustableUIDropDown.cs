@@ -1,8 +1,6 @@
-﻿
-using static Localyssation.Language;
-using static Localyssation.LangAdjutable.LangAdjustables;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using static Localyssation.LangAdjutable.LangAdjustables;
 
 namespace Localyssation.LangAdjutable
 {

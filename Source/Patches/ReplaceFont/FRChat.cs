@@ -1,11 +1,10 @@
 ﻿using HarmonyLib;
-using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceFont
 {
     internal static class FRChat
     {
-        
+
 
 
         [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.UserCode_Rpc_RecieveChatMessage__String__Boolean__ChatChannel))]

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation.LangAdjutable;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -6,8 +7,6 @@ using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
-using Localyssation.LangAdjutable;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -22,18 +21,18 @@ namespace Localyssation.Patches.ReplaceText
         /// <param name="stringReplacements">Key-value pairs of in-game strings to replace and language keys to replace with.</param>
         /// <returns>The generated CodeMatcher.</returns>
         internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(
-            IEnumerable<CodeInstruction> instructions, 
-            IDictionary<string, string> stringReplacements, 
-            bool allowRepeat=false, bool supressNotfoundWarnings = false
+            IEnumerable<CodeInstruction> instructions,
+            IDictionary<string, string> stringReplacements,
+            bool allowRepeat = false, bool supressNotfoundWarnings = false
         )
         {
             var replacedStrings = new List<string>();
-            
+
             var result = new CodeMatcher(instructions).MatchForward(false,
                 new CodeMatch(
-                    (instr) => 
-                        instr.opcode == OpCodes.Ldstr 
-                        && stringReplacements.ContainsKey((string)instr.operand) 
+                    (instr) =>
+                        instr.opcode == OpCodes.Ldstr
+                        && stringReplacements.ContainsKey((string)instr.operand)
                         && (allowRepeat || !replacedStrings.Contains((string)instr.operand))
                 ))
                 .Repeat(matcher =>
@@ -45,7 +44,7 @@ namespace Localyssation.Patches.ReplaceText
                         return Localyssation.GetString(stringReplacements[key], key);
                     }));
                     replacedStrings.Add(key);
-                    
+
                 }).InstructionEnumeration();
             var notReplaced = stringReplacements.Keys.Cast<string>().Except(replacedStrings).ToList();
             if (notReplaced.Count > 0 && !supressNotfoundWarnings)
@@ -54,16 +53,16 @@ namespace Localyssation.Patches.ReplaceText
         }
 
         internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(
-            IEnumerable<CodeInstruction> instructions, 
-            IEnumerable<string> keyReplacement, 
+            IEnumerable<CodeInstruction> instructions,
+            IEnumerable<string> keyReplacement,
             bool allowRepeat = false, bool supressNotfoundWarnings = false
         )
         {
             Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
-            
+
             foreach (var key in keyReplacement)
             {
-                stringReplacements.Add(I18nKeys.getDefaulted(key), key);
+                stringReplacements.Add(I18nKeys.GetDefaulted(key), key);
             }
             return SimpleStringReplaceTranspiler(instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
         }
@@ -235,7 +234,7 @@ namespace Localyssation.Patches.ReplaceText
         }
 
         public IEnumerable<CodeInstruction> Unwrap()
-        { 
+        {
             return __instructions;
         }
 

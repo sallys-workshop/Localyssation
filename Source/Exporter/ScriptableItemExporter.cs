@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Localyssation;
-
-namespace Localyssation.Exporter
+﻿namespace Localyssation.Exporter
 {
     internal class ScriptableItemExporter : Exporter<ScriptableItem>
     {

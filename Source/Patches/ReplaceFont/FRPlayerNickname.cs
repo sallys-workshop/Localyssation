@@ -1,11 +1,10 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace Localyssation.Patches.ReplaceFont
 {
     internal static class FRPlayerNickname
     {
-        
+
 
         [HarmonyPatch(typeof(Player), nameof(Player.Handle_ClientParameters))]
         [HarmonyPostfix]

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Localyssation.Exporter
 {
-    internal abstract class Exporter<T> : MonoBehaviour 
+    internal abstract class Exporter<T> : MonoBehaviour
         where T : ScriptableObject
     {
         public abstract string Name();
@@ -41,7 +41,7 @@ namespace Localyssation.Exporter
                     RenderTextureFormat.Default,
                     RenderTextureReadWrite.Linear
                 );
-                Graphics.Blit(sp.texture, tmp );
+                Graphics.Blit(sp.texture, tmp);
                 // 备份当前设置的RenderTexture
                 RenderTexture previous = RenderTexture.active;
 

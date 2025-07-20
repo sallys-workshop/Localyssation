@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
-using Localyssation;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Reflection;
 using UnityEngine.UI;
 
@@ -18,7 +15,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 string tag = __instance._menuCells[__instance._currentCellSelection - 1]._menuCell_tag;
                 string key = $"TAB_MENU_CELL_{KeyUtil.Normalize(tag)}_HEADER";
-                __instance._button_previousCell.GetComponentInChildren<Text>().text = "<< " 
+                __instance._button_previousCell.GetComponentInChildren<Text>().text = "<< "
                     + Localyssation.GetString(key, I18nKeys.TR_KEYS[key]);
             }
 
@@ -44,8 +41,8 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void ItemMenuCell_Init_ItemPromptWindow(ItemMenuCell __instance, ItemListDataEntry _listEntry)
         {
-            
-            
+
+
             foreach (var kvPair in I18nKeys.TabMenu.CELL_ITEMS_PROMPT_BUTTONS)
             {
                 string key = $"_{kvPair.Key}Button";

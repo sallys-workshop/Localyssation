@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using Localyssation;
-using System;
 using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceText
@@ -19,7 +17,7 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        
+
         [HarmonyPatch(typeof(ShopkeepManager), nameof(ShopkeepManager.Init_ShopTooltip))]
         [HarmonyPrefix]
         public static bool ShopkeepManager_Init_ShopTooltip_Prefix(ShopkeepManager __instance, int _tabValue)

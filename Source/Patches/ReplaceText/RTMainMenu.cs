@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Localyssation;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using UnityEngine.EventSystems;
@@ -69,7 +68,7 @@ namespace Localyssation.Patches.ReplaceText
                             { "_button_joinServer", I18nKeys.MainMenu.BUTTON_JOIN_SERVER },
                             { "_button_hostServer", I18nKeys.MainMenu.BUTTON_HOST_SERVER },
                             { "_button_return", I18nKeys.MainMenu.BUTTON_RETURN }
-                        
+
                         });
                     }
                 }

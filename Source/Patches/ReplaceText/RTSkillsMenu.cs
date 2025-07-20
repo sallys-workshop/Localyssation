@@ -1,11 +1,6 @@
 ﻿using HarmonyLib;
-using Localyssation;
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -309,9 +304,9 @@ namespace Localyssation.Patches.ReplaceText
                     {
                         string text = scriptableCondition.Generate_ConditionDescriptor(_pStats._statStruct, bonusPower, bonusDuration);
                         string text2 = $"\n\n<color=cyan>{Localyssation.GetString(KeyUtil.GetForAsset(scriptableCondition) + "_NAME")} - ({Localyssation.GetString(KeyUtil.GetForAsset(scriptableCondition._conditionGroup) + "_NAME")})";
-                        text2 += (!(skillObjectCondition._chance < 1f)) ? 
+                        text2 += (!(skillObjectCondition._chance < 1f)) ?
                             ""
-                            :  string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CONDITION_CHANCE), skillObjectCondition._chance * 100f);
+                            : string.Format(Localyssation.GetString(I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CONDITION_CHANCE), skillObjectCondition._chance * 100f);
                         text2 += "</color>\n" + text;
                         skillDescription += text2;
                     }

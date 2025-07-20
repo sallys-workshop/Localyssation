@@ -1,10 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HarmonyLib;
-using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -25,8 +20,8 @@ namespace Localyssation.Patches.ReplaceText
         public static void InGameUI__Awake__Postfix(InGameUI __instance)
         {
             //QuickSwapWeaponGUI
-            
-            RTUtil.RemapChildTextsByPath(__instance.transform, 
+
+            RTUtil.RemapChildTextsByPath(__instance.transform,
                 WeaponSlotReplacer("Canvas_InGameUI/dolly_bottomBar/_cell_weaponSwapper/{0}/{1}/Text (Legacy)",
                     "_altWeaponQuickSlot",
                     "_weaponQuickSlot",
@@ -36,16 +31,16 @@ namespace Localyssation.Patches.ReplaceText
             , supressNotfoundWarnings: true
             , rawText: true
             );
-            
+
         }
         [HarmonyPatch(typeof(SkillListDataEntry), nameof(SkillListDataEntry.Start))]
         [HarmonyPostfix]
         public static void SkillListDataEntry__Start__Postfix(SkillListDataEntry __instance)
         {
             if (__instance._primaryLoadoutIcon)
-                RTUtil.RemapChildTextsByPath(__instance._primaryLoadoutIcon.transform, new Dictionary<string, string> { { "Text (Legacy)" , "I"} }, rawText:true);
+                RTUtil.RemapChildTextsByPath(__instance._primaryLoadoutIcon.transform, new Dictionary<string, string> { { "Text (Legacy)", "I" } }, rawText: true);
             if (__instance._altLoadoutIcon)
-                RTUtil.RemapChildTextsByPath(__instance._altLoadoutIcon.transform, new Dictionary<string, string> { { "Text (Legacy)", "II" } }, rawText:true);
+                RTUtil.RemapChildTextsByPath(__instance._altLoadoutIcon.transform, new Dictionary<string, string> { { "Text (Legacy)", "II" } }, rawText: true);
         }
 
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Awake))]

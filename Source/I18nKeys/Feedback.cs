@@ -5,18 +5,18 @@ namespace Localyssation
     {
         internal static class Feedback
         {
-            internal static void init() { }
-            private static string create(string key, string defaultString)
+            internal static void Init() { }
+            private static string Create(string key, string defaultString)
             {
                 if (!key.StartsWith("FEEDBACK_"))
                 {
                     key = "FEEDBACK_" + key;
                 }
-                I18nKeys.create(key, defaultString);
+                I18nKeys.Create(key, defaultString);
                 return key;
             }
             public static readonly string DROP_ITEM_FORMAT
-                = create("DROP_ITEM_FORMAT", "Dropped {0}. (-{1})");
+                = Create("DROP_ITEM_FORMAT", "Dropped {0}. (-{1})");
         }
     }
 }

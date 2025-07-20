@@ -9,82 +9,82 @@ namespace Localyssation
             {
                 internal static void init() { }
                 public static readonly string HEADER_GAME_EFFECT_SETTINGS
-                    = create("SETTINGS_VIDEO_HEADER_GAME_EFFECT_SETTINGS", "Display Sensitive Settings");
+                    = Create("SETTINGS_VIDEO_HEADER_GAME_EFFECT_SETTINGS", "Display Sensitive Settings");
                 public static readonly string CELL_PROPORTIONS_TOGGLE
-                    = create("SETTINGS_VIDEO_CELL_PROPORTIONS_TOGGLE", "Limit Player Character Proportions");
+                    = Create("SETTINGS_VIDEO_CELL_PROPORTIONS_TOGGLE", "Limit Player Character Proportions");
                 public static readonly string CELL_JIGGLE_BONES_TOGGLE
-                    = create("SETTINGS_VIDEO_CELL_JIGGLE_BONES_TOGGLE", "Disable Suggestive Jiggle Bones");
+                    = Create("SETTINGS_VIDEO_CELL_JIGGLE_BONES_TOGGLE", "Disable Suggestive Jiggle Bones");
                 public static readonly string CELL_CLEAR_UNDERCLOTHES_TOGGLE
-                    = create("SETTINGS_VIDEO_CELL_CLEAR_UNDERCLOTHES_TOGGLE", "Enable Clear Clothing");
+                    = Create("SETTINGS_VIDEO_CELL_CLEAR_UNDERCLOTHES_TOGGLE", "Enable Clear Clothing");
 
                 public static readonly string HEADER_VIDEO_SETTINGS
-                    = create("SETTINGS_VIDEO_HEADER_VIDEO_SETTINGS", "Video Settings");
+                    = Create("SETTINGS_VIDEO_HEADER_VIDEO_SETTINGS", "Video Settings");
                 public static readonly string CELL_FULLSCREEN_TOGGLE
-                    = create("SETTINGS_VIDEO_CELL_FULLSCREEN_TOGGLE", "Fullscreen Mode");
+                    = Create("SETTINGS_VIDEO_CELL_FULLSCREEN_TOGGLE", "Fullscreen Mode");
                 public static readonly string CELL_VERTICAL_SYNC
-                    = create("SETTINGS_VIDEO_CELL_VERTICAL_SYNC", "Vertical Sync / Lock 60 FPS");
+                    = Create("SETTINGS_VIDEO_CELL_VERTICAL_SYNC", "Vertical Sync / Lock 60 FPS");
                 public static readonly string CELL_ANISOTROPIC_FILTERING
-                    = create("SETTINGS_VIDEO_CELL_ANISOTROPIC_FILTERING", "Anisotropic Filtering");
+                    = Create("SETTINGS_VIDEO_CELL_ANISOTROPIC_FILTERING", "Anisotropic Filtering");
                 public static readonly string CELL_SCREEN_RESOLUTION
-                    = create("SETTINGS_VIDEO_CELL_SCREEN_RESOLUTION", "Screen Resolution");
+                    = Create("SETTINGS_VIDEO_CELL_SCREEN_RESOLUTION", "Screen Resolution");
                 public static readonly string CELL_ANTI_ALIASING
-                    = create("SETTINGS_VIDEO_CELL_ANTI_ALIASING", "Anti Aliasing");
+                    = Create("SETTINGS_VIDEO_CELL_ANTI_ALIASING", "Anti Aliasing");
                 public static readonly string CELL_ANTI_ALIASING_OPTION_1
-                    = create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_1", "Disabled");
+                    = Create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_1", "Disabled");
                 public static readonly string CELL_ANTI_ALIASING_OPTION_2
-                    = create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_2", "2x Multi Sampling");
+                    = Create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_2", "2x Multi Sampling");
                 public static readonly string CELL_ANTI_ALIASING_OPTION_3
-                    = create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_3", "4x Multi Sampling");
+                    = Create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_3", "4x Multi Sampling");
                 public static readonly string CELL_ANTI_ALIASING_OPTION_4
-                    = create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_4", "8x Multi Sampling");
+                    = Create("SETTINGS_VIDEO_CELL_ANTI_ALIASING_OPTION_4", "8x Multi Sampling");
                 public static readonly string CELL_TEXTURE_FILTERING
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING", "Texture Filtering");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING", "Texture Filtering");
                 public static readonly string CELL_TEXTURE_FILTERING_OPTION_1
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING_OPTION_1", "Bilnear (Smooth)");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING_OPTION_1", "Bilnear (Smooth)");
                 public static readonly string CELL_TEXTURE_FILTERING_OPTION_2
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING_OPTION_2", "Nearest (Crunchy)");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING_OPTION_2", "Nearest (Crunchy)");
                 public static readonly string CELL_TEXTURE_QUALITY
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY", "Texture Quality");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY", "Texture Quality");
                 public static readonly string CELL_TEXTURE_QUALITY_OPTION_1
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_1", "High");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_1", "High");
                 public static readonly string CELL_TEXTURE_QUALITY_OPTION_2
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_2", "Medium");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_2", "Medium");
                 public static readonly string CELL_TEXTURE_QUALITY_OPTION_3
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_3", "Low");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_3", "Low");
                 public static readonly string CELL_TEXTURE_QUALITY_OPTION_4
-                    = create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_4", "Very Low");
+                    = Create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY_OPTION_4", "Very Low");
 
                 public static readonly string HEADER_CAMERA_SETTINGS
-                    = create("SETTINGS_VIDEO_HEADER_CAMERA_SETTINGS", "Camera Display Settings");
+                    = Create("SETTINGS_VIDEO_HEADER_CAMERA_SETTINGS", "Camera Display Settings");
                 public static readonly string CELL_FIELD_OF_VIEW
-                    = create("SETTINGS_VIDEO_CELL_FIELD_OF_VIEW", "Field Of View");
+                    = Create("SETTINGS_VIDEO_CELL_FIELD_OF_VIEW", "Field Of View");
                 public static readonly string CELL_CAMERA_SMOOTHING
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_SMOOTHING", "Camera Smoothing");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_SMOOTHING", "Camera Smoothing");
                 public static readonly string CELL_CAMERA_HORIZ
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_HORIZ", "Camera X Position");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_HORIZ", "Camera X Position");
                 public static readonly string CELL_CAMERA_VERT
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_VERT", "Camera Y Position");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_VERT", "Camera Y Position");
                 public static readonly string CELL_CAMERA_RENDER_DISTANCE
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE", "Render Distance");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE", "Render Distance");
                 public static readonly string CELL_CAMERA_RENDER_DISTANCE_OPTION_1
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_1", "Very Near");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_1", "Very Near");
                 public static readonly string CELL_CAMERA_RENDER_DISTANCE_OPTION_2
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_2", "Near");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_2", "Near");
                 public static readonly string CELL_CAMERA_RENDER_DISTANCE_OPTION_3
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_3", "Far");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_3", "Far");
                 public static readonly string CELL_CAMERA_RENDER_DISTANCE_OPTION_4
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_4", "Very Far");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE_OPTION_4", "Very Far");
 
                 public static readonly string HEADER_POST_PROCESSING
-                    = create("SETTINGS_VIDEO_HEADER_POST_PROCESSING", "Post Processing");
+                    = Create("SETTINGS_VIDEO_HEADER_POST_PROCESSING", "Post Processing");
                 public static readonly string CELL_CAMERA_BITCRUSH_SHADER
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_BITCRUSH_SHADER", "Enable Bitcrush Shader");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_BITCRUSH_SHADER", "Enable Bitcrush Shader");
                 public static readonly string CELL_CAMERA_WATER_EFFECT
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_WATER_EFFECT", "Enable Underwater Distortion Shader");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_WATER_EFFECT", "Enable Underwater Distortion Shader");
                 public static readonly string CELL_CAMERA_SHAKE
-                    = create("SETTINGS_VIDEO_CELL_CAMERA_SHAKE", "Enable Screen Shake");
+                    = Create("SETTINGS_VIDEO_CELL_CAMERA_SHAKE", "Enable Screen Shake");
                 public static readonly string CELL_WEAPON_GLOW
-                    = create("SETTINGS_VIDEO_CELL_WEAPON_GLOW", "Disable Weapon Glow Effect");
+                    = Create("SETTINGS_VIDEO_CELL_WEAPON_GLOW", "Disable Weapon Glow Effect");
             }
 
         }

@@ -1,12 +1,7 @@
-﻿
-
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using static Localyssation.LangAdjutable.LangAdjustables;
 
 namespace Localyssation.LangAdjutable
