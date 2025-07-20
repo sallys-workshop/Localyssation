@@ -23,7 +23,9 @@ namespace Localyssation
                     vanillaFont => vanillaFont.GetDescription(),
                     vanillaFont => new BundledFontLookupInfo()
                 );
-            public Dictionary<string, BundledFontLookupInfo> componentSpecifiedFontReplacement = new Dictionary<string, BundledFontLookupInfo>();
+            public Dictionary<string, BundledFontLookupInfo> componentSpecifiedFontReplacement = new Dictionary<string, BundledFontLookupInfo>() {
+                { "__some___example/_gameobject/_path", new BundledFontLookupInfo() }
+            };
 
         }
 
