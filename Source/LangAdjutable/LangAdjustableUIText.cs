@@ -76,7 +76,6 @@ namespace Localyssation.LangAdjutable
                     text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
                     fontReplaced = true;
                     return true;
-
                 }
             }
             return false;
@@ -86,7 +85,6 @@ namespace Localyssation.LangAdjutable
         {
             bool TryReplaceFont()
             {
-                Localyssation.logger.LogDebug("UIText font:" + text.font.name);
                 return newLanguage.info.fontReplacement.Select(kvPair =>
                 {
                     string originalFontName = kvPair.Key;
@@ -100,10 +98,8 @@ namespace Localyssation.LangAdjutable
                             BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
                             return ReplaceFontForPath(path, replacementFontLookupInfo);
                         })
-
                     )
                     .Any(b => b);
-
             }
 
             var fontReplacedThisTime = false;

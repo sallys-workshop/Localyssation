@@ -44,9 +44,10 @@ namespace Localyssation.LangAdjutable
         private bool ReplaceFontIfMatch(string originalFontName, BundledFontLookupInfo replacementFontLookupInfo)
         {
             if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                replacementFontLookupInfo != null &&
+                Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont)
+            )
             {
                 if (text.font == loadedFont.tmpFont) return true;
                 if (Regex.IsMatch(text.font.name, originalFontName + @"\s*SDF\w*"))
@@ -76,7 +77,6 @@ namespace Localyssation.LangAdjutable
                     text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
                     fontReplaced = true;
                     return true;
-
                 }
             }
             return false;
@@ -99,10 +99,8 @@ namespace Localyssation.LangAdjutable
                             BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
                             return ReplaceFontForPath(path, replacementFontLookupInfo);
                         })
-
                     )
                     .Any(b => b);
-
             }
 
             var fontReplacedThisTime = false;

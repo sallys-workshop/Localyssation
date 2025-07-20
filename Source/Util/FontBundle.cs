@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -81,6 +82,19 @@ namespace Localyssation
                     }
                     bundles.Add(info, AssetBundle.LoadFromFile(bundlePath));
                     Localyssation.logger.LogInfo($"Loaded font bundle `{info.bundleFile}`");
+                    bundles.Select(kv => kv.Value).Do(bundle =>
+                    {
+                        Localyssation.logger.LogInfo("Found Fonts:");
+                        bundle.LoadAllAssets(typeof(Font)).Cast<Font>().Do(font =>
+                        {
+                            Localyssation.logger.LogInfo($"\t{font.name}");
+                        });
+                        Localyssation.logger.LogInfo($"Found TMP_FontAsset:");
+                        bundle.LoadAllAssets(typeof(TMP_FontAsset)).Cast<TMP_FontAsset>().Do(font => 
+                        {
+                            Localyssation.logger.LogInfo($"\t{font.name}");
+                        });
+                    });
                 }
                 catch (Exception e)
                 {

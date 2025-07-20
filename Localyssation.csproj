@@ -12,7 +12,7 @@
 		
 		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
 		<Version>$(VersionPrefix)</Version>
-		<FileVersion>$(Version)-$(VersionSuffix)</FileVersion>
+		<ZipFileVersion>$(Version)-$(VersionSuffix)</ZipFileVersion>
 	</PropertyGroup>
 	
 	<PropertyGroup Label="MSBuild">
