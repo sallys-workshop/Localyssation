@@ -1,6 +1,61 @@
 ﻿{
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "bundleName": "string"
+    "$id": "https://raw.githubusercontent.com/sallys-workshop/Localyssation/refs/heads/towardthestars/dev/extraFontBundle/localyssationFontBundleSchema.json",
+    "title": "MetaFontBundleInfo",
+    "description": "A font bundle consists of one or multiple asset bundles",
+    "type": "object",
 
+    "properties": {
+        "bundleName": {
+            "type": "string",
+            "description": "The identifier of font bundle name, used in language defination json"
+        },
+        "fontBundles": {
+            "type": "array",
+            "description": "A series of `FontBundle`",
+            "items": {
+                "title": "FontBundle",
+                "type": "object",
+                "properties": {
+                    "bundleFile": {
+                        "type": "string",
+                        "description": "The relative file path to the asset bundle"
+                    },
+                    "fontInfos": {
+                        "type": "array",
+                        "description": "A series of `FontInfo` this asset bundle contains",
+                        "items": {
+                            "title": "FontInfo",
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of your font when packaging them into the bundle"
+                                },
+                                "tmpVariant": {
+                                    "type": "string",
+                                    "description": "The name of this font's TextMeshPro Font Asset variant, default to name + \" SDF\""
+                                },
+                                "sizeMultiplier": {
+                                    "type": "number",
+                                    "description": "Font size will multiply by this when this font is used. Default to 1."
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "bundleFile",
+                    "fontInfos"
+                ]
+            }
+        }
 
+    },
+    "required": [
+        "bundleName", "fontBundles"
+    ]
 }

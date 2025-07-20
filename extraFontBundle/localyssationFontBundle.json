@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/sallys-workshop/Localyssation/refs/heads/towardthestars/dev/extraFontBundle/localyssationFontBundleSchema.json",
     "bundleName": "unifont",
     "fontBundles": [
         {
@@ -11,5 +12,5 @@
             ]
         }
     ]
-  
+
 }
