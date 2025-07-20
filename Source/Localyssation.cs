@@ -54,27 +54,6 @@ namespace Localyssation
         internal static bool settingsTabSetup = false;
         internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
-        //public static class GameAssetCache
-        //{
-        //    public static Font uguiFontCentaur;
-        //    public static TMPro.TMP_FontAsset tmpFontCentaur;
-        //    public static Font uguiFontTerminalGrotesque;
-        //    public static TMPro.TMP_FontAsset tmpFontTerminalGrotesque;
-        //    public static Font uguiFontLibrationSans;
-        //    public static TMPro.TMP_FontAsset tmpFontLibrationSans;
-
-        //    internal static void Load()
-        //    {
-        //        uguiFontCentaur = Resources.Load<Font>("_graphic/_font/centaur");
-        //        tmpFontCentaur = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/centaur sdf");
-        //        uguiFontTerminalGrotesque = Resources.Load<Font>("_graphic/_font/terminal-grotesque");
-        //        tmpFontTerminalGrotesque = Resources.Load<TMPro.TMP_FontAsset>("_graphic/_font/terminal-grotesque sdf");
-        //        uguiFontLibrationSans = Resources.Load<Font>("_graphic/_font/libration sans");
-        //        tmpFontLibrationSans = Resources.Load<TMPro.TMP_FontAsset>("LiberationSans SDF_2");
-        //    }
-        //}
-
-
 
 #pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Awake()
@@ -419,37 +398,5 @@ namespace Localyssation
         }
     }
 
-
-
-    public static class Util
-    {
-        public static string GetChildTransformPath(Transform transform, int depth = 0)
-        {
-            var str = transform.name;
-            if (depth > 0)
-            {
-                var parent = transform.parent;
-                if (parent != null)
-                {
-                    str = $"{GetChildTransformPath(parent, depth - 1)}/{str}";
-                }
-            }
-            return str;
-        }
-        public static string GetPath(Transform transform)
-        {
-            string path = transform.name;
-            Transform current = transform;
-
-            // 从当前节点向上遍历到根节点
-            while (current.parent != null)
-            {
-                current = current.parent;
-                path = current.name + "/" + path; // 从根向子节点拼接
-            }
-
-            return "/" + path; // 添加根路径斜杠
-        }
-    }
 
 }
