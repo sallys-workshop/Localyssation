@@ -13,9 +13,6 @@ namespace Localyssation
             public string code = "";
             public string name = "";
             public bool autoShrinkOverflowingText = false;
-            //public BundledFontLookupInfo fontReplacementCentaur = new BundledFontLookupInfo();
-            //public BundledFontLookupInfo fontReplacementTerminalGrotesque = new BundledFontLookupInfo();
-            //public BundledFontLookupInfo fontReplacementLibrationSans = new BundledFontLookupInfo();
             public BundledFontLookupInfo chatFont = new BundledFontLookupInfo();
             public Dictionary<string, BundledFontLookupInfo> fontReplacement
                 = Enum.GetValues(typeof(VanillaFonts)).Cast<VanillaFonts>()
@@ -31,8 +28,10 @@ namespace Localyssation
 
         public class BundledFontLookupInfo
         {
-            public string bundleName = "";
+            //public string bundleName = "";
             public string fontName = "";
+            public float fontScale = 1.0f;
+            //public bool asFallbackToVanilla = false;    // unused
         }
 
         public LanguageInfo info = new LanguageInfo();

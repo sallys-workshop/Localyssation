@@ -74,9 +74,7 @@ namespace Localyssation.Patches.ReplaceText
         /// <returns>The int operand.</returns>
         internal static int GetIntOperand(CodeMatcher matcher)
         {
-            var result = matcher.Operand;
-            if (result == null)
-                result = int.Parse(matcher.Opcode.Name.Substring(matcher.Opcode.Name.Length - 1));
+            var result = matcher.Operand ?? int.Parse(matcher.Opcode.Name.Substring(matcher.Opcode.Name.Length - 1));
             return (int)result;
         }
 
@@ -93,7 +91,7 @@ namespace Localyssation.Patches.ReplaceText
                 if (textRemaps.TryGetValue(lookupNameTransform.name, out var key))
                 {
                     LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(key, text.text));
-                    if (onRemap != null) onRemap(lookupNameTransform, key);
+                    onRemap?.Invoke(lookupNameTransform, key);
                     return true;
                 }
                 return false;
@@ -130,7 +128,7 @@ namespace Localyssation.Patches.ReplaceText
                             LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(textRemap.Value, text.text));
                         else
                             text.text = textRemap.Value;
-                        if (onRemap != null) onRemap(foundTransform, textRemap.Value);
+                        onRemap?.Invoke(foundTransform, textRemap.Value);
                     }
                     else
                     {
@@ -164,7 +162,7 @@ namespace Localyssation.Patches.ReplaceText
                     if (text && textRemaps.TryGetValue(inputField.name, out var key))
                     {
                         LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(key, text.text));
-                        if (onRemap != null) onRemap(inputField.transform, key);
+                        onRemap?.Invoke(inputField.transform, key);
                     }
                 }
             }

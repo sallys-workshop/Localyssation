@@ -46,14 +46,13 @@ namespace Localyssation.LangAdjutable
         {
             if (
                 replacementFontLookupInfo != null &&
-                Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont)
+                FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont)
             )
             {
-                if (text.font == loadedFont.tmpFont) return true;
+                if (text.font == loadedFont) return true;
                 if (Regex.IsMatch(text.font.name, originalFontName + @"\s*SDF\w*"))
                 {
-                    text.font = loadedFont.tmpFont;
+                    text.font = loadedFont;
                     text.fontSize = (int)(orig_fontSize);
                     text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;
@@ -69,11 +68,10 @@ namespace Localyssation.LangAdjutable
             {
                 if (
                     replacementFontLookupInfo != null &&
-                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                    FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                 {
-                    if (text.font == loadedFont.tmpFont) return true;
-                    text.font = loadedFont.tmpFont;
+                    if (text.font == loadedFont) return true;
+                    text.font = loadedFont;
                     text.fontSize = (int)(orig_fontSize);
                     text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;

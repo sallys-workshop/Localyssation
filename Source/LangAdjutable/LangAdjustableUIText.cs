@@ -46,15 +46,14 @@ namespace Localyssation.LangAdjutable
         {
             if (
                 replacementFontLookupInfo != null &&
-                Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                FontManager.Fonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
             {
-                if (text.font == loadedFont.uguiFont) return true;
+                if (text.font == loadedFont) return true;
                 if (text.font.name == originalFontName)
                 {
-                    text.font = loadedFont.uguiFont;
-                    text.fontSize = (int)orig_fontSize;
-                    text.lineSpacing = orig_lineSpacing;
+                    text.font = loadedFont;
+                    text.fontSize = (int)(orig_fontSize * replacementFontLookupInfo.fontScale);
+                    text.lineSpacing = (orig_lineSpacing * replacementFontLookupInfo.fontScale);
                     fontReplaced = true;
                     return true;
                 }
@@ -68,13 +67,12 @@ namespace Localyssation.LangAdjutable
             {
                 if (
                     replacementFontLookupInfo != null &&
-                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                    FontManager.Fonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                 {
-                    if (text.font == loadedFont.uguiFont) return true;
-                    text.font = loadedFont.uguiFont;
-                    text.fontSize = (int)orig_fontSize;
-                    text.lineSpacing = orig_lineSpacing;
+                    if (text.font == loadedFont) return true;
+                    text.font = loadedFont;
+                    text.fontSize = (int)(orig_fontSize * replacementFontLookupInfo.fontScale);
+                    text.lineSpacing = (orig_lineSpacing * replacementFontLookupInfo.fontScale);
                     fontReplaced = true;
                     return true;
                 }
@@ -118,8 +116,8 @@ namespace Localyssation.LangAdjutable
             {
                 fontReplaced = false;
                 text.font = orig_font;
-                text.fontSize = orig_fontSize;
-                text.lineSpacing = orig_lineSpacing;
+                text.fontSize = (int)(orig_fontSize * newLanguage.info.chatFont.fontScale);
+                text.lineSpacing = (orig_lineSpacing * newLanguage.info.chatFont.fontScale);
             }
 
             if (newLanguage.info.autoShrinkOverflowingText != textAutoShrunk)
@@ -142,8 +140,8 @@ namespace Localyssation.LangAdjutable
                 else
                 {
                     text.resizeTextForBestFit = orig_resizeTextForBestFit;
-                    text.resizeTextMaxSize = orig_resizeTextMaxSize;
-                    text.resizeTextMinSize = orig_resizeTextMinSize;
+                    text.resizeTextMaxSize = (int)(orig_resizeTextMaxSize * newLanguage.info.chatFont.fontScale);
+                    text.resizeTextMinSize = (int)(orig_resizeTextMinSize * newLanguage.info.chatFont.fontScale);
 
                     textAutoShrunk = false;
                 }

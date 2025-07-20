@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Localyssation.LangAdjutable;
+using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceFont
 {
@@ -9,7 +10,11 @@ namespace Localyssation.Patches.ReplaceFont
         [HarmonyPostfix]
         public static void ItemObjectVisual__OnEnable__Postfix(ItemObjectVisual __instance)
         {
-            LangAdjustables.RegisterTextMeshPro(__instance._itemNametagTextMesh);
+            if (__instance != null && __instance._itemNametagTextMesh)
+            {
+                FRUtil.replaceTmpFont(__instance._itemNametagTextMesh, Localyssation.currentLanguage.info.chatFont);
+            }
         }
+
     }
 }

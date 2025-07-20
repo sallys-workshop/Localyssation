@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -10,7 +11,7 @@ namespace Localyssation.LangAdjutable
     }
     // "adjustables" are in-game objects that must be automatically adjusted with
     // language-specific variants (strings, textures, etc.) whenever language is changed in-game
-    internal static class LangAdjustables
+    public static class LangAdjustables
     {
         public static List<ILangAdjustable> nonMonoBehaviourAdjustables = new List<ILangAdjustable>();
 
@@ -33,17 +34,18 @@ namespace Localyssation.LangAdjutable
             return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
         }
 
-        internal static Dictionary<UnityEngine.UI.Text, LangAdjustableUIText> registeredTexts = new Dictionary<UnityEngine.UI.Text, LangAdjustableUIText>();
+        public static Dictionary<UnityEngine.UI.Text, LangAdjustableUIText> registeredTexts = new Dictionary<UnityEngine.UI.Text, LangAdjustableUIText>();
         public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc = null)
         {
-            LangAdjustableUIText adjustable;
-            if (!registeredTexts.TryGetValue(text, out adjustable))
+            if (!registeredTexts.TryGetValue(text, out LangAdjustableUIText adjustable))
                 adjustable = registeredTexts[text] = text.gameObject.AddComponent<LangAdjustableUIText>();
 
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
 
-        internal static Dictionary<TMPro.TextMeshProUGUI, LangAdjustableTMProUGUIText> registeredTMProUGUITexts = new Dictionary<TMPro.TextMeshProUGUI, LangAdjustableTMProUGUIText>();
+
+        /// Unused
+        public static Dictionary<TMPro.TextMeshProUGUI, LangAdjustableTMProUGUIText> registeredTMProUGUITexts = new Dictionary<TMPro.TextMeshProUGUI, LangAdjustableTMProUGUIText>();
         public static void RegisterText(TMPro.TextMeshProUGUI text, System.Func<int, string> newTextFunc = null)
         {
             LangAdjustableTMProUGUIText adjustable;
@@ -53,7 +55,7 @@ namespace Localyssation.LangAdjutable
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
 
-        internal static Dictionary<UnityEngine.UI.Dropdown, LangAdjustableUIDropdown> registeredDropdowns = new Dictionary<UnityEngine.UI.Dropdown, LangAdjustableUIDropdown>();
+        public static Dictionary<UnityEngine.UI.Dropdown, LangAdjustableUIDropdown> registeredDropdowns = new Dictionary<UnityEngine.UI.Dropdown, LangAdjustableUIDropdown>();
         public static void RegisterDropdown(UnityEngine.UI.Dropdown dropdown, List<System.Func<int, string>> newTextFuncs = null)
         {
             LangAdjustableUIDropdown adjustable;
@@ -63,7 +65,7 @@ namespace Localyssation.LangAdjutable
             if (newTextFuncs != null) adjustable.newTextFuncs = newTextFuncs;
         }
 
-        internal static readonly Dictionary<TMPro.TextMeshPro, LangAdjustableTextMeshPro> registeredTextMeshPro = new Dictionary<TMPro.TextMeshPro, LangAdjustableTextMeshPro>();
+        public static Dictionary<TMPro.TextMeshPro, LangAdjustableTextMeshPro> registeredTextMeshPro = new Dictionary<TMPro.TextMeshPro, LangAdjustableTextMeshPro>();
         public static void RegisterTextMeshPro(TMPro.TextMeshPro textMeshPro, Func<int, string> newTextFunc = null)
         {
             if (!registeredTextMeshPro.TryGetValue(textMeshPro, out var adjustable))
@@ -72,5 +74,6 @@ namespace Localyssation.LangAdjutable
             }
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
+        /// Unused
     }
 }

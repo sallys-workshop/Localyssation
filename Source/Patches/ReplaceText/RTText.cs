@@ -28,6 +28,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 LangAdjustables.RegisterText(__instance);
             }
+#if DEBUG
             if (__instance.font != null && !USED_FONT_NAME.Contains(__instance.font.name))
             {
                 USED_FONT_NAME.Add(__instance.font.name);
@@ -37,6 +38,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 Localyssation.logger.LogDebug($"MSGOTHIC usage @ `{RTUtil.GetPath(__instance.transform)}`");
             }
+#endif
         }
 
     }

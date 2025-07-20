@@ -35,6 +35,7 @@ namespace Localyssation
 
         public static Dictionary<string, FontBundle> fontBundles = new Dictionary<string, FontBundle>();
         public static readonly List<FontBundle> fontBundlesList = new List<FontBundle>();
+        
 
         public event System.Action<Language> onLanguageChanged;
         internal void CallOnLanguageChanged(Language newLanguage) { onLanguageChanged?.Invoke(newLanguage); }
@@ -55,7 +56,7 @@ namespace Localyssation
         internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
 
-#pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
+//#pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Awake()
         {
             instance = this;
@@ -72,7 +73,8 @@ namespace Localyssation
             ChangeLanguage(defaultLanguage);
             LoadLanguagesFromFileSystem();
             //ExportUtil.InitExports();
-            LoadFontBundlesFromFileSystem();
+            FontManager.LoadFontBundlesFromFileSystem();
+            FontHelper.DetectVanillaFonts();
 
             configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
             if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
@@ -103,7 +105,7 @@ namespace Localyssation
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
-#pragma warning restore IDE0051
+//#pragma warning restore IDE0051
         private static void TrySetupSettingsTab()
         {
             if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
@@ -133,7 +135,12 @@ namespace Localyssation
             tab.AddToggle(configTranslatorMode);
             if (configTranslatorMode.Value)
             {
-                tab.AddToggle(configShowTranslationKey);
+                var showTranslationKeyToggle = tab.AddToggle(configShowTranslationKey);
+                showTranslationKeyToggle.OnValueChanged.AddListener((v) => 
+                {
+                    ChangeLanguage(currentLanguage);    // refresh all
+                });
+
                 tab.AddToggle(configCreateDefaultLanguageFiles);
                 tab.AddToggle(configExportExtra);
                 tab.AddKeyButton(configReloadLanguageKeybind);
@@ -200,20 +207,7 @@ namespace Localyssation
             TrySetupSettingsTab();
         }
 
-        public static void LoadFontBundlesFromFileSystem()
-        {
-            string[] filePaths = Directory.GetFiles(Paths.PluginPath, "*.fontbundle", SearchOption.AllDirectories);
-            logger.LogInfo($"Found {filePaths.Length} fontBundles");
-            foreach (var filePath in filePaths)
-            {
-                var loadedFontBundle = new FontBundle
-                {
-                    fileSystemPath = filePath
-                };
-                if (loadedFontBundle.LoadFromFileSystem())
-                    RegisterFontBundle(loadedFontBundle);
-            }
-        }
+        
 
         public static void RegisterLanguage(Language language)
         {
@@ -221,14 +215,6 @@ namespace Localyssation
 
             languages[language.info.code] = language;
             languagesList.Add(language);
-        }
-
-        public static void RegisterFontBundle(FontBundle fontBundle)
-        {
-            //if (fontBundles.ContainsKey(fontBundle.info.bundleName)) return;
-
-            //fontBundles[fontBundle.info.bundleName] = fontBundle;
-            fontBundlesList.Add(fontBundle);
         }
 
         public static void ChangeLanguage(Language newLanguage)

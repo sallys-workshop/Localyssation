@@ -9,17 +9,16 @@ namespace Localyssation.Patches.ReplaceFont
         public static void replaceTmpFont(TMPro.TMP_Text text, Language.BundledFontLookupInfo replacementFontLookupInfo)
         {
             if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                replacementFontLookupInfo != null &&
+                FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
             {
-                if (text.font != loadedFont.tmpFont)
+                if (text.font != loadedFont)
                 {
                     float orig_fontSize = text.fontSize;
                     float orig_lineSpacing = text.lineSpacing;
-                    text.font = loadedFont.tmpFont;
-                    text.fontSize = (int)(orig_fontSize);
-                    text.lineSpacing = orig_lineSpacing;
+                    text.font = loadedFont;
+                    text.fontSize = (int)(orig_fontSize * replacementFontLookupInfo.fontScale);
+                    text.lineSpacing = orig_lineSpacing * replacementFontLookupInfo.fontScale;
 
                 }
             }
