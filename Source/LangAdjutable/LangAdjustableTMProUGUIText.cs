@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using static Localyssation.Language;
 using static Localyssation.LangAdjutable.LangAdjustables;
+using System.Text.RegularExpressions;
 
 namespace Localyssation.LangAdjutable
 {
@@ -40,6 +41,46 @@ namespace Localyssation.LangAdjutable
         {
             AdjustToLanguage(newLanguage);
         }
+        private bool ReplaceFontIfMatch(string originalFontName, BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if (
+                        replacementFontLookupInfo != null &&
+                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+            {
+                if (text.font == loadedFont.tmpFont) return true;
+                if (Regex.IsMatch(text.font.name, originalFontName + @"\s*SDF\w*"))
+                {
+                    text.font = loadedFont.tmpFont;
+                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    fontReplaced = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool ReplaceFontForPath(string path, BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if (Util.GetPath(text.transform) == path)
+            {
+                if (
+                    replacementFontLookupInfo != null &&
+                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                {
+                    if (text.font == loadedFont.tmpFont) return true;
+                    text.font = loadedFont.tmpFont;
+                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    fontReplaced = true;
+                    return true;
+
+                }
+            }
+            return false;
+        }
 
         public void AdjustToLanguage(Language newLanguage)
         {
@@ -49,45 +90,14 @@ namespace Localyssation.LangAdjutable
                 {
                     string originalFontName = kvPair.Key;
                     BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
-                    if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
-                    {
-                        if (text.font == loadedFont.tmpFont) return true;
-                        if (text.font.name == originalFontName)
-                        {
-                            text.font = loadedFont.tmpFont;
-                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
-                            fontReplaced = true;
-                            return true;
-                        }
-                    }
-                    return false;
+                    return ReplaceFontIfMatch(originalFontName, replacementFontLookupInfo);
                 })
                     .Concat(
                         newLanguage.info.componentSpecifiedFontReplacement.Select(kvPair =>
                         {
                             string path = kvPair.Key;
                             BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
-                            if (Util.GetPath(text.transform) == path)
-                            {
-                                if (
-                                    replacementFontLookupInfo != null &&
-                                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
-                                {
-                                    if (text.font == loadedFont.tmpFont) return true;
-                                    text.font = loadedFont.tmpFont;
-                                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
-                                    fontReplaced = true;
-                                    return true;
-
-                                }
-                            }
-                            return false;
+                            return ReplaceFontForPath(path, replacementFontLookupInfo);
                         })
 
                     )

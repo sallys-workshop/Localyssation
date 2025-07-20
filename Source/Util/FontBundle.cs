@@ -81,6 +81,7 @@ namespace Localyssation
                         return;
                     }
                     bundles.Add(info, AssetBundle.LoadFromFile(bundlePath));
+                    Localyssation.logger.LogInfo($"Loaded font bundle `{info.bundleFile}`");
                 }
                 catch (Exception e)
                 {
@@ -90,6 +91,7 @@ namespace Localyssation
             });
 
 
+            
             bundles.Do(kvPair =>
             {
                 var bundleInfo = kvPair.Key;
@@ -106,6 +108,7 @@ namespace Localyssation
                                 string.IsNullOrWhiteSpace(fontInfo.tmpVariant) ? fontInfo.name + " SDF" : fontInfo.tmpVariant
                                 )
                         });
+                        Localyssation.logger.LogInfo($"Loaded font `{fontInfo.name}`");
                     }
                     catch (Exception e)
                     {
@@ -113,7 +116,6 @@ namespace Localyssation
                     }
                 });
 
-                Localyssation.logger.LogInfo($"Loaded font bundle `{bundleInfo.bundleFile}`");
             });
 
             return true;

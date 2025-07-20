@@ -41,53 +41,64 @@ namespace Localyssation.LangAdjutable
             AdjustToLanguage(newLanguage);
         }
 
+        private bool ReplaceFontIfMatch(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if(
+                replacementFontLookupInfo != null &&
+                Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+            {
+                if (text.font == loadedFont.uguiFont) return true;
+                if (text.font.name == originalFontName)
+                {
+                    text.font = loadedFont.uguiFont;
+                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    fontReplaced = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool ReplaceFontForPath(string path, Language.BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if (Util.GetPath(text.transform) == path)
+            {
+                if (
+                    replacementFontLookupInfo != null &&
+                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                {
+                    if (text.font == loadedFont.uguiFont) return true;
+                    text.font = loadedFont.uguiFont;
+                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
+                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
+                    fontReplaced = true;
+                    return true;
+
+                }
+            }
+            return false;
+        }
+
         public void AdjustToLanguage(Language newLanguage)
         {
             bool TryReplaceFont()
             {
+                Localyssation.logger.LogDebug("UIText font:" + text.font.name);
                 return newLanguage.info.fontReplacement.Select(kvPair =>
                 {
                     string originalFontName = kvPair.Key;
                     BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
-                    if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
-                    {
-                        if (text.font == loadedFont.uguiFont) return true;
-                        if (text.font.name == originalFontName)
-                        {
-                            text.font = loadedFont.uguiFont;
-                            text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                            text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
-                            fontReplaced = true;
-                            return true;
-                        }
-                    }
-                    return false;
+                    return ReplaceFontIfMatch(originalFontName, replacementFontLookupInfo);
                 })
                     .Concat(
                         newLanguage.info.componentSpecifiedFontReplacement.Select(kvPair =>
                         {
                             string path = kvPair.Key;
                             BundledFontLookupInfo replacementFontLookupInfo = kvPair.Value;
-                            if (Util.GetPath(text.transform) == path)
-                            {
-                                if (
-                                    replacementFontLookupInfo != null &&
-                                    Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                                    fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
-                                {
-                                    if (text.font == loadedFont.uguiFont) return true;
-                                    text.font = loadedFont.uguiFont;
-                                    text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
-                                    text.lineSpacing = orig_lineSpacing * loadedFont.info.sizeMultiplier;
-                                    fontReplaced = true;
-                                    return true;
-
-                                }
-                            }
-                            return false;
+                            return ReplaceFontForPath(path, replacementFontLookupInfo);
                         })
 
                     )

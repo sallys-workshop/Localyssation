@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,12 +48,12 @@ namespace Localyssation.LangAdjutable
         private bool ReplaceFontIfMatch(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
         {
             if (
-                        replacementFontLookupInfo != null &&
-                        Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
-                        fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                replacementFontLookupInfo != null &&
+                Localyssation.fontBundles.TryGetValue(replacementFontLookupInfo.bundleName, out var fontBundle) &&
+                fontBundle.loadedFonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
             {
                 if (text.font == loadedFont.tmpFont) return true;
-                if (text.font.name == originalFontName)
+                if (Regex.IsMatch(text.font.name, originalFontName + @"\s*SDF\w*"))
                 {
                     text.font = loadedFont.tmpFont;
                     text.fontSize = (int)(orig_fontSize * loadedFont.info.sizeMultiplier);
