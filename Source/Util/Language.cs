@@ -1,8 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using BepInEx;
+using HarmonyLib;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using YamlDotNet.Serialization;
+using YamlDotNet.Core;
 
 namespace Localyssation
 {
@@ -34,13 +38,19 @@ namespace Localyssation
             //public bool asFallbackToVanilla = false;    // unused
         }
 
+        private static readonly ISerializer YAML_SERIALIZER = new SerializerBuilder().WithDefaultScalarStyle(ScalarStyle.DoubleQuoted).Build();
+        private static readonly IDeserializer YAML_DESERIALIZER = new DeserializerBuilder().Build();
         public LanguageInfo info = new LanguageInfo();
         public string fileSystemPath;
         public Dictionary<string, string> strings = new Dictionary<string, string>();
 
         public void RegisterKey(string key, string defaultValue)
         {
-            if (strings.ContainsKey(key)) return;
+            if (strings.ContainsKey(key))
+            {
+                Localyssation.logger.LogWarning($"Duplicate localisation key `{key}` in language `{info.name}`({info.code})");
+                return;
+            }
             strings[key] = defaultValue;
         }
 
@@ -49,12 +59,45 @@ namespace Localyssation
             if (string.IsNullOrEmpty(fileSystemPath)) return false;
 
             var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
-            var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
             try
             {
                 info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
+            }
+            catch (Exception e)
+            {
+                Localyssation.logger.LogError(e);
+                return false;
+            }
+            try
+            {
+                Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml").Do(stringsFilePath =>
+                {
+                    var file = File.OpenText(stringsFilePath);
+                    YAML_DESERIALIZER.Deserialize<Dictionary<string, string>>(file)
+                        .Do(kv =>
+                        {
+                            if (!forceOverwrite)
+                            {
+                                RegisterKey(kv.Key, kv.Value);
+                            }
+                            else
+                            {
+                                strings[kv.Key] = kv.Value;
+                            }
+                        });
+                    file.Close();
+                });
+            }
+            catch (Exception e)
+            {
+                Localyssation.logger.LogError(e);
+                return false;
+            }
 
-                foreach (var tsvRow in TSVUtil.parseTsvWithHeaders(File.ReadAllText(stringsFilePath)))
+            var stringsFilePathTSV = Path.Combine(fileSystemPath, "strings.tsv");
+            try
+            {
+                foreach (var tsvRow in TSVUtil.parseTsvWithHeaders(File.ReadAllText(stringsFilePathTSV)))
                 {
                     if (!forceOverwrite) RegisterKey(tsvRow["key"], tsvRow["value"]);
                     else strings[tsvRow["key"]] = tsvRow["value"];
@@ -80,11 +123,14 @@ namespace Localyssation
                 var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
                 File.WriteAllText(infoFilePath, JsonConvert.SerializeObject(info, Formatting.Indented));
 
-                var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
-                var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
-                tsvRows.Insert(0, new List<string>() { "key", "value" });
-                File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
-
+                //var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
+                //var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
+                //tsvRows.Insert(0, new List<string>() { "key", "value" });
+                //File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
+                string translationFilePath = Path.Combine(fileSystemPath, "strings.yml");
+                var file = new StreamWriter(translationFilePath);
+                YAML_SERIALIZER.Serialize(file, strings, typeof(Dictionary<string, string>));
+                file.Close();
                 return true;
             }
             catch (Exception e)

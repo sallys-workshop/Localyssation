@@ -86,11 +86,14 @@ namespace Localyssation.Patches.ReplaceText
         /// <param name="onRemap">A method called on a successful remap.</param>
         public static void RemapAllTextUnderObject(GameObject gameObject, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
         {
+            HashSet<string> remappedString = new HashSet<string>();
+            Localyssation.logger.LogInfo($"Remapping for {gameObject.name}");
             bool TryRemapSingle(Transform lookupNameTransform, Text text)
             {
                 if (textRemaps.TryGetValue(lookupNameTransform.name, out var key))
                 {
                     LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(key, text.text));
+                    remappedString.Add(lookupNameTransform.name);
                     onRemap?.Invoke(lookupNameTransform, key);
                     return true;
                 }
@@ -105,6 +108,14 @@ namespace Localyssation.Patches.ReplaceText
                     if (textParent) TryRemapSingle(textParent, text);
                 }
             }
+            var remain = textRemaps.Select(kv => kv.Key).ToHashSet();
+            remain.RemoveWhere(s => remappedString.Contains(s));
+            if (remain.Count() > 0)
+            {
+                Localyssation.logger.LogWarning($"GameObject(s) not found in `{gameObject.name}` during {nameof(RemapAllTextUnderObject)}:");
+                remain.Do(missing => Localyssation.logger.LogWarning($"\t- {missing}"));
+            }
+
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace Localyssation.Patches
         /// Constants such as Enum should be registered at static loading
         /// </summary>
         /// <param name="__instance"></param>
-        [HarmonyPatch(typeof(GameManager), "Cache_ScriptableAssets")]
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.Cache_ScriptableAssets))]
         [HarmonyPostfix]
         public static void GameManager_Cache_ScriptableAssets(GameManager __instance)
         {

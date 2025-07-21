@@ -18,12 +18,12 @@ namespace Localyssation.Patches.ReplaceText
                 { "Button_videoTab", "SETTINGS_TAB_BUTTON_VIDEO" },
 
                 { "_header_GameEffectSettings", "SETTINGS_VIDEO_HEADER_GAME_EFFECT_SETTINGS" },
-                { "_cell_proportionsToggle", "SETTINGS_VIDEO_CELL_PROPORTIONS_TOGGLE" },
+                //{ "_cell_proportionsToggle", "SETTINGS_VIDEO_CELL_PROPORTIONS_TOGGLE" },
                 { "_cell_jiggleBonesToggle", "SETTINGS_VIDEO_CELL_JIGGLE_BONES_TOGGLE" },
                 { "_cell_clearUnderclothesToggle", "SETTINGS_VIDEO_CELL_CLEAR_UNDERCLOTHES_TOGGLE" },
 
                 { "_header_videoSettings", "SETTINGS_VIDEO_HEADER_VIDEO_SETTINGS" },
-                { "_cell_fullscreenToggle", "SETTINGS_VIDEO_CELL_FULLSCREEN_TOGGLE" },
+                //{ "_cell_fullscreenToggle", "SETTINGS_VIDEO_CELL_FULLSCREEN_TOGGLE" },
                 { "_cell_verticalSync", "SETTINGS_VIDEO_CELL_VERTICAL_SYNC" },
                 { "_cell_anisotropicFiltering", "SETTINGS_VIDEO_CELL_ANISOTROPIC_FILTERING" },
                 { "_cell_screenResolution", "SETTINGS_VIDEO_CELL_SCREEN_RESOLUTION" },
@@ -52,7 +52,7 @@ namespace Localyssation.Patches.ReplaceText
                 { "_cell_muteApplication", "SETTINGS_AUDIO_CELL_MUTE_APPLICATION" },
                 { "_cell_muteMusic", "SETTINGS_AUDIO_CELL_MUTE_MUSIC" },
 
-                { "_header_audioChannelSettings", "SETTINGS_AUDIO_HEADER_AUDIO_CHANNEL_SETTINGS" },
+                //{ "_header_audioChannelSettings", "SETTINGS_AUDIO_HEADER_AUDIO_CHANNEL_SETTINGS" },
                 { "_cell_gameVolume", "SETTINGS_AUDIO_CELL_GAME_VOLUME" },
                 { "_cell_guiVolume", "SETTINGS_AUDIO_CELL_GUI_VOLUME" },
                 { "_cell_ambienceVolume", "SETTINGS_AUDIO_CELL_AMBIENCE_VOLUME" },
@@ -64,7 +64,7 @@ namespace Localyssation.Patches.ReplaceText
 
                 { "Image_05", "SETTINGS_INPUT_HEADER_INPUT_SETTINGS" },
                 { "_cell_axisType", "SETTINGS_INPUT_CELL_AXIS_TYPE" },
-                { "_cell_resetToDefaults", "SETTINGS_BUTTON_RESET_TO_DEFAULTS" },
+                //{ "_cell_resetToDefaults", "SETTINGS_BUTTON_RESET_TO_DEFAULTS" },
 
                 { "Image_06", "SETTINGS_INPUT_HEADER_CAMERA_CONTROL" },
                 { "_cell_cameraSensitivity", "SETTINGS_INPUT_CELL_CAMERA_SENSITIVITY" },
@@ -109,7 +109,7 @@ namespace Localyssation.Patches.ReplaceText
                 { "_cell_keybinding_quickSlot02", "SETTINGS_INPUT_CELL_KEYBINDING_QUICK_SLOT_02" },
                 { "_cell_keybinding_quickSlot03", "SETTINGS_INPUT_CELL_KEYBINDING_QUICK_SLOT_03" },
                 { "_cell_keybinding_quickSlot04", "SETTINGS_INPUT_CELL_KEYBINDING_QUICK_SLOT_04" },
-                { "_cell_keybinding_quickSlot05", "SETTINGS_INPUT_CELL_KEYBINDING_QUICK_SLOT_05" },
+                //{ "_cell_keybinding_quickSlot05", "SETTINGS_INPUT_CELL_KEYBINDING_QUICK_SLOT_05" },
 
                 { "Header_Interface", "SETTINGS_INPUT_HEADER_INTERFACE" },
                 { "_cell_keybinding_38", "SETTINGS_INPUT_CELL_KEYBINDING_HOST_CONSOLE" },
@@ -123,20 +123,20 @@ namespace Localyssation.Patches.ReplaceText
                 { "_cell_keybinding_hideUI", "SETTINGS_INPUT_CELL_KEYBINDING_HIDE_UI" },
 
 
-                { "Button_networkTab", "SETTINGS_TAB_BUTTON_NETWORK" },
+                { "Button_gameTab", "SETTINGS_TAB_BUTTON_NETWORK" },
 
                 { "_header_uiSettings", "SETTINGS_NETWORK_HEADER_UI_SETTINGS" },
-                { "_cell_displayCreepNametags", "SETTINGS_NETWORK_CELL_DISPLAY_CREEP_NAMETAGS" },
+                //{ "_cell_displayCreepNametags", "SETTINGS_NETWORK_CELL_DISPLAY_CREEP_NAMETAGS" },
                 { "_cell_displayGlobalNicknameTags", "SETTINGS_NETWORK_CELL_DISPLAY_GLOBAL_NICKNAME_TAGS" },
                 { "_cell_displayLocalNametag", "SETTINGS_NETWORK_CELL_DISPLAY_LOCAL_NAMETAG" },
                 { "_cell_displayHostTag", "SETTINGS_NETWORK_CELL_DISPLAY_HOST_TAG" },
-                { "_cell_hideDungeonMinimap", "SETTINGS_NETWORK_CELL_HIDE_DUNGEON_MINIMAP" },
+                //{ "_cell_hideDungeonMinimap", "SETTINGS_NETWORK_CELL_HIDE_DUNGEON_MINIMAP" },
                 { "_cell_hideFPSCounter", "SETTINGS_NETWORK_CELL_HIDE_FPS_COUNTER" },
                 { "_cell_hidePingCounter", "SETTINGS_NETWORK_CELL_HIDE_PING_COUNTER" },
                 { "_cell_hideStatPointCounter", "SETTINGS_NETWORK_CELL_HIDE_STAT_POINT_COUNTER" },
                 { "_cell_hideSkillPointCounter", "SETTINGS_NETWORK_CELL_HIDE_SKILL_POINT_COUNTER" },
 
-                { "_header_clientSettings", "SETTINGS_NETWORK_HEADER_CLIENT_SETTINGS" },
+                //{ "_header_clientSettings", "SETTINGS_NETWORK_HEADER_CLIENT_SETTINGS" },
                 { "_cell_enablePvPOnMapEnter", "SETTINGS_NETWORK_CELL_ENABLE_PVP_ON_MAP_ENTER" },
 
 
