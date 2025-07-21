@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
 namespace Localyssation.Patches
 {
@@ -258,7 +259,7 @@ namespace Localyssation.Patches
                             if (dialogTrigger._useLocalDialogBranch && dialogTrigger.gameObject.scene.name == sceneName)
                             {
                                 var key = KeyUtil.GetForAsset(dialogTrigger._scriptDialogData);
-                                RegisterKeysForDialogBranch(key, KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{Util.GetChildTransformPath(dialogTrigger.transform, 2)}"), dialogTrigger._localDialogBranch);
+                                RegisterKeysForDialogBranch(key, KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{PathUtil.GetChildTransformPath(dialogTrigger.transform, 2)}"), dialogTrigger._localDialogBranch);
                             }
                         }
 

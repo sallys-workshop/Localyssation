@@ -8,7 +8,7 @@ using System.Linq;
 using UnityEngine;
 
 
-namespace Localyssation
+namespace Localyssation.Util
 {
     public static class LocalyssationConfig
     {
@@ -99,7 +99,7 @@ namespace Localyssation
             languageDropdown.OnValueChanged.AddListener(OnLanguageDropdownChanged);
             LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("MOD_SETTINGS_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
 
-            
+
             translatorModeToggle = tab.AddToggle(LocalyssationConfig.configTranslatorMode);
             translatorModeToggle.OnValueChanged.AddListener(OnTranslatorModeChanged);
 
@@ -109,7 +109,7 @@ namespace Localyssation
                 LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage);    // refresh all
             });
 
-            createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles); 
+            createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles);
 
             reloadLanguageKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadLanguageKeybind);
 
@@ -165,7 +165,7 @@ namespace Localyssation
             LocalyssationConfig.configLanguage.Value = languageKey;
         }
 
-        private void OnAddMissingKeyButtonPressed() 
+        private void OnAddMissingKeyButtonPressed()
         {
             foreach (var kvp in LanguageManager.DefaultLanguage.GetStrings())
             {
@@ -187,12 +187,12 @@ namespace Localyssation
                 if (LanguageManager.DefaultLanguage.GetStrings().TryGetValue(kvp.Key, out var valueInDefaultLanguage))
                 {
                     totalCount += 1;
-                    if (kvp.Value == valueInDefaultLanguage) 
+                    if (kvp.Value == valueInDefaultLanguage)
                         Localyssation.logger.LogMessage(kvp.Key);
                     else changedCount += 1;
                 }
             }
-            Localyssation.logger.LogMessage($"Done! {changedCount}/{totalCount} ({((float)changedCount / (float)totalCount * 100f):0.00}%) strings are different between the languages.");
+            Localyssation.logger.LogMessage($"Done! {changedCount}/{totalCount} ({changedCount / (float)totalCount * 100f:0.00}%) strings are different between the languages.");
         }
 
     }

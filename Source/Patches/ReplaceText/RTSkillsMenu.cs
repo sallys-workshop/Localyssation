@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using UnityEngine;
 using UnityEngine.UI;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
 namespace Localyssation.Patches.ReplaceText
 {

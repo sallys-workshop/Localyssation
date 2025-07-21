@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace Localyssation.Patches.ReplaceText
                             return Localyssation.GetString(
                                 GetInputKey(
                                     KeyUtil.Normalize(
-                                        $"LOCAL_BRANCH_{dialogTrigger.gameObject.scene.name}_{Util.GetChildTransformPath(dialogTrigger.transform, 2)}"
+                                        $"LOCAL_BRANCH_{dialogTrigger.gameObject.scene.name}_{PathUtil.GetChildTransformPath(dialogTrigger.transform, 2)}"
                                         )
                                     ), oldString);
                         }

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
 namespace Localyssation.Patches.ReplaceText
 {

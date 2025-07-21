@@ -4,8 +4,8 @@ using TMPro;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
-#pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
 {
     public class LangAdjustableTextMeshPro
@@ -58,7 +58,7 @@ namespace Localyssation.LangAdjutable
 
         private bool ReplaceFontForPath(string path, Language.BundledFontLookupInfo replacementFontLookupInfo)
         {
-            if (Util.GetPath(text.transform) == path)
+            if (PathUtil.GetPath(text.transform) == path)
             {
                 if (GetLoadedFont(replacementFontLookupInfo, out var loadedFont))
                 {

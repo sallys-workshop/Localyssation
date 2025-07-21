@@ -8,6 +8,7 @@ using System.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Core;
 using System.Threading.Tasks;
+using Localyssation.Util;
 
 namespace Localyssation.LanguageModule
 {

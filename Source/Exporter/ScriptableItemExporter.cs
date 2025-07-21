@@ -1,4 +1,6 @@
-﻿namespace Localyssation.Exporter
+﻿using Localyssation.Util;
+
+namespace Localyssation.Exporter
 {
     internal class ScriptableItemExporter : Exporter<ScriptableItem>
     {

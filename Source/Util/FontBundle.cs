@@ -10,7 +10,7 @@ using BepInEx;
 using MonoMod.Utils;
 using System.Collections.Frozen;
 
-namespace Localyssation
+namespace Localyssation.Util
 {
     public class FontBundle
     {
@@ -22,7 +22,7 @@ namespace Localyssation
         public bool LoadFromFileSystem()
         {
             if (string.IsNullOrEmpty(fileSystemPath)) return false;
-            
+
             var bundle = AssetBundle.LoadFromFile(fileSystemPath);
 
             Localyssation.logger.LogInfo($"Loading font bundle `{fileSystemPath}`");
@@ -42,8 +42,8 @@ namespace Localyssation
                 Localyssation.logger.LogInfo($"\t- {font.name}");
                 TMPfonts.Add(font.name, font);
             });
-            
-            
+
+
             return true;
         }
 
@@ -77,11 +77,11 @@ namespace Localyssation
 
             // no fallback for Font!
 
-            TMPfonts.Select(kv=>kv.Value).DoIf(
+            TMPfonts.Select(kv => kv.Value).DoIf(
                 font => !font.fallbackFontAssetTable.Contains(TMPfonts["unifont SDF"]),
                 font => font.fallbackFontAssetTable.Add(TMPfonts["unifont SDF"])
             );
-            
+
         }
 
         private static void RegisterFontBundle(FontBundle fontBundle)

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Localyssation.LangAdjutable;
+using Localyssation.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -155,7 +156,7 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        public static string GetPath(Transform transform) => Util.GetPath(transform);
+        public static string GetPath(Transform transform) => PathUtil.GetPath(transform);
 
         /// <summary>
         /// Remaps all UnityEngine.UI.InputField instances' placeholder texts found in this object, and under all of its children, with localised variants if the in-game strings match remap keys.
@@ -179,7 +180,7 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-        private static List<string> fallbackTextEditTags = new List<string>()
+        private static readonly List<string> fallbackTextEditTags = new List<string>()
         {
             "scalefallback"
         };

@@ -9,6 +9,7 @@ using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
 #pragma warning disable CS0618
 

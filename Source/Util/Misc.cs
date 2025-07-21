@@ -1,9 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel;
 using UnityEngine;
 
-namespace Localyssation
+namespace Localyssation.Util
 {
     public enum VanillaFonts
     {
@@ -28,7 +27,7 @@ namespace Localyssation
             return attribute == null ? value.ToString() : attribute.Description;
         }
     }
-    public static class Util
+    public static class PathUtil
     {
         public static string GetChildTransformPath(Transform transform, int depth = 0)
         {

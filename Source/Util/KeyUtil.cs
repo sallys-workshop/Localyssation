@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Localyssation
+namespace Localyssation.Util
 {
 
     public static class KeyUtil

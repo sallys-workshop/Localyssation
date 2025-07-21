@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using System.IO;
+using Localyssation.Util;
 
 namespace Localyssation.Exporter
 {

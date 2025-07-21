@@ -6,8 +6,8 @@ using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
 using Localyssation.LanguageModule;
 using static Localyssation.LanguageModule.Language;
+using Localyssation.Util;
 
-#pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
 {
     public class LangAdjustableTMProUGUIText : MonoBehaviour, ILangAdjustable
@@ -65,7 +65,7 @@ namespace Localyssation.LangAdjutable
 
         private bool ReplaceFontForPath(string path, BundledFontLookupInfo replacementFontLookupInfo)
         {
-            if (Util.GetPath(text.transform) == path)
+            if (PathUtil.GetPath(text.transform) == path)
             {
                 if (
                     replacementFontLookupInfo != null &&

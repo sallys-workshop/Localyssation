@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Immutable;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
 namespace Localyssation.Patches.ReplaceFont
 {

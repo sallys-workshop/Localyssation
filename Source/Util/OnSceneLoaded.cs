@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Localyssation
+namespace Localyssation.Util
 {
     internal static class OnSceneLoaded
     {
