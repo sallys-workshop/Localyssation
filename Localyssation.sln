@@ -3,7 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Localyssation", "Localyssation.csproj", "{356033B9-C816-43E0-9C52-5CCD6611F8ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Localyssation", "Source\Localyssation.csproj", "{5C53D5B7-0443-48ED-AB06-3945B1A6A44A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{D9474C89-5FD0-4613-B08B-7DFDB8B31919}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CHANGELOG.md = CHANGELOG.md
+		DevNote.md = DevNote.md
+		icon.png = icon.png
+		LICENSE = LICENSE
+		manifest.json = manifest.json
+		README.md = README.md
+		unifont.fontbundle = unifont.fontbundle
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +24,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{356033B9-C816-43E0-9C52-5CCD6611F8ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C53D5B7-0443-48ED-AB06-3945B1A6A44A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C53D5B7-0443-48ED-AB06-3945B1A6A44A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C53D5B7-0443-48ED-AB06-3945B1A6A44A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C53D5B7-0443-48ED-AB06-3945B1A6A44A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

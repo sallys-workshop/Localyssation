@@ -73,7 +73,7 @@ File.WriteAllText(FilePath, content);
 
 	<Target Name="ReplaceVersionText" BeforeTargets="BeforeBuild">
 		<RegexReplaceText
-			FilePath="$(ProjectDir)Source/PluginInfo.cs"
+			FilePath="$(ProjectDir)PluginInfo.cs"
 			Pattern="public\s+const\s+string\s+PLUGIN_VERSION\s*=\s*&quot;[^&quot;]*&quot;\s*;"
 			Replacement = "public const string PLUGIN_VERSION = &quot;$(Version)&quot;;"
 		/>

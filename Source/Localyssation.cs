@@ -69,7 +69,6 @@ namespace Localyssation
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
-//#pragma warning restore IDE0051
         
 #pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Update()
@@ -84,9 +83,6 @@ namespace Localyssation
             }
         }
 #pragma warning restore IDE0051
-
-        
-
 
         public const string GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED = "SAME_AS_KEY";
         public static string GetStringRaw(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)

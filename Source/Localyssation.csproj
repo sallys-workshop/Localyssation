@@ -17,29 +17,28 @@
 	
 	<PropertyGroup Label="MSBuild">
         <Configurations>Debug;Release</Configurations>
-		<MSBuildFileVersion>1.4</MSBuildFileVersion>
-		<BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
-		<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\</IntermediateOutputPath>
+		<MSBuildFileVersion>1.5</MSBuildFileVersion>
         <TargetFramework>net481</TargetFramework>
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+
     </PropertyGroup>
 
 
 
 	<ItemGroup Label="Extra Resources">
-		<None Update="CHANGELOG.md">
+		<None Update="../CHANGELOG.md">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="unifont.fontbundle">
+		<None Update="../unifont.fontbundle">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="icon.png">
+		<None Update="../icon.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="LICENSE">
+		<None Update="../LICENSE">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="README.md">
+		<None Update="../README.md">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
@@ -190,9 +189,6 @@
           <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.UIModule.dll</HintPath>
           <Private>False</Private>
         </Reference>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="dist\" />
     </ItemGroup>
     
 	
