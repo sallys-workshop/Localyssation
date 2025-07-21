@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Immutable;
+using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceFont
 {

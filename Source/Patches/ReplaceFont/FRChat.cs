@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceFont
 {
@@ -12,7 +13,7 @@ namespace Localyssation.Patches.ReplaceFont
         public static void FixChatFont(ChatBehaviour __instance, string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
         {
             var text = __instance._chatTextMesh;
-            var replacementFontLookupInfo = Localyssation.currentLanguage.info.chatFont;
+            var replacementFontLookupInfo = LanguageManager.CurrentLanguage.info.chatFont;
 
             FRUtil.replaceTmpFont(text, replacementFontLookupInfo);
         }
@@ -21,7 +22,7 @@ namespace Localyssation.Patches.ReplaceFont
         [HarmonyPostfix]
         public static void FixChatBehaviourAssets(ChatBehaviourAssets __instance)
         {
-            FRUtil.replaceTmpFont(__instance._chatText, Localyssation.currentLanguage.info.chatFont);
+            FRUtil.replaceTmpFont(__instance._chatText, LanguageManager.CurrentLanguage.info.chatFont);
         }
     }
 }

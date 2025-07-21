@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
+using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -162,6 +163,7 @@ namespace Localyssation.Patches.ReplaceText
                         //case QuestSubType.MASTERY:
                         //    __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_MASTERY", null, fontSize)}</color>";
                         //    break;
+                    
                 }
             }
             else
@@ -198,17 +200,17 @@ namespace Localyssation.Patches.ReplaceText
             var creepKey = $"{KeyUtil.GetForAsset(creep)}_NAME";
             if (requirement > 1)
             {
-                if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_{requirement}"))
+                if (LanguageManager.CurrentLanguage.ContainsKey($"{creepKey}_VARIANT_{requirement}"))
                     creepKey = $"{creepKey}_VARIANT_{requirement}";
-                else if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_PLURAL"))
+                else if (LanguageManager.CurrentLanguage.ContainsKey($"{creepKey}_PLURAL"))
                     creepKey = $"{creepKey}_PLURAL";
 
-                if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_VARIANT_{requirement}"))
+                if (LanguageManager.CurrentLanguage.ContainsKey($"{formatKey}_VARIANT_{requirement}"))
                     formatKey = $"{formatKey}_VARIANT_{requirement}";
-                else if (Localyssation.currentLanguage.strings.ContainsKey($"{formatKey}_PLURAL"))
+                else if (LanguageManager.CurrentLanguage.ContainsKey($"{formatKey}_PLURAL"))
                     formatKey = $"{formatKey}_PLURAL";
             }
-            if (Localyssation.currentLanguage.strings.ContainsKey($"{creepKey}_VARIANT_QUEST_KILLED"))
+            if (LanguageManager.CurrentLanguage.ContainsKey($"{creepKey}_VARIANT_QUEST_KILLED"))
                 creepKey = $"{creepKey}_VARIANT_QUEST_KILLED";
 
             return string.Format(

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using UnityEngine;
 using UnityEngine.UI;
+using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -46,7 +47,7 @@ namespace Localyssation.Patches.ReplaceText
                     if (!playerClass) return;
 
                     var classKey = $"{KeyUtil.GetForAsset(playerClass)}_NAME";
-                    if (Localyssation.currentLanguage.strings.ContainsKey(classKey + "_VARIANT_OF"))
+                    if (LanguageManager.CurrentLanguage.ContainsKey(classKey + "_VARIANT_OF"))
                         classKey += "_VARIANT_OF";
 
                     ToolTipManager._current.Apply_GenericToolTip(string.Format(
@@ -95,7 +96,7 @@ namespace Localyssation.Patches.ReplaceText
                     break;
                 case SkillTier.CLASS:
                     var classKey = $"{KeyUtil.GetForAsset(Player._mainPlayer._pStats._class)}_NAME";
-                    if (Localyssation.currentLanguage.strings.ContainsKey(classKey + "_VARIANT_OF"))
+                    if (LanguageManager.CurrentLanguage.ContainsKey(classKey + "_VARIANT_OF"))
                         classKey += "_VARIANT_OF";
                     txt = string.Format(
                         Localyssation.GetString("TAB_MENU_CELL_SKILLS_CLASS_HEADER", fontSize: fontSize),

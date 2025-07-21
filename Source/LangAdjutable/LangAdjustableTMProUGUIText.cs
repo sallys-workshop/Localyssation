@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
-using static Localyssation.Language;
+using Localyssation.LanguageModule;
+using static Localyssation.LanguageModule.Language;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -30,12 +31,12 @@ namespace Localyssation.LangAdjutable
         public void Awake()
         {
             text = GetComponent<TMPro.TextMeshProUGUI>();
-            Localyssation.instance.onLanguageChanged += onLanguageChanged;
+            Localyssation.instance.OnLanguageChanged += onLanguageChanged;
         }
 
         public void Start()
         {
-            AdjustToLanguage(Localyssation.currentLanguage);
+            AdjustToLanguage(LanguageManager.CurrentLanguage);
         }
 
         private void onLanguageChanged(Language newLanguage)
@@ -156,7 +157,7 @@ namespace Localyssation.LangAdjutable
 
         public void OnDestroy()
         {
-            Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+            Localyssation.instance.OnLanguageChanged -= onLanguageChanged;
             registeredTMProUGUITexts.Remove(text);
         }
     }

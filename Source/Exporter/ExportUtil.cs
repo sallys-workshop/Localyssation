@@ -23,7 +23,7 @@ namespace Localyssation.Exporter
 
         public static void InitExports()
         {
-            if (Localyssation.configExportExtra.Value)
+            if (LocalyssationConfig.ExportExtra)
             {
                 Directory.CreateDirectory(EXPORT_FOLDER);
                 Directory.Delete(EXPORT_FOLDER, true);

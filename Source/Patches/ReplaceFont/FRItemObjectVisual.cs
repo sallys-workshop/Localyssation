@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
-using Localyssation.LangAdjutable;
-using UnityEngine;
+using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceFont
 {
@@ -12,7 +11,7 @@ namespace Localyssation.Patches.ReplaceFont
         {
             if (__instance != null && __instance._itemNametagTextMesh)
             {
-                FRUtil.replaceTmpFont(__instance._itemNametagTextMesh, Localyssation.currentLanguage.info.chatFont);
+                FRUtil.replaceTmpFont(__instance._itemNametagTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
+using Localyssation.LanguageModule;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -13,7 +14,7 @@ namespace Localyssation.LangAdjutable
         public void Awake()
         {
             dropdown = GetComponent<UnityEngine.UI.Dropdown>();
-            Localyssation.instance.onLanguageChanged += onLanguageChanged;
+            Localyssation.instance.OnLanguageChanged += onLanguageChanged;
 
             // auto-shrink text according to options
             if (dropdown.itemText)
@@ -28,7 +29,7 @@ namespace Localyssation.LangAdjutable
 
         public void Start()
         {
-            AdjustToLanguage(Localyssation.currentLanguage);
+            AdjustToLanguage(LanguageManager.CurrentLanguage);
         }
 
         private void onLanguageChanged(Language newLanguage)
@@ -51,7 +52,7 @@ namespace Localyssation.LangAdjutable
 
         public void OnDestroy()
         {
-            Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+            Localyssation.instance.OnLanguageChanged -= onLanguageChanged;
             registeredDropdowns.Remove(dropdown);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Localyssation.LangAdjutable;
+using Localyssation.LanguageModule;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -152,7 +153,7 @@ namespace Localyssation.Patches.ReplaceText
                     {
                         var option = dropdown.options[i];
                         var dropdownOptionKey = $"{key}_OPTION_{i + 1}";
-                        if (Localyssation.defaultLanguage.strings.TryGetValue(dropdownOptionKey, out var dropdownOptionText))
+                        if (LanguageManager.DefaultLanguage.TryGetString(dropdownOptionKey, out var dropdownOptionText))
                             dropdownOptionsTextFuncs.Add(LangAdjustables.GetStringFunc(dropdownOptionKey, option.text));
                     }
 

@@ -2,6 +2,7 @@ using HarmonyLib;
 using Localyssation.LangAdjutable;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -24,7 +25,7 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void Text_OnEnable(Text __instance)
         {
-            if (Localyssation.currentLanguage != null && __instance != null && __instance.font != null)
+            if (LanguageManager.CurrentLanguage != null && __instance != null && __instance.font != null)
             {
                 LangAdjustables.RegisterText(__instance);
             }

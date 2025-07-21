@@ -7,8 +7,9 @@ using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Core;
+using System.Threading.Tasks;
 
-namespace Localyssation
+namespace Localyssation.LanguageModule
 {
     public class Language
     {
@@ -40,20 +41,39 @@ namespace Localyssation
 
         private static readonly ISerializer YAML_SERIALIZER = new SerializerBuilder().WithDefaultScalarStyle(ScalarStyle.DoubleQuoted).Build();
         private static readonly IDeserializer YAML_DESERIALIZER = new DeserializerBuilder().Build();
+
         public LanguageInfo info = new LanguageInfo();
         public string fileSystemPath;
-        public Dictionary<string, string> strings = new Dictionary<string, string>();
+        readonly Dictionary<string, string> strings = new Dictionary<string, string>();
+
+        public Dictionary<string, string> GetStrings() => strings;
 
         public void RegisterKey(string key, string defaultValue)
         {
             if (strings.ContainsKey(key))
             {
-                Localyssation.logger.LogWarning($"Duplicate localisation key `{key}` in language `{info.name}`({info.code})");
+                if (defaultValue != strings[key])
+                    Localyssation.logger.LogWarning($"Duplicate localisation key `{key}` in language `{info.name}`({info.code})");
                 return;
             }
             strings[key] = defaultValue;
         }
 
+        public bool TryGetString(string key, out string value)
+        {
+            return strings.TryGetValue(key, out value);
+        }
+
+        public bool ContainsKey(string key)
+        {
+            return strings.ContainsKey(key);
+        }
+
+        /// <summary>
+        /// Parallel load
+        /// </summary>
+        /// <param name="forceOverwrite"></param>
+        /// <returns></returns>
         public bool LoadFromFileSystem(bool forceOverwrite = false)
         {
             if (string.IsNullOrEmpty(fileSystemPath)) return false;
@@ -68,13 +88,15 @@ namespace Localyssation
                 Localyssation.logger.LogError(e);
                 return false;
             }
+            if (info.code == LanguageManager.DefaultLanguage.info.code) return false;   // skip default language
             try
             {
-                Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml").Do(stringsFilePath =>
+                Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml").Do(
+                stringsFilePath =>
                 {
                     var file = File.OpenText(stringsFilePath);
-                    YAML_DESERIALIZER.Deserialize<Dictionary<string, string>>(file)
-                        .Do(kv =>
+                    Parallel.ForEach(YAML_DESERIALIZER.Deserialize<Dictionary<string, string>>(file),
+                        kv =>
                         {
                             if (!forceOverwrite)
                             {
@@ -112,22 +134,16 @@ namespace Localyssation
             }
         }
 
-        public bool WriteToFileSystem()
+        public bool WriteToFileSystem(string fileName, bool noLangCode = false)
         {
             if (string.IsNullOrEmpty(fileSystemPath)) return false;
 
             try
             {
                 Directory.CreateDirectory(fileSystemPath);
-
                 var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
                 File.WriteAllText(infoFilePath, JsonConvert.SerializeObject(info, Formatting.Indented));
-
-                //var stringsFilePath = Path.Combine(fileSystemPath, "strings.tsv");
-                //var tsvRows = strings.Select(x => new List<string>() { x.Key, x.Value }).ToList();
-                //tsvRows.Insert(0, new List<string>() { "key", "value" });
-                //File.WriteAllText(stringsFilePath, TSVUtil.makeTsv(tsvRows));
-                string translationFilePath = Path.Combine(fileSystemPath, "strings.yml");
+                string translationFilePath = Path.Combine(fileSystemPath, noLangCode? $"{fileName}.yml" :$"{fileName}.{info.code}.yml");
                 var file = new StreamWriter(translationFilePath);
                 YAML_SERIALIZER.Serialize(file, strings, typeof(Dictionary<string, string>));
                 file.Close();

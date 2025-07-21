@@ -8,6 +8,7 @@ using System.IO;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
+using Localyssation.LanguageModule;
 
 #pragma warning disable CS0618
 
@@ -18,6 +19,7 @@ namespace Localyssation
 {
     [BepInDependency(Nessie.ATLYSS.EasySettings.MyPluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+    //using Language = Language.Language;
     public class Localyssation : BaseUnityPlugin
     {
 
@@ -28,74 +30,36 @@ namespace Localyssation
         internal static System.Reflection.Assembly assembly;
         internal static string dllPath;
 
-        public static Language defaultLanguage;
-        public static Language currentLanguage;
-        public static Dictionary<string, Language> languages = new Dictionary<string, Language>();
-        public static readonly List<Language> languagesList = new List<Language>();
 
-        public static Dictionary<string, FontBundle> fontBundles = new Dictionary<string, FontBundle>();
-        public static readonly List<FontBundle> fontBundlesList = new List<FontBundle>();
-        
-
-        public event System.Action<Language> onLanguageChanged;
-        internal void CallOnLanguageChanged(Language newLanguage) { onLanguageChanged?.Invoke(newLanguage); }
+        public event System.Action<Language> OnLanguageChanged;
+        internal void CallOnLanguageChanged(Language newLanguage) { OnLanguageChanged?.Invoke(newLanguage); }
 
         internal static BepInEx.Logging.ManualLogSource logger;
-        internal static BepInEx.Configuration.ConfigFile config;
-
-        internal static BepInEx.Configuration.ConfigEntry<string> configLanguage;
-        internal static BepInEx.Configuration.ConfigEntry<bool> configTranslatorMode;
-        internal static BepInEx.Configuration.ConfigEntry<bool> configCreateDefaultLanguageFiles;
-        internal static BepInEx.Configuration.ConfigEntry<bool> configShowTranslationKey;
-        internal static BepInEx.Configuration.ConfigEntry<bool> configExportExtra;
-        internal static BepInEx.Configuration.ConfigEntry<KeyCode> configReloadLanguageKeybind;
 
         internal static bool settingsTabReady = false;
         internal static bool languagesLoaded = false;
         internal static bool settingsTabSetup = false;
-        internal static Nessie.ATLYSS.EasySettings.UIElements.AtlyssDropdown languageDropdown;
 
 
-//#pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
+#pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Awake()
         {
             instance = this;
             logger = Logger;
-            config = Config;
+            LocalyssationConfig.Init(Config);
 
             assembly = System.Reflection.Assembly.GetExecutingAssembly();
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
 
             //GameAssetCache.Load();
 
-            defaultLanguage = CreateDefaultLanguage();
-            RegisterLanguage(defaultLanguage);
-            ChangeLanguage(defaultLanguage);
-            LoadLanguagesFromFileSystem();
+            LanguageManager.Init();
             //ExportUtil.InitExports();
             FontManager.LoadFontBundlesFromFileSystem();
             FontHelper.DetectVanillaFonts();
 
-            configLanguage = config.Bind("General", "Language", defaultLanguage.info.code, "Currently selected language's code");
-            if (languages.TryGetValue(configLanguage.Value, out var previouslySelectedLanguage))
-                ChangeLanguage(previouslySelectedLanguage);
-
-            configTranslatorMode = config.Bind("Translators", "Translator Mode", false, "Enables the features of this section");
-            configCreateDefaultLanguageFiles = config.Bind("Translators", "Create Default Language Files On Load", true, "If enabled, files for the default game language will be created in the mod's directory on game load");
-            configReloadLanguageKeybind = config.Bind("Translators", "Reload Language Keybind", KeyCode.F10, "When you press this button, your current language's files will be reloaded mid-game");
-            configShowTranslationKey = config.Bind("Translators", "Show Translation Key", false, "Show translation keys instead of translated string for debugging.");
-            configExportExtra = config.Bind("Translators", "Export Extra Info", false, "Export quest and item data and image to markdown for translation referencing.");
-
-            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(() =>
-            {
-                settingsTabReady = true;
-                TrySetupSettingsTab();
-            });
-
-            Nessie.ATLYSS.EasySettings.Settings.OnApplySettings.AddListener(() =>
-            {
-
-            });
+            new SettingsGUI().Init();
+            
 
 
             harmony.PatchAll();
@@ -106,142 +70,29 @@ namespace Localyssation
             LangAdjustables.Init();
         }
 //#pragma warning restore IDE0051
-        private static void TrySetupSettingsTab()
-        {
-            if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
-            settingsTabSetup = true;
-
-            var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
-
-            tab.AddHeader("Localyssation");
-
-            var languageNames = new List<string>();
-            var currentLanguageIndex = 0;
-            for (var i = 0; i < languagesList.Count; i++)
-            {
-                var language = languagesList[i];
-                languageNames.Add(language.info.name);
-                if (language == currentLanguage) currentLanguageIndex = i;
-            }
-            languageDropdown = tab.AddDropdown("Language", languageNames, currentLanguageIndex);
-            languageDropdown.OnValueChanged.AddListener((valueIndex) =>
-            {
-                var language = languagesList[valueIndex];
-                ChangeLanguage(language);
-                configLanguage.Value = language.info.code;
-            });
-            LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
-
-            tab.AddToggle(configTranslatorMode);
-            if (configTranslatorMode.Value)
-            {
-                var showTranslationKeyToggle = tab.AddToggle(configShowTranslationKey);
-                showTranslationKeyToggle.OnValueChanged.AddListener((v) => 
-                {
-                    ChangeLanguage(currentLanguage);    // refresh all
-                });
-
-                tab.AddToggle(configCreateDefaultLanguageFiles);
-                tab.AddToggle(configExportExtra);
-                tab.AddKeyButton(configReloadLanguageKeybind);
-                tab.AddButton("Add Missing Keys to Current Language", () =>
-                {
-                    foreach (var kvp in defaultLanguage.strings)
-                    {
-                        if (!currentLanguage.strings.ContainsKey(kvp.Key))
-                        {
-                            currentLanguage.strings[kvp.Key] = kvp.Value;
-                        }
-                    }
-                    currentLanguage.WriteToFileSystem();
-                });
-                tab.AddButton("Log Untranslated Strings", () =>
-                {
-                    var changedCount = 0;
-                    var totalCount = 0;
-                    logger.LogMessage($"Logging strings that are the same in {defaultLanguage.info.name} and {currentLanguage.info.name}:");
-                    foreach (var kvp in currentLanguage.strings)
-                    {
-                        if (defaultLanguage.strings.TryGetValue(kvp.Key, out var valueInDefaultLanguage))
-                        {
-                            totalCount += 1;
-                            if (kvp.Value == valueInDefaultLanguage) logger.LogMessage(kvp.Key);
-                            else changedCount += 1;
-                        }
-                    }
-                    logger.LogMessage($"Done! {changedCount}/{totalCount} ({((float)changedCount / (float)totalCount * 100f):0.00}%) strings are different between the languages.");
-                });
-            }
-        }
-
+        
 #pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Update()
         {
-            if (configTranslatorMode.Value)
+            if (LocalyssationConfig.TranslatorMode)
             {
-                if (UnityInput.Current.GetKeyDown(configReloadLanguageKeybind.Value))
+                if (UnityInput.Current.GetKeyDown(LocalyssationConfig.ReloadLanguageKeybind))
                 {
-                    currentLanguage.LoadFromFileSystem(true);
-                    CallOnLanguageChanged(currentLanguage);
+                    LanguageManager.CurrentLanguage.LoadFromFileSystem(true);
+                    CallOnLanguageChanged(LanguageManager.CurrentLanguage);
                 }
             }
         }
 #pragma warning restore IDE0051
 
-        public static void LoadLanguagesFromFileSystem()
-        {
-            var filePaths = Directory.GetFiles(Paths.PluginPath, "localyssationLanguage.json", SearchOption.AllDirectories);
-            foreach (var filePath in filePaths)
-            {
-                var langPath = Path.GetDirectoryName(filePath);
-
-                var loadedLanguage = new Language
-                {
-                    fileSystemPath = langPath
-                };
-                if (loadedLanguage.LoadFromFileSystem())
-                    RegisterLanguage(loadedLanguage);
-            }
-
-            languagesLoaded = true;
-            TrySetupSettingsTab();
-        }
-
         
 
-        public static void RegisterLanguage(Language language)
-        {
-            if (languages.ContainsKey(language.info.code)) return;
-
-            languages[language.info.code] = language;
-            languagesList.Add(language);
-        }
-
-        public static void ChangeLanguage(Language newLanguage)
-        {
-            if (currentLanguage == newLanguage) return;
-
-            currentLanguage = newLanguage;
-            instance.CallOnLanguageChanged(newLanguage);
-        }
-
-        internal static Language CreateDefaultLanguage()
-        {
-            var language = new Language();
-            language.info.code = "en-US";
-            language.info.name = "English (US)";
-            language.fileSystemPath = Path.Combine(Path.GetDirectoryName(dllPath), "defaultLanguage");
-
-            I18nKeys.Init();
-            language.strings = I18nKeys.TR_KEYS;
-            return language;
-        }
 
         public const string GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED = "SAME_AS_KEY";
         public static string GetStringRaw(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
-            if (currentLanguage.strings.TryGetValue(key, out string result)) return result;
-            if (defaultLanguage.strings.TryGetValue(key, out result)) return result;
+            if (LanguageManager.CurrentLanguage.TryGetString(key, out string result)) return result;
+            if (LanguageManager.DefaultLanguage.TryGetString(key, out result)) return result;
             return (defaultValue == GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED ? key : defaultValue);
         }
 
@@ -368,7 +219,7 @@ namespace Localyssation
 
         public static string GetString(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED, int fontSize = -1)
         {
-            if (configShowTranslationKey.Value)
+            if (LocalyssationConfig.ShowTranslationKey)
             {
                 return key;
             }
@@ -377,7 +228,7 @@ namespace Localyssation
 
         public static string GetDefaultString(string key)
         {
-            if (!defaultLanguage.strings.TryGetValue(key, out string result))
+            if (!LanguageManager.DefaultLanguage.TryGetString(key, out string result))
                 result = "";
             return result;
         }

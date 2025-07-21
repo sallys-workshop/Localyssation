@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Localyssation.LanguageModule;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -17,7 +18,7 @@ namespace Localyssation.LangAdjutable
 
         public static void Init()
         {
-            Localyssation.instance.onLanguageChanged += (newLanguage) =>
+            Localyssation.instance.OnLanguageChanged += (newLanguage) =>
             {
                 // copy the list to avoid the loop breaking if an entry self-destructs mid-loop
                 var safeAdjustables = new List<ILangAdjustable>(nonMonoBehaviourAdjustables);

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
+using Localyssation.LanguageModule;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -33,12 +34,12 @@ namespace Localyssation.LangAdjutable
         {
             text = GetComponent<TextMeshPro>();
             //text.verticalOverflow = VerticalWrapMode.Overflow;
-            Localyssation.instance.onLanguageChanged += onLanguageChanged;
+            Localyssation.instance.OnLanguageChanged += onLanguageChanged;
         }
 
         public void Start()
         {
-            AdjustToLanguage(Localyssation.currentLanguage);
+            AdjustToLanguage(LanguageManager.CurrentLanguage);
         }
 
         private bool ReplaceFontIfMatch(string originalFontName, Language.BundledFontLookupInfo replacementFontLookupInfo)
@@ -163,7 +164,7 @@ namespace Localyssation.LangAdjutable
 
         public void OnDestory()
         {
-            Localyssation.instance.onLanguageChanged -= onLanguageChanged;
+            Localyssation.instance.OnLanguageChanged -= onLanguageChanged;
             registeredTextMeshPro.Remove(text);
         }
     }
