@@ -17,7 +17,7 @@ namespace Localyssation
             public static readonly string TOOLTIP_DAMAGE_TYPE
                 = Create("FORMAT_SKILL_TOOLTIP_DAMAGE_TYPE", "{0} Skill");
             public static readonly string TOOLTIP_ITEM_COST
-                = Create("FORMAT_SKILL_TOOLTIP_ITEM_COST", "x{0} {1}");
+                = Create("FORMAT_SKILL_TOOLTIP_ITEM_COST", "{0} {1}");
             public static readonly string TOOLTIP_MANA_COST
                 = Create("FORMAT_SKILL_TOOLTIP_MANA_COST", "{0} Mana");
             public static readonly string TOOLTIP_HEALTH_COST

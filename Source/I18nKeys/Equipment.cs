@@ -9,7 +9,7 @@ namespace Localyssation
 
         internal static class Equipment
         {
-            internal static void init() { }
+            internal static void Init() { }
             public static readonly string TOOLTIP_GAMBLE_ITEM_NAME
                 = Create("EQUIP_TOOLTIP_GAMBLE_ITEM_NAME", "Mystery Gear");
 
@@ -45,8 +45,8 @@ namespace Localyssation
                 = Create("EQUIP_TOOLTIP_STATS_DAMAGE", "Damage");
             public static readonly string STATS_BASE_DAMAGE
                 = Create("EQUIP_TOOLTIP_STATS_BASE_DAMAGE", "Base Damage");
-            public static readonly string FORMAT_STATS_DAMAGE_UNSCALED
-                = Create("FORMAT_EQUIP_STATS_DAMAGE_UNSCALED", "({0} - {1}) Damage");
+            //public static readonly string FORMAT_STATS_DAMAGE_UNSCALED
+            //    = Create("FORMAT_EQUIP_STATS_DAMAGE_UNSCALED", "({0} - {1}){2} Damage");
             public static readonly string FORMAT_STATS_BLOCK_THRESHOLD
                 = Create("FORMAT_EQUIP_STATS_BLOCK_THRESHOLD", "Block threshold: {0} damage");
 

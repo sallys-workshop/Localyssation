@@ -177,7 +177,7 @@ namespace Localyssation.Patches.ReplaceText
                     I18nKeys.Equipment.TOOLTIP_TYPE_LEGGINGS,
                     I18nKeys.Equipment.TOOLTIP_TYPE_CAPE,
                     I18nKeys.Equipment.TOOLTIP_TYPE_RING,
-                    I18nKeys.Equipment.FORMAT_STATS_DAMAGE_UNSCALED,
+                    //I18nKeys.Equipment.FORMAT_STATS_DAMAGE_UNSCALED,
                     //I18nKeys.Equipment.
                 })
                 .Unwrap();

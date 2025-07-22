@@ -19,6 +19,9 @@ namespace Localyssation
                 public static readonly string CELL_AXIS_TYPE_OPTION_3
                     = Create("SETTINGS_INPUT_CELL_AXIS_TYPE_OPTION_3", "Playstation 4");
 
+                public static readonly string GAME_PAD_WIP
+                    = Create("SETTINGS_INPUT_GAME_PAD_WIP", "*Gamepad Input is a work in progress.\r\nVarious menu elements are incomplete.");
+
                 public static readonly string HEADER_CAMERA_CONTROL
                     = Create("SETTINGS_INPUT_HEADER_CAMERA_CONTROL", "Camera Control");
                 public static readonly string CELL_CAMERA_SENSITIVITY
@@ -128,6 +131,9 @@ namespace Localyssation
                     = Create("SETTINGS_INPUT_CELL_KEYBINDING_WHO_TAB", "Who Tab");
                 public static readonly string CELL_KEYBINDING_HIDE_UI
                     = Create("SETTINGS_INPUT_CELL_KEYBINDING_HIDE_UI", "Hide Game UI");
+
+                public static readonly string CELL_RESET_BINDINGS
+                    = Create("SETTINGS_INPUT_CELL_RESET_BINDINGS", "Reset Bindings");
             }
 
         }

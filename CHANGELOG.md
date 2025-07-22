@@ -1,3 +1,24 @@
+## 2.0.0
+- Remake font bundle
+	- Remove json descriptor
+	- Using `.fontbundle` suffix to locate asset bundles and identify them as font bundles
+	- Associated modification for `localyssationLanguage.json`
+		- `chatFont` field for replacing all `TMP_FontAsset` type font
+			- Includes chat, chat bubble, items on the ground, and nametag of players
+		- `fontReplacement` dictionary for replacing arbitrary `Font` type font in game, compatible to mods.
+		- `pathSpecifiedFontReplacement` for replacing `Text` component in specified `GameObject` path, for some of UI elements in game have weird settings and you want to stick a different font for them.
+		- `replacementForXXXFont` field are removed (Will not cause error if remains in your json)
+		- Font description for replacment don't need to specify which font bundle to use
+		- Font scale merges into font descriptor in language json
+- Using `YAML` as translation strings file
+	- Will load `tsv` format for backward compatibility
+	- Default language generation will use yml format
+	- Allow modders adding their own localisation file for their own mod
+	- Add missing translation keys button now creates a `missing.{CurrentLanguage.code}.yml` at the same folder of your `localyssationLanguage.json`
+		- Note: anything inside that yml, if exists, **will be erased**
+- Localisation keys updates
+	- Localized localyssation settings tab
+
 ## 202507.07.1.2
 * Fixed an issue that "enchanted" creeps cannot display their "enchantment" correctly.
 * Added multiplayer "Join" "Host" and "Return" to translation

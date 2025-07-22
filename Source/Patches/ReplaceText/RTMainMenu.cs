@@ -80,7 +80,7 @@ namespace Localyssation.Patches.ReplaceText
                     RTUtil.RemapAllTextUnderObject(obj_Canvas_characterSelect.gameObject, new Dictionary<string, string>()
                     {
                         { "_text_header", "CHARACTER_SELECT_HEADER" },
-                        { "_button_createCharacter", "CHARACTER_SELECT_BUTTON_CREATE_CHARACTER" },
+                        //{ "_button_createCharacter", "CHARACTER_SELECT_BUTTON_CREATE_CHARACTER" },
                         { "_button_deleteCharacter", "CHARACTER_SELECT_BUTTON_DELETE_CHARACTER" },
                         { "_button_select", "CHARACTER_SELECT_BUTTON_SELECT_CHARACTER" },
                         { "_button_return", "CHARACTER_SELECT_BUTTON_RETURN" },
@@ -124,7 +124,7 @@ namespace Localyssation.Patches.ReplaceText
                             { "_characterButtonSelector", "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_TEXTURE" },
                             { "Image", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_HEADER" },
                             { "Toggle_lockColor", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_LOCK_COLOR" },
-                            { "_button_defaultColor", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
+                            //{ "_button_defaultColor", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
                         });
                     if (customizer_head)
                         RTUtil.RemapAllTextUnderObject(customizer_head.gameObject, new Dictionary<string, string>()
@@ -150,7 +150,7 @@ namespace Localyssation.Patches.ReplaceText
                             { "_characterSlider_bottom", "CHARACTER_CREATION_CUSTOMIZER_BODY_BOTTOM" },
                             { "_characterButtonSelector_tail", "CHARACTER_CREATION_CUSTOMIZER_BODY_TAIL" },
                             { "_toggle_leftHanded", "CHARACTER_CREATION_CUSTOMIZER_BODY_TOGGLE_LEFT_HANDED" },
-                            { "_button_defaultBody", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
+                            //{ "_button_defaultBody", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
                         });
                     if (customizer_trait)
                         RTUtil.RemapAllTextUnderObject(customizer_trait.gameObject, new Dictionary<string, string>()

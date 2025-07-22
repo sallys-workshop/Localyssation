@@ -14,7 +14,7 @@ namespace Localyssation
             CharacterCreation.init();
             CharacterSelect.Init();
             Enums.init();
-            Equipment.init();
+            Equipment.Init();
             Feedback.Init();
             Item.Init();
             Lore.Init();
