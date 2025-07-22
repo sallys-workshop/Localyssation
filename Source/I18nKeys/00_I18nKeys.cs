@@ -21,7 +21,7 @@ namespace Localyssation
             MainMenu.init();
             Quest.init();
             ScriptableStatusCondition.init();
-            Settings.init();
+            Settings.Init();
             SkillMenu.init();
             TabMenu.Init();
         }

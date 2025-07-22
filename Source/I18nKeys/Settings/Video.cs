@@ -7,7 +7,7 @@ namespace Localyssation
         {
             internal static class Video
             {
-                internal static void init() { }
+                internal static void Init() { }
                 public static readonly string HEADER_GAME_EFFECT_SETTINGS
                     = Create("SETTINGS_VIDEO_HEADER_GAME_EFFECT_SETTINGS", "Display Sensitive Settings");
                 public static readonly string CELL_PROPORTIONS_TOGGLE

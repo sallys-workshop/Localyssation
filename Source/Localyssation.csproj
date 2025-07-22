@@ -49,6 +49,9 @@
 		<None Update="../README.md">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Update="../manifest.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 	
     <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->

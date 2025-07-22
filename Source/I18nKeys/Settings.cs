@@ -6,12 +6,12 @@ namespace Localyssation
 
         internal static partial class Settings
         {
-            internal static void init()
+            internal static void Init()
             {
-                Video.init();
+                Video.Init();
                 Audio.Init();
                 Input.init();
-                Network.init();
+                Network.Init();
             }
             public static readonly string BUTTON_VIDEO
                 = Create("SETTINGS_TAB_BUTTON_VIDEO", "Display");

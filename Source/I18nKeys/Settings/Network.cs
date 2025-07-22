@@ -7,11 +7,9 @@ namespace Localyssation
         {
             internal static class Network
             {
-                internal static void init() { }
+                internal static void Init() { }
                 public static readonly string HEADER_UI_SETTINGS
                     = Create("SETTINGS_NETWORK_HEADER_UI_SETTINGS", "UI Settings");
-                public static readonly string CELL_LOCALYSSATION_LANGUAGE
-                    = Create("SETTINGS_NETWORK_CELL_LOCALYSSATION_LANGUAGE", "Language");
                 public static readonly string CELL_DISPLAY_CREEP_NAMETAGS
                     = Create("SETTINGS_NETWORK_CELL_DISPLAY_CREEP_NAMETAGS", "Display Enemy Nametags");
                 public static readonly string CELL_DISPLAY_GLOBAL_NICKNAME_TAGS
