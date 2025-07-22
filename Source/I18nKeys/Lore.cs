@@ -47,8 +47,8 @@ namespace Localyssation
                 = Create(nameof(GAMBLING_SHOP_BUTTON_REROLL), "Re-roll Stock");
             public static readonly string DUNGEON_PORTAL_ENTER_PARTY
                 = Create(nameof(DUNGEON_PORTAL_ENTER_PARTY), "Join Party");
-            public static readonly string DUNGEON_PORTAL_ENTER_LEVELED
-                = Create(nameof(DUNGEON_PORTAL_ENTER_LEVELED), "Enter Dungeon (LV {0}-{1})");
+            public static readonly string DUNGEON_PORTAL_ENTER_LEVELED_FORMAT
+                = Create(nameof(DUNGEON_PORTAL_ENTER_LEVELED_FORMAT), "Enter Dungeon (LV {0}-{1})");
         }
 
     }

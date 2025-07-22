@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation.Util;
 using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText
@@ -54,6 +55,14 @@ namespace Localyssation.Patches.ReplaceText
                     "01",
                     "02"
             ), supressNotfoundWarnings: true, rawText: true);
+        }
+
+        [HarmonyPatch(typeof(ActionBarManager), nameof(ActionBarManager.Handle_CastBar))]
+        [HarmonyPostfix]
+        public static void ActionBarManager__Handle_CastBar__Postfix(ActionBarManager __instance)
+        {
+            if (__instance._player._currentPlayerAction == PlayerAction.CASTING && __instance._pCast && __instance._pCast._currentCastSkill)
+                __instance._castBarTag.text = Localyssation.GetString(KeyUtil.GetForAsset(__instance._pCast._currentCastSkill) + "_NAME");
         }
     }
 }
