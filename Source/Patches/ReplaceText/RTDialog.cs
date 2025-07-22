@@ -109,32 +109,65 @@ namespace Localyssation.Patches.ReplaceText
             var buttonText = newButton.GetComponentInChildren<Text>();
             if (buttonText)
             {
-                var branchTypes = new Dictionary<DialogBranch[], string>()
+                Dictionary<DialogBranch[], string> branchTypes = new Dictionary<DialogBranch[], string>()
                 {
                     { __instance._scriptableDialog._dialogBranches, "BRANCH" },
-                    { __instance._scriptableDialog._introductionBranches, "INTRODUCTION_BRANCH" }
+                    { __instance._scriptableDialog._introductionBranches, "INTRODUCTION_BRANCH" },
                 };
+                bool replaced = false;
                 foreach (var branchType in branchTypes)
                 {
-                    var branchArray = branchType.Key;
-                    var branchTypeName = branchType.Value;
-                    for (var branchIndex = 0; branchIndex < branchArray.Length; branchIndex++)
+                    DialogBranch[] branchArray = branchType.Key;
+                    string branchTypeName = branchType.Value;
+                    for (int branchIndex = 0; branchIndex < branchArray.Length; branchIndex++)
                     {
-                        var branch = branchArray[branchIndex];
-                        for (var dialogIndex = 0; dialogIndex < branch.dialogs.Length; dialogIndex++)
+                        DialogBranch branch = branchArray[branchIndex];
+                        for (int dialogIndex = 0; dialogIndex < branch.dialogs.Length; dialogIndex++)
                         {
-                            var dialog = branch.dialogs[dialogIndex];
-                            for (var selectionIndex = 0; selectionIndex < dialog._dialogSelections.Length; selectionIndex++)
+                            Dialog dialog = branch.dialogs[dialogIndex];
+                            for (int selectionIndex = 0; selectionIndex < dialog._dialogSelections.Length; selectionIndex++)
                             {
-                                var selection = dialog._dialogSelections[selectionIndex];
+                                DialogSelection selection = dialog._dialogSelections[selectionIndex];
                                 if (selection == _dialogSelection)
                                 {
                                     buttonText.text = Localyssation.GetString($"{key}_{branchTypeName}_{branchIndex}_DIALOG_{dialogIndex}_SELECTION_{selectionIndex}", buttonText.text, buttonText.fontSize);
+                                    replaced = true;
+                                    goto outsideLoop;   // I'll pour another pile of shit here
                                 }
                             }
                         }
                     }
                 }
+            outsideLoop:;   // Shit here
+                /// <see cref="GameLoadPatches.RegisterKeysForDialogBranch"/>
+                /// <see cref="GameLoadPatches.RegisterSceneSpecificStrings"/>
+                /// Only for the local diaglog branch
+                if (!replaced && __instance._currentDialogTrigger != null && __instance._currentDialogTrigger._useLocalDialogBranch)
+                {
+                    key = KeyUtil.GetForAsset(__instance._scriptableDialog);
+                    DialogTrigger dialogTrigger = __instance._currentDialogTrigger;
+                    DialogBranch branch = __instance._currentDialogTrigger._localDialogBranch;
+                    string sceneName = dialogTrigger.gameObject.scene.name;
+                    string branchTypeName = KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{PathUtil.GetChildTransformPath(dialogTrigger.transform, 2)}");
+                    for (var dialogIndex = 0; dialogIndex < branch.dialogs.Length; dialogIndex++)
+                    {
+                        Dialog dialog = branch.dialogs[dialogIndex];
+                        for (var selectionIndex = 0; selectionIndex < dialog._dialogSelections.Length; selectionIndex++)
+                        {
+                            DialogSelection selection = dialog._dialogSelections[selectionIndex];
+                            if (selection == _dialogSelection)
+                            {
+                                string finalKey = $"{key}_{branchTypeName}_DIALOG_{dialogIndex}_SELECTION_{selectionIndex}";
+                                Localyssation.logger.LogInfo(finalKey);
+                                buttonText.text = Localyssation.GetString(finalKey, buttonText.text, buttonText.fontSize);
+                                replaced = true;
+                                //goto outsideLoop; oh--no~no~no~no~no~no~
+                                return; // for the holy dimension
+                            }
+                        }
+                    }
+                }                // I'm crucified
+
             }
         }
 

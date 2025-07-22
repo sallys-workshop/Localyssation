@@ -35,6 +35,20 @@ namespace Localyssation
                 = Create(nameof(INTERACT_OPEN), "OPEN");
             public static readonly string INTERACT_PICK_UP
                 = Create(nameof(INTERACT_PICK_UP), "PICK UP");
+
+            public static readonly string WORLDPORTAL_SELECT_WAYPOINT
+                = Create(nameof(WORLDPORTAL_SELECT_WAYPOINT), "- Select Waypoint -");
+            public static readonly string WORLDPORTAL_TITLE
+                = Create(nameof(WORLDPORTAL_TITLE), "World Portal");
+            public static readonly string WORLDPORTAL_TELEPORT
+                = Create(nameof(WORLDPORTAL_TELEPORT), "Teleport");
+
+            public static readonly string GAMBLING_SHOP_BUTTON_REROLL
+                = Create(nameof(GAMBLING_SHOP_BUTTON_REROLL), "Re-roll Stock");
+            public static readonly string DUNGEON_PORTAL_ENTER_PARTY
+                = Create(nameof(DUNGEON_PORTAL_ENTER_PARTY), "Join Party");
+            public static readonly string DUNGEON_PORTAL_ENTER_LEVELED
+                = Create(nameof(DUNGEON_PORTAL_ENTER_LEVELED), "Enter Dungeon (LV {0}-{1})");
         }
 
     }

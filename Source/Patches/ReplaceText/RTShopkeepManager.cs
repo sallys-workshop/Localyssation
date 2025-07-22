@@ -1,12 +1,22 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
 
     internal static partial class RTReplacer
     {
+        // _button_rerollGamble
+        [HarmonyPatch(typeof(ShopkeepManager), nameof(ShopkeepManager.Awake))]
+        [HarmonyPostfix]
+        public static void ShopkeepManager_Awake_Postfix(ShopkeepManager __instance)
+        {
+            __instance._rerollGambleButton.GetComponentInChildren<Text>().text = Localyssation.GetString(I18nKeys.Lore.GAMBLING_SHOP_BUTTON_REROLL);
+        }
+
+
         [HarmonyPatch(typeof(ShopkeepManager), nameof(ShopkeepManager.Handle_ShopkeepUIBehavior))]
         [HarmonyPostfix]
         public static void ShopkeepManager_Handle_ShopkeepUIBehavior_Postfix(ShopkeepManager __instance)
