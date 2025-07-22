@@ -55,14 +55,14 @@ File.WriteAllText(FilePath, content);
 
 	<Target Name="CopyResources" AfterTargets="PostBuildEvent">
 		<ItemGroup>
-			<FilesToCopy Include="$(ProjectDir)../CHANGELOG.md" />
-			<FilesToCopy Include="$(ProjectDir)../unifont.fontbundle" />
-			<FilesToCopy Include="$(ProjectDir)../icon.png" />
-			<FilesToCopy Include="$(ProjectDir)../LICENSE" />
-			<FilesToCopy Include="$(ProjectDir)../README.md" />
-			<FilesToCopy Include="$(ProjectDir)../manifest.json" />
+			<FilesToCopy Include="$(ProjectDir)..\CHANGELOG.md" />
+			<FilesToCopy Include="$(ProjectDir)..\unifont.fontbundle" />
+			<FilesToCopy Include="$(ProjectDir)..\icon.png" />
+			<FilesToCopy Include="$(ProjectDir)..\LICENSE" />
+			<FilesToCopy Include="$(ProjectDir)..\README.md" />
+			<FilesToCopy Include="$(ProjectDir)..\manifest.json" />
 		</ItemGroup>
-		<Copy />
+		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(TargetDir)"/>
 	</Target>
 
 	<Target Name="ManageResources" AfterTargets="PostBuildEvent">
