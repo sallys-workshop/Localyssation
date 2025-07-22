@@ -16,8 +16,8 @@ namespace Localyssation.Patches.ReplaceText
         {
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new string[]
             {
-                I18nKeys.Lore.DUNGEON_PORTAL_ENTER_LEVELED
-            });
+                I18nKeys.Lore.DUNGEON_PORTAL_ENTER_LEVELED_FORMAT
+            }, allowRepeat:true);
         }
 
         [HarmonyPatch(typeof(DungeonPortalManager), nameof(DungeonPortalManager.Update))]
