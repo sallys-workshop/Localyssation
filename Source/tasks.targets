@@ -62,7 +62,7 @@ File.WriteAllText(FilePath, content);
 			<FilesToCopy Include="$(ProjectDir)..\README.md" />
 			<FilesToCopy Include="$(ProjectDir)..\manifest.json" />
 		</ItemGroup>
-		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(TargetDir)"/>
+		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
 	</Target>
 
 	<Target Name="ManageResources" AfterTargets="PostBuildEvent">
