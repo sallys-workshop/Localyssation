@@ -22,6 +22,14 @@
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
 
     </PropertyGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="I18nKeys\Settings\模板.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Include="I18nKeys\Settings\模板.cs" />
+	</ItemGroup>
 
 
 

@@ -77,6 +77,11 @@ File.WriteAllText(FilePath, content);
 			Pattern="public\s+const\s+string\s+PLUGIN_VERSION\s*=\s*&quot;[^&quot;]*&quot;\s*;"
 			Replacement = "public const string PLUGIN_VERSION = &quot;$(Version)&quot;;"
 		/>
+		<RegexReplaceText
+			FilePath="$(ProjectDir)..\manifest.json"
+			Pattern="&quot;version_number&quot;\s*:\s*&quot;[^&quot;]*&quot;"
+			Replacement ="&quot;version_number&quot;: &quot;$(Version)&quot;"
+		/>
 	</Target>
 
 </Project>

@@ -21,6 +21,8 @@ namespace Localyssation
                 = Create("SETTINGS_TAB_BUTTON_INPUT", "Input");
             public static readonly string BUTTON_NETWORK
                 = Create("SETTINGS_TAB_BUTTON_NETWORK", "Interface");
+            public static readonly string BUTTON_MODS
+                = Create("SETTINGS_TAB_BUTTON_MODS", "Mods");
 
             public static readonly string BUTTON_RESET_TO_DEFAULTS
                 = Create("SETTINGS_BUTTON_RESET_TO_DEFAULTS", "Reset to Defaults");

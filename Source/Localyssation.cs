@@ -47,7 +47,6 @@ namespace Localyssation
         {
             instance = this;
             logger = Logger;
-            LocalyssationConfig.Init(Config);
 
             assembly = System.Reflection.Assembly.GetExecutingAssembly();
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
@@ -59,7 +58,8 @@ namespace Localyssation
             FontManager.LoadFontBundlesFromFileSystem();
             FontHelper.DetectVanillaFonts();
 
-            new SettingsGUI().Init();
+            LocalyssationConfig.Init(Config);
+            SettingsGUI.Init();
             
 
 

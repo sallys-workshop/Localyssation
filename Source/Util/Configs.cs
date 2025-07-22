@@ -12,48 +12,73 @@ namespace Localyssation.Util
 {
     public static class LocalyssationConfig
     {
-        internal static ConfigFile config;
+        private static ConfigFile config;
 
-
-        internal static ConfigEntry<string> configLanguage;
+        public static readonly ConfigDefinition configLanguageDefinition = new ConfigDefinition("General", "Language");
+        internal static ConfigEntry<string> configLanguage { get; private set; }
         public static string Language { get => configLanguage.Value; }
 
-        internal static ConfigEntry<bool> configTranslatorMode;
+        public static readonly ConfigDefinition configTraslatorModeDefinition = new ConfigDefinition("Translators", "Translator Mode");
+        internal static ConfigEntry<bool> configTranslatorMode { get; private set; }
         public static bool TranslatorMode { get => configTranslatorMode.Value; }
 
-        internal static ConfigEntry<bool> configCreateDefaultLanguageFiles;
+        public static readonly ConfigDefinition configCreateDefaultLanguageFilesDefinition = new ConfigDefinition("Translators", "Create Default Language Files On Load");
+        internal static ConfigEntry<bool> configCreateDefaultLanguageFiles { get; private set; }
         public static bool CreateDefaultLanguageFiles { get => configCreateDefaultLanguageFiles.Value; }
 
-        internal static ConfigEntry<bool> configShowTranslationKey;
+        public static readonly ConfigDefinition configShowTranslationKeyDefinition = new ConfigDefinition("Translators", "Show Translation Key");
+        internal static ConfigEntry<bool> configShowTranslationKey { get; private set; }
         public static bool ShowTranslationKey { get => configShowTranslationKey.Value; }
 
-        internal static ConfigEntry<bool> configExportExtra;
+        public static readonly ConfigDefinition configExportExtraDefinition = new ConfigDefinition("Translators", "Export Extra Info");
+        internal static ConfigEntry<bool> configExportExtra { get; private set; }
         public static bool ExportExtra { get => configExportExtra.Value; }
 
-        internal static ConfigEntry<KeyCode> configReloadLanguageKeybind;
+        public static readonly ConfigDefinition configReloadLanguageKeybindDefinition = new ConfigDefinition("Translators", "Reload Language Keybind");
+        internal static ConfigEntry<KeyCode> configReloadLanguageKeybind { get; private set; }
         public static KeyCode ReloadLanguageKeybind { get => configReloadLanguageKeybind.Value; }
 
         public static void Init(ConfigFile _config)
         {
             config = _config;
-            configLanguage = config.Bind("General", "Language", LanguageManager.DefaultLanguage.info.code, "Currently selected language's code");
+            configLanguage = config.Bind(configLanguageDefinition, LanguageManager.DefaultLanguage.info.code, new ConfigDescription("Currently selected language's code"));
             if (LanguageManager.GetLanguage(Language, out var previouslySelectedLanguage))
                 LanguageManager.ChangeLanguage(previouslySelectedLanguage);
 
-            configTranslatorMode = config.Bind("Translators", "Translator Mode", false, "Enables the features of this section");
-            configCreateDefaultLanguageFiles = config.Bind("Translators", "Create Default Language Files On Load", true, "If enabled, files for the default game language will be created in the mod's directory on game load");
-            configReloadLanguageKeybind = config.Bind("Translators", "Reload Language Keybind", KeyCode.F10, "When you press this button, your current language's files will be reloaded mid-game");
-            configShowTranslationKey = config.Bind("Translators", "Show Translation Key", false, "Show translation keys instead of translated string for debugging.");
-            configExportExtra = config.Bind("Translators", "Export Extra Info", false, "Export quest and item data and image to markdown for translation referencing.");
+            configTranslatorMode = config.Bind(
+                configTraslatorModeDefinition, 
+                false, 
+                new ConfigDescription("Enables the features of this section")
+                );
+            configCreateDefaultLanguageFiles = config.Bind(
+                configCreateDefaultLanguageFilesDefinition, 
+                true, 
+                new ConfigDescription("If enabled, files for the default game language will be created in the mod's directory on game load")
+                );
+            configReloadLanguageKeybind = config.Bind(
+                configReloadLanguageKeybindDefinition, 
+                KeyCode.F10, 
+                new ConfigDescription("When you press this button, your current language's files will be reloaded mid-game")
+                );
+            configShowTranslationKey = config.Bind(
+                configShowTranslationKeyDefinition, 
+                false, 
+                new ConfigDescription("Show translation keys instead of translated string for debugging.")
+                );
+            configExportExtra = config.Bind(
+                configExportExtraDefinition, 
+                false, 
+                new ConfigDescription("Export quest and item data and image to markdown for translation referencing.")
+                );
 
         }
     }
 
     internal class SettingsGUI
     {
-        internal bool settingsTabReady = false;
-        internal bool languagesLoaded = false;
-        internal bool settingsTabSetup = false;
+        //internal bool settingsTabReady = false;
+        //internal bool languagesLoaded = false;
+        //internal bool settingsTabSetup = false;
 
         private AtlyssDropdown languageDropdown;
         private List<string> languageKeys;
@@ -67,16 +92,21 @@ namespace Localyssation.Util
         private AtlyssButton createMissingForCurrentLangButton;
         private AtlyssButton logUntranslatedStringsButton;
 
+        private static Color ENABLED_COLOR = Color.white;
+        private static Color DISABLED_COLOR = Color.grey;
+
+        private static SettingsGUI instance = null;
+        public static void Init()
+        {
+            if (instance == null)
+                instance = new SettingsGUI();
+        }
 
         // Require language loaded
-        public void Init()
+        public SettingsGUI()
         {
-            TrySetupSettingsTab();
-            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(() =>
-            {
-                settingsTabReady = true;
-                TrySetupSettingsTab();
-            });
+            //TrySetupSettingsTab();
+            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(TrySetupSettingsTab);
 
             Nessie.ATLYSS.EasySettings.Settings.OnApplySettings.AddListener(() =>
             {
@@ -86,10 +116,11 @@ namespace Localyssation.Util
 
         private void TrySetupSettingsTab()
         {
-            if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
-            settingsTabSetup = true;
+            //if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
+            //settingsTabSetup = true;
 
             var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
+            LangAdjustables.RegisterText(tab.TabButton.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.BUTTON_MODS));
 
             tab.AddHeader("Localyssation");
 
@@ -97,27 +128,44 @@ namespace Localyssation.Util
             var currentLanguageIndex = languageKeys.IndexOf(LanguageManager.CurrentLanguage.info.code);
             languageDropdown = tab.AddDropdown("Language", languageKeys.Select(key => LanguageManager.languages[key].info.name).ToList(), currentLanguageIndex);
             languageDropdown.OnValueChanged.AddListener(OnLanguageDropdownChanged);
-            LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc("MOD_SETTINGS_CELL_LOCALYSSATION_LANGUAGE", languageDropdown.LabelText));
+            LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LANGUAGE));
 
 
             translatorModeToggle = tab.AddToggle(LocalyssationConfig.configTranslatorMode);
             translatorModeToggle.OnValueChanged.AddListener(OnTranslatorModeChanged);
+            LangAdjustables.RegisterText(translatorModeToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.TRANSLATOR_MODE));
 
             showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
             showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
             {
                 LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage);    // refresh all
             });
+            LangAdjustables.RegisterText(showTranslationKeyToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.SHOW_TRANSLATION_KEY));
 
             createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles);
+            LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.CREATE_DEFAULT_LANGUAGE_FILES));
 
             reloadLanguageKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadLanguageKeybind);
+            LangAdjustables.RegisterText(reloadLanguageKeybind.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.RELOAD_LANGUAGE_KEYBIND));
 
             exportExtraToggle = tab.AddToggle(LocalyssationConfig.configExportExtra);
+            LangAdjustables.RegisterText(exportExtraToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.EXPORT_EXTRA));
 
-            createMissingForCurrentLangButton = tab.AddButton("Add Missing Keys to Current Language", OnAddMissingKeyButtonPressed);
+            createMissingForCurrentLangButton = tab.AddButton(
+                Localyssation.GetDefaultString(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE), 
+                OnAddMissingKeyButtonPressed
+                );
+            LangAdjustables.RegisterText(createMissingForCurrentLangButton.ButtonLabel,
+                LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE));
 
-            logUntranslatedStringsButton = tab.AddButton("Log Untranslated Strings", OnLogUntranslated);
+            logUntranslatedStringsButton = tab.AddButton(
+                Localyssation.GetDefaultString(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS), 
+                OnLogUntranslated
+                );
+            LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
+                LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
+                );
+            
 
             OnTranslatorModeChanged(LocalyssationConfig.TranslatorMode);
 
@@ -127,21 +175,25 @@ namespace Localyssation.Util
         {
             if (uiElement is AtlyssButton button)
             {
-                button.ButtonLabel.enabled = enabled;
+                //button.ButtonLabel.enabled = enabled;
                 button.Button.enabled = enabled;
+                button.ButtonLabel.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
                 return;
             }
             if (uiElement is AtlyssKeyButton keyButton)
             {
-                keyButton.Label.enabled = enabled;
+                //keyButton.Label.enabled = enabled;
                 keyButton.Button.enabled = enabled;
-                keyButton.ButtonLabel.enabled = enabled;
+                //keyButton.ButtonLabel.enabled = enabled;
+                keyButton.Label.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
+                keyButton.ButtonLabel.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
                 return;
             }
             if (uiElement is AtlyssToggle toggle)
             {
-                toggle.Label.enabled = enabled;
+                //toggle.Label.enabled = enabled;
                 toggle.Toggle.enabled = enabled;
+                toggle.Label.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
                 return;
             }
             Localyssation.logger.LogError($"Unknown UI element type: {uiElement.GetType()}");

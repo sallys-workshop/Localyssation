@@ -18,6 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		unifont.fontbundle = unifont.fontbundle
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "调试", "调试", "{B9D2E036-464C-45E9-933A-0A790FF949AC}"
+	ProjectSection(SolutionItems) = preProject
+		C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\test2\BepInEx\LogOutput.log = C:\Users\TowardTheStars\AppData\Roaming\r2modmanPlus-local\ATLYSS\profiles\test2\BepInEx\LogOutput.log
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
