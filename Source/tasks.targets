@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup Label="Output">
 		<ZipOutputFileName>$(AssemblyName)-v$(ZipFileVersion).zip</ZipOutputFileName>
-		<ZipOutputPath>$(MSBuildProjectDirectory)/dist/</ZipOutputPath>
+		<ZipOutputPath>$(MSBuildProjectDirectory)/../dist/</ZipOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Release No PDB">
@@ -40,6 +40,31 @@ File.WriteAllText(FilePath, content);
 		</Task>
 	</UsingTask>
 
+	<Target Name="ReplaceVersionText" BeforeTargets="BeforeBuild">
+		<RegexReplaceText
+			FilePath="$(ProjectDir)PluginInfo.cs"
+			Pattern="public\s+const\s+string\s+PLUGIN_VERSION\s*=\s*&quot;[^&quot;]*&quot;\s*;"
+			Replacement = "public const string PLUGIN_VERSION = &quot;$(Version)&quot;;"
+		/>
+		<RegexReplaceText
+			FilePath="$(ProjectDir)..\manifest.json"
+			Pattern="&quot;version_number&quot;\s*:\s*&quot;[^&quot;]*&quot;"
+			Replacement ="&quot;version_number&quot;: &quot;$(Version)&quot;"
+		/>
+	</Target>
+
+	<Target Name="CopyResources" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<FilesToCopy Include="$(ProjectDir)../CHANGELOG.md" />
+			<FilesToCopy Include="$(ProjectDir)../unifont.fontbundle" />
+			<FilesToCopy Include="$(ProjectDir)../icon.png" />
+			<FilesToCopy Include="$(ProjectDir)../LICENSE" />
+			<FilesToCopy Include="$(ProjectDir)../README.md" />
+			<FilesToCopy Include="$(ProjectDir)../manifest.json" />
+		</ItemGroup>
+		<Copy />
+	</Target>
+
 	<Target Name="ManageResources" AfterTargets="PostBuildEvent">
 		<PropertyGroup>
 			<OutputLibDir>$(TargetDir)libs</OutputLibDir>
@@ -71,17 +96,6 @@ File.WriteAllText(FilePath, content);
 		<ZipDirectory SourceDirectory="$(TargetDir)" DestinationFile="$(ZipOutputPath)$(ZipOutputFileName)" Overwrite="true" />
 	</Target>
 
-	<Target Name="ReplaceVersionText" BeforeTargets="BeforeBuild">
-		<RegexReplaceText
-			FilePath="$(ProjectDir)PluginInfo.cs"
-			Pattern="public\s+const\s+string\s+PLUGIN_VERSION\s*=\s*&quot;[^&quot;]*&quot;\s*;"
-			Replacement = "public const string PLUGIN_VERSION = &quot;$(Version)&quot;;"
-		/>
-		<RegexReplaceText
-			FilePath="$(ProjectDir)..\manifest.json"
-			Pattern="&quot;version_number&quot;\s*:\s*&quot;[^&quot;]*&quot;"
-			Replacement ="&quot;version_number&quot;: &quot;$(Version)&quot;"
-		/>
-	</Target>
+	
 
 </Project>

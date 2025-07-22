@@ -1,9 +1,9 @@
 {
     "name": "Localyssation",
-    "author": "Sallys_workshop (Originally by TheMysticSword)",
-    "version_number": "2.0.0",
+    "author": "Sallys_workshop",
+    "version_number": "1.99.0",
     "website_url": "https://github.com/sallys-workshop/Localyssation",
-    "description": "Localization mod for players and translators. Need language patch to work. Check main page for detail.",
+    "description": "**Originally by TheMysticSword** Localization mod for players and translators. Need language patch to work. Check main page for detail.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
         "Nessie-EasySettings-1.1.8"
