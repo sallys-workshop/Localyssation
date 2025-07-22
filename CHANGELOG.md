@@ -1,4 +1,4 @@
-## 2.0.0
+## 1.99.0
 - Remake font bundle
 	- Remove json descriptor
 	- Using `.fontbundle` suffix to locate asset bundles and identify them as font bundles
@@ -17,7 +17,13 @@
 	- Add missing translation keys button now creates a `missing.{CurrentLanguage.code}.yml` at the same folder of your `localyssationLanguage.json`
 		- Note: anything inside that yml, if exists, **will be erased**
 - Localisation keys updates
-	- Localized localyssation settings tab
+	- Localyssation settings tab
+	- World Portal
+	- Dungeon Portal
+	- Re-roll button in gamble shop
+- Fixed localisations
+	- Action bar when casting spells
+	- Cancel button in World portal dialogs
 
 ## 202507.07.1.2
 * Fixed an issue that "enchanted" creeps cannot display their "enchantment" correctly.
