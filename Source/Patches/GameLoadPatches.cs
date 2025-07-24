@@ -31,24 +31,24 @@ namespace Localyssation.Patches
             foreach (var item in __instance._cachedScriptableItems.Values)
             {
                 var key = KeyUtil.GetForAsset(item);
-                LanguageManager.RegisterKey($"{key}_NAME", item._itemName);
-                LanguageManager.RegisterKey($"{key}_NAME_PLURAL", item._itemName);
-                LanguageManager.RegisterKey($"{key}_DESCRIPTION", item._itemDescription);
+                LanguageManager.RegisterKey(key.Name, item._itemName);
+                LanguageManager.RegisterKey(key.NamePlural, item._itemName);
+                LanguageManager.RegisterKey(key.Description, item._itemDescription);
             }
             // creeps
             foreach (var creep in __instance._cachedScriptableCreeps.Values)
             {
                 var key = KeyUtil.GetForAsset(creep);
-                LanguageManager.RegisterKey($"{key}_NAME", creep._creepName);
-                LanguageManager.RegisterKey($"{key}_NAME_PLURAL", creep._creepName + "s");
+                LanguageManager.RegisterKey(key.Name, creep._creepName);
+                LanguageManager.RegisterKey(key.NamePlural, creep._creepName + "s");
             }
             // quests
             foreach (var quest in __instance._cachedScriptableQuests.Values)
             {
                 var key = KeyUtil.GetForAsset(quest);
-                LanguageManager.RegisterKey($"{key}_NAME", quest._questName);
-                LanguageManager.RegisterKey($"{key}_DESCRIPTION", quest._questDescription);
-                LanguageManager.RegisterKey($"{key}_COMPLETE_RETURN_MESSAGE", quest._questCompleteReturnMessage);
+                LanguageManager.RegisterKey(key.Name, quest._questName);
+                LanguageManager.RegisterKey(key.Description, quest._questDescription);
+                LanguageManager.RegisterKey(key.CompleteReturnMessage, quest._questCompleteReturnMessage);
                 foreach (var questTriggerRequirement in quest._questObjective._questTriggerRequirements)
                 {
                     LanguageManager.RegisterKey($"{KeyUtil.GetForAsset(questTriggerRequirement)}_PREFIX", questTriggerRequirement._prefix);
@@ -58,29 +58,29 @@ namespace Localyssation.Patches
             // conditions
             foreach (var condition in __instance._cachedScriptableConditions.Values)
             {
-                var key = $"{KeyUtil.GetForAsset(condition)}";
-                LanguageManager.RegisterKey($"{key}_NAME", condition._conditionName);
-                LanguageManager.RegisterKey($"{key}_DESCRIPTION", condition._conditionDescription);
+                var key = KeyUtil.GetForAsset(condition);
+                LanguageManager.RegisterKey(key.Name, condition._conditionName);
+                LanguageManager.RegisterKey(key.Description, condition._conditionDescription);
             }
             // stat modifiers
             foreach (var statModifier in __instance._cachedScriptableStatModifiers.Values)
             {
                 var key = KeyUtil.GetForAsset(statModifier);
-                LanguageManager.RegisterKey($"{key}_TAG", statModifier._modifierTag);
+                LanguageManager.RegisterKey($"{key}", statModifier._modifierTag);
             }
             // races
             foreach (var race in __instance._cachedScriptableRaces.Values)
             {
                 var key = KeyUtil.GetForAsset(race);
-                LanguageManager.RegisterKey($"{key}_NAME", race._raceName);
-                LanguageManager.RegisterKey($"{key}_DESCRIPTION", race._raceDescription);
+                LanguageManager.RegisterKey(key.Name, race._raceName);
+                LanguageManager.RegisterKey(key.Description, race._raceDescription);
                 LanguageManager.RegisterKey($"{key}_MISC", race._miscName);
             }
             // combat elements
             foreach (var combatElement in __instance._cachedScriptableCombatElements.Values)
             {
                 var key = KeyUtil.GetForAsset(combatElement);
-                LanguageManager.RegisterKey($"{key}_NAME", combatElement._elementName);
+                LanguageManager.RegisterKey(key.Name, combatElement._elementName);
             }
             LanguageManager.RegisterKey($"PLAYER_CLASS_EMPTY_NAME", GameManager._current._statLogics._emptyClassName);
 
@@ -88,11 +88,11 @@ namespace Localyssation.Patches
             foreach (var playerClass in __instance._cachedScriptablePlayerClasses.Values)
             {
                 var key = KeyUtil.GetForAsset(playerClass);
-                LanguageManager.RegisterKey($"{key}_NAME", playerClass._className);
+                LanguageManager.RegisterKey(key.Name, playerClass._className);
                 // PlayerClassTier
                 foreach (PlayerClassTier playerClassTier in playerClass._playerClassTiers)
                 {
-                    LanguageManager.RegisterKey($"{KeyUtil.GetForAsset(playerClassTier)}_NAME", playerClassTier._classTierName);
+                    LanguageManager.RegisterKey(KeyUtil.GetForAsset(playerClassTier).Name, playerClassTier._classTierName);
                 }
             }
 
@@ -100,8 +100,8 @@ namespace Localyssation.Patches
             foreach (var skill in __instance._cachedScriptableSkills.Values)
             {
                 var key = KeyUtil.GetForAsset(skill);
-                LanguageManager.RegisterKey($"{key}_NAME", skill._skillName);
-                LanguageManager.RegisterKey($"{key}_DESCRIPTION", skill._skillDescription);
+                LanguageManager.RegisterKey(key.Name, skill._skillName);
+                LanguageManager.RegisterKey(key.Description, skill._skillDescription);
                 //for (var rankIndex = 0; rankIndex < skill._skillRanks.Length; rankIndex++)
                 //{
                 //    var rank = skill._skillRanks[rankIndex];
@@ -112,7 +112,7 @@ namespace Localyssation.Patches
             foreach (var statAttribute in GameManager._current._statLogics._statAttributes)
             {
                 var key = KeyUtil.GetForAsset(statAttribute);
-                LanguageManager.RegisterKey($"{key}_NAME", statAttribute._attributeName);
+                LanguageManager.RegisterKey(key.Name, statAttribute._attributeName);
                 LanguageManager.RegisterKey($"{key}_DESCRIPTOR", statAttribute._attributeDescriptor);
             }
 

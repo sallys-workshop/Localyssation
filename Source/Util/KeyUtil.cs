@@ -1,8 +1,42 @@
-﻿using System;
+﻿using Localyssation.LanguageModule;
+using System;
 using System.Linq;
 
 namespace Localyssation.Util
 {
+    public class TranslationKey
+    {
+        public readonly string key;
+        public TranslationKey(string _key) { key = _key; }
+        public TranslationKey Name { get => new TranslationKey(key + "_NAME"); }
+        public TranslationKey NamePlural { get => new TranslationKey(key + "_NAME_PLURAL"); }
+        public TranslationKey Description { get => new TranslationKey(key + "_DESCRIPTION"); }
+
+        public static implicit operator string(TranslationKey key) => key.key;
+        public override string ToString() => key;
+
+        public string Localize()
+        {
+            return Localyssation.GetString(key);
+        }
+
+        public string DefaultString()
+        {
+            return Localyssation.GetDefaultString(key);
+        }
+
+        public TranslationKey NameByQuantity(int quantity)
+        {
+            return Math.Abs(quantity) > 1? NamePlural : Name;
+        }
+    }
+
+    public class QuestTranslationKey : TranslationKey
+    {
+        public QuestTranslationKey(string _key) : base(_key) { }
+
+        public TranslationKey CompleteReturnMessage { get => new TranslationKey(key + "_COMPLETE_RETURN_MESSAGE"); }
+    }
 
     public static class KeyUtil
     {
@@ -14,109 +48,110 @@ namespace Localyssation.Util
                 .ToArray());
         }
 
-        public static string GetForAsset(ScriptableItem asset)
+        
+        public static TranslationKey GetForAsset(ScriptableItem asset)
         {
-            return $"ITEM_{Normalize(asset._itemName)}";
+            return new TranslationKey($"ITEM_{Normalize(asset._itemName)}");
         }
 
-        public static string GetForAsset(ScriptableConditionGroup asset)
+        public static TranslationKey GetForAsset(ScriptableConditionGroup asset)
         {
-            return $"CONDITION_GROUP_{Normalize(asset._conditionGroupTag)}";
+            return new TranslationKey($"CONDITION_GROUP_{Normalize(asset._conditionGroupTag)}");
         }
 
-        public static string GetForAsset(WeaponAnimationSlot asset)
+        public static TranslationKey GetForAsset(WeaponAnimationSlot asset)
         {
-            return $"WEAPON_TYPE_{Normalize(asset._weaponNameTag)}";
+            return new TranslationKey($"WEAPON_TYPE_{Normalize(asset._weaponNameTag)}");
         }
 
-        public static string GetForAsset(ScriptableCreep asset)
+        public static TranslationKey GetForAsset(ScriptableCreep asset)
         {
-            return $"CREEP_{Normalize(asset._creepName)}";
+            return new TranslationKey($"CREEP_{Normalize(asset._creepName)}");
         }
 
-        public static string GetForAsset(ScriptableQuest asset)
+        public static QuestTranslationKey GetForAsset(ScriptableQuest asset)
         {
-            return $"QUEST_{Normalize(asset._questName)}";
+            return new QuestTranslationKey($"QUEST_{Normalize(asset._questName)}");
         }
 
-        public static string GetForAsset(QuestTriggerRequirement asset)
+        public static TranslationKey GetForAsset(QuestTriggerRequirement asset)
         {
-            return $"QUEST_TRIGGER_{Normalize(asset._questTriggerTag)}";
+            return new TranslationKey($"QUEST_TRIGGER_{Normalize(asset._questTriggerTag)}");
         }
 
-        public static string GetForAsset(ScriptableCondition asset)
+        public static TranslationKey GetForAsset(ScriptableCondition asset)
         {
-            return $"CONDITION_{Normalize(asset._conditionName)}";
+            return new TranslationKey($"CONDITION_{Normalize(asset._conditionName)}");
         }
 
-        public static string GetForAsset(ScriptableStatModifier asset)
+        public static TranslationKey GetForAsset(ScriptableStatModifier asset)
         {
-            return $"STAT_MODIFIER_{Normalize(asset._modifierTag)}";
+            return new TranslationKey($"STAT_MODIFIER_{Normalize(asset._modifierTag)}_TAG");
         }
 
-        public static string GetForAsset(ScriptablePlayerRace asset)
+        public static TranslationKey GetForAsset(ScriptablePlayerRace asset)
         {
-            return $"RACE_{Normalize(asset._raceName)}";
+            return new TranslationKey($"RACE_{Normalize(asset._raceName)}");
         }
 
-        public static string GetForAsset(ScriptableCombatElement asset)
+        public static TranslationKey GetForAsset(ScriptableCombatElement asset)
         {
-            return $"COMBAT_ELEMENT_{Normalize(asset._elementName)}";
+            return new TranslationKey($"COMBAT_ELEMENT_{Normalize(asset._elementName)}");
         }
 
-        public static string GetForAsset(ScriptablePlayerBaseClass asset)
+        public static TranslationKey GetForAsset(ScriptablePlayerBaseClass asset)
         {
-            return $"PLAYER_CLASS_{Normalize(asset._className)}";
+            return new TranslationKey($"PLAYER_CLASS_{Normalize(asset._className)}");
         }
 
-        public static string GetForAsset(ScriptableSkill asset)
+        public static TranslationKey GetForAsset(ScriptableSkill asset)
         {
-            return $"SKILL_{Normalize(asset._skillName)}";
+            return new TranslationKey($"SKILL_{Normalize(asset._skillName)}");
         }
 
-        public static string GetForAsset(ScriptableStatAttribute asset)
+        public static TranslationKey GetForAsset(ScriptableStatAttribute asset)
         {
-            return $"STAT_ATTRIBUTE_{Normalize(asset._attributeName)}";
+            return new TranslationKey($"STAT_ATTRIBUTE_{Normalize(asset._attributeName)}");
         }
 
-        public static string GetForAsset(ItemRarity asset)
+        public static TranslationKey GetForAsset(ItemRarity asset)
         {
-            return $"ITEM_RARITY_{Normalize(asset.ToString())}";
+            return new TranslationKey($"ITEM_RARITY_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForAsset(DamageType asset)
+        public static TranslationKey GetForAsset(DamageType asset)
         {
-            return $"DAMAGE_TYPE_{Normalize(asset.ToString())}";
+            return new TranslationKey($"DAMAGE_TYPE_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForAsset(SkillControlType asset)
+        public static TranslationKey GetForAsset(SkillControlType asset)
         {
-            return $"SKILL_CONTROL_TYPE_{Normalize(asset.ToString())}";
+            return new TranslationKey($"SKILL_CONTROL_TYPE_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForAsset(CombatColliderType asset)
+        public static TranslationKey GetForAsset(CombatColliderType asset)
         {
-            return $"COMBAT_COLLIDER_TYPE_{Normalize(asset.ToString())}";
+            return new TranslationKey($"COMBAT_COLLIDER_TYPE_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForAsset(ScriptableDialogData asset)
+        public static TranslationKey GetForAsset(ScriptableDialogData asset)
         {
-            return $"{Normalize(asset.name.ToString())}";
+            return new TranslationKey($"{Normalize(asset.name.ToString())}");
         }
 
-        public static string GetForAsset(ItemType asset)
+        public static TranslationKey GetForAsset(ItemType asset)
         {
-            return $"ITEM_TOOLTIP_TYPE_{Normalize(asset.ToString())}";
+            return new TranslationKey($"ITEM_TOOLTIP_TYPE_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForAsset(PlayerClassTier asset)
+        public static TranslationKey GetForAsset(PlayerClassTier asset)
         {
-            return $"PLAYER_CLASS_TIER_{Normalize(asset._classTierName)}";
+            return new TranslationKey($"PLAYER_CLASS_TIER_{Normalize(asset._classTierName)}");
         }
 
-        public static string GetForAsset(ZoneType asset)
+        public static TranslationKey GetForAsset(ZoneType asset)
         {
-            return $"ZONE_TYPE_{Normalize(asset.ToString())}";
+            return new TranslationKey($"ZONE_TYPE_{Normalize(asset.ToString())}");
         }
 
         public static string GetForMapRegionTag(string regionTag)
@@ -126,9 +161,9 @@ namespace Localyssation.Util
             return "";
         }
 
-        public static string GetForAsset(SkillToolTipRequirement asset)
+        public static TranslationKey GetForAsset(SkillToolTipRequirement asset)
         {
-            return $"SKILL_TOOLTIP_REQUIREMENT_{Normalize(asset.ToString())}";
+            return new TranslationKey($"SKILL_TOOLTIP_REQUIREMENT_{Normalize(asset.ToString())}");
         }
 
         public static string GetForMapName(string name)
@@ -136,14 +171,14 @@ namespace Localyssation.Util
             return $"MAP_NAME_{Normalize(name)}";
         }
 
-        public static string GetForAsset(ScriptableShopkeep asset)
+        public static TranslationKey GetForAsset(ScriptableShopkeep asset)
         {
-            return $"SHOP_KEEP_{Normalize(asset._shopName)}";
+            return new TranslationKey($"SHOP_KEEP_{Normalize(asset._shopName)}");
         }
 
-        public static string GetForAsset(ShopTab shopTab)
+        public static TranslationKey GetForAsset(ShopTab shopTab)
         {
-            return $"SHOP_TAB_{Normalize(shopTab.ToString())}";
+            return new TranslationKey($"SHOP_TAB_{Normalize(shopTab.ToString())}");
         }
 
     }

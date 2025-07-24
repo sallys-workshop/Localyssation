@@ -101,7 +101,7 @@ namespace Localyssation.Patches.ReplaceText
                     RTUtil.RemapAllTextUnderObject(obj_Canvas_characterCreation.gameObject, new Dictionary<string, string>()
                     {
                         { "_text_header", "CHARACTER_CREATION_HEADER" },
-                        { "_header_raceName_01", "CHARACTER_CREATION_HEADER" },
+                        { "_header_raceSelect", "CHARACTER_CREATION_HEADER" },
                         { "_header_initialSkill", "CHARACTER_CREATION_RACE_DESCRIPTOR_HEADER_INITIAL_SKILL" },
                         { "_button_createCharacter", "CHARACTER_CREATION_BUTTON_CREATE_CHARACTER" },
                         { "_button_return", "CHARACTER_CREATION_BUTTON_RETURN" },
@@ -120,9 +120,9 @@ namespace Localyssation.Patches.ReplaceText
                         RTUtil.RemapAllTextUnderObject(customizer_color.gameObject, new Dictionary<string, string>()
                         {
                             { "_customizer_header", "CHARACTER_CREATION_CUSTOMIZER_HEADER_COLOR" },
-                            { "Image_01", "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_HEADER" },
+                            { "_text_bodyColor", "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_HEADER" },
                             { "_characterButtonSelector", "CHARACTER_CREATION_CUSTOMIZER_COLOR_BODY_TEXTURE" },
-                            { "Image", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_HEADER" },
+                            { "_text_hairColor", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_HEADER" },
                             { "Toggle_lockColor", "CHARACTER_CREATION_CUSTOMIZER_COLOR_HAIR_LOCK_COLOR" },
                             //{ "_button_defaultColor", "CHARACTER_CREATION_BUTTON_SET_TO_DEFAULTS" },
                         });

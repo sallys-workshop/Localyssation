@@ -46,7 +46,7 @@ namespace Localyssation.Patches.ReplaceText
                     shownRarity += 1;
                     ScriptableStatModifier modifier = GameManager._current.Locate_StatModifier(_itemData._modifierID);
                     __instance._toolTipName.text = __instance._toolTipName.text.Replace(
-                        modifier._modifierTag, Localyssation.GetString(KeyUtil.GetForAsset(modifier) + "_TAG")
+                        modifier._modifierTag, Localyssation.GetString(KeyUtil.GetForAsset(modifier))
                     );
                 }
 

@@ -12,10 +12,10 @@ namespace Localyssation
         internal static class Enums
         {
             internal static void init() { }
-            private static ImmutableDictionary<string, string> CreateEnumKeys<TEnum>(Func<TEnum, string> keyOverride = null, Func<TEnum, string> valueOverride = null)
+            private static ImmutableDictionary<string, string> CreateEnumKeys<TEnum>(Func<TEnum, TranslationKey> keyOverride = null, Func<TEnum, string> valueOverride = null)
                 where TEnum : Enum
             {
-                string defaultGetString(TEnum item)
+                TranslationKey defaultGetString(TEnum item)
                 {
                     var GetForAsset = typeof(KeyUtil).GetMethods()
                         .Where(m => m.Name == "GetForAsset")
@@ -24,7 +24,7 @@ namespace Localyssation
                             var parameter = m.GetParameters();
                             return parameter.Length == 1 && parameter[0].ParameterType == typeof(TEnum);
                         });
-                    return (string)GetForAsset.Invoke(null, new object[] { item });
+                    return (TranslationKey)GetForAsset.Invoke(null, new object[] { item });
                 }
                 if (keyOverride == null)
                 {
@@ -35,7 +35,7 @@ namespace Localyssation
                     valueOverride = item => item.ToString();
                 }
                 return Enum.GetValues(typeof(TEnum)).OfType<TEnum>().ToImmutableDictionary(
-                    item => Create(keyOverride(item), valueOverride(item)),
+                    item => Create(keyOverride(item).ToString(), valueOverride(item)),
                     valueOverride
                 );
             }
@@ -66,7 +66,7 @@ namespace Localyssation
             };
             public static readonly ImmutableDictionary<string, string> SHOP_TAB
                 = __SHOP_TABS.ToImmutableDictionary(
-                    kv => Create(KeyUtil.GetForAsset(kv.Key)),
+                    kv => Create(KeyUtil.GetForAsset(kv.Key).ToString(), kv.Value),
                     kv => kv.Value
                 );
 

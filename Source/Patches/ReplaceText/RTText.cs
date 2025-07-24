@@ -35,10 +35,6 @@ namespace Localyssation.Patches.ReplaceText
                 USED_FONT_NAME.Add(__instance.font.name);
                 Localyssation.logger.LogDebug($"Using font: `{__instance.font.name}`");
             }
-            if (__instance.font != null && __instance.font.name == "MSGOTHIC")
-            {
-                Localyssation.logger.LogDebug($"MSGOTHIC usage @ `{RTUtil.GetPath(__instance.transform)}`");
-            }
 #endif
         }
 

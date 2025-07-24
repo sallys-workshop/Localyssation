@@ -81,6 +81,8 @@ namespace Localyssation
                 = Create("CHARACTER_CREATION_CUSTOMIZER_TRAIT_ATTRIBUTES", "Attributes");
             public static readonly string CUSTOMIZER_TRAIT_RESET_ATTRIBUTE_POINTS
                 = Create("CHARACTER_CREATION_CUSTOMIZER_TRAIT_RESET_ATTRIBUTE_POINTS", "Reset Points");
+
+            // _text_atbCounter
         }
 
     }

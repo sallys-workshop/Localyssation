@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using Localyssation.Util;
 using MonoMod.Utils;
 using System.Collections.Generic;
 using System.IO;
@@ -56,6 +57,10 @@ namespace Localyssation.LanguageModule
         public static void RegisterKey(string key, string defaultValue)
         {
             DefaultLanguage.RegisterKey(key, defaultValue);
+        }
+        public static void RegisterKey(TranslationKey key, string defaultValue)
+        {
+            DefaultLanguage.RegisterKey(key.key, defaultValue);
         }
 
         public static void LoadLanguagesFromFileSystem()

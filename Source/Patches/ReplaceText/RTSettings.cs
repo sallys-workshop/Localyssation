@@ -135,7 +135,7 @@ namespace Localyssation.Patches.ReplaceText
 
                 { "Button_gameTab", I18nKeys.Settings.BUTTON_NETWORK },
 
-                { "_header_gameSettins", I18nKeys.Settings.Network.HEADER_GAME_SETTINGS },
+                { "_header_gameSettings", I18nKeys.Settings.Network.HEADER_GAME_SETTINGS },
                 { "_cell_enablePvPOnMapEnter", I18nKeys.Settings.Network.CELL_ENABLE_PVP_ON_MAP_ENTER },
 
                 { "_header_nametagSettings", I18nKeys.Settings.Network.HEADER_NAMETAG_SETTINGS },
@@ -175,9 +175,13 @@ namespace Localyssation.Patches.ReplaceText
                         var option = dropdown.options[i];
                         var dropdownOptionKey = $"{key}_OPTION_{i + 1}";
                         if (LanguageManager.DefaultLanguage.TryGetString(dropdownOptionKey, out var dropdownOptionText))
+                        {
                             dropdownOptionsTextFuncs.Add(LangAdjustables.GetStringFunc(dropdownOptionKey, option.text));
+                        }
                         else
-                            Localyssation.logger.LogWarning($"Cannot find translation key `{dropdownOptionKey}` for dropdown `{dropdown.name}`");
+                        {
+                            //Localyssation.logger.LogWarning($"Cannot find translation key `{dropdownOptionKey}` for dropdown `{dropdown.name}`");
+                        }
                     }
 
                     if (dropdownOptionsTextFuncs.Count == dropdown.options.Count)

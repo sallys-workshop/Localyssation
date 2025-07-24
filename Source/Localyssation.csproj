@@ -6,8 +6,8 @@
         <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
 		
 		
-		<TARGET_ATLYSS_VERSION>72025.a7</TARGET_ATLYSS_VERSION>
-		<VersionPrefix>1.99.0</VersionPrefix>
+		<TARGET_ATLYSS_VERSION>72025.a8</TARGET_ATLYSS_VERSION>
+		<VersionPrefix>2.0.0</VersionPrefix>
 		
 		
 		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
