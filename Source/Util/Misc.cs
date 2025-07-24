@@ -6,16 +6,10 @@ namespace Localyssation.Util
 {
     public enum VanillaFonts
     {
-        [Description("CENTAUR")]
-        CENTAUR,
+        [Description("Roskell")]
+        Roskell,
         [Description("terminal-grotesque")]
         TERMINAL_GROTESQUE,
-        [Description("LiberationSans")]
-        LIBRATION_SANS,
-        [Description("HoboStd")]
-        HOBOSTD,
-        [Description("MSGOTHIC")]
-        MSGOTHIC
     }
 
     public static class EnumExtensions
