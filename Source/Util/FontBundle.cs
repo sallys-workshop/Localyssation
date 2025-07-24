@@ -81,6 +81,11 @@ namespace Localyssation.Util
                 font => !font.fallbackFontAssetTable.Contains(TMPfonts["unifont SDF"]),
                 font => font.fallbackFontAssetTable.Add(TMPfonts["unifont SDF"])
             );
+            Resources.LoadAll<TMP_FontAsset>("").Cast<TMP_FontAsset>().DoIf(
+                font => !font.fallbackFontAssetTable.Contains(TMPfonts["unifont SDF"]),
+                font => font.fallbackFontAssetTable.Add(TMPfonts["unifont SDF"])
+            );
+
 
         }
 
