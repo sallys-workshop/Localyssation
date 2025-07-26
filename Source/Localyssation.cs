@@ -51,14 +51,15 @@ namespace Localyssation
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
 
             //GameAssetCache.Load();
+
             LanguageManager.Init();
-            LocalyssationConfig.Init(Config);
             //ExportUtil.InitExports();
             FontManager.LoadFontBundlesFromFileSystem();
             FontHelper.DetectVanillaFonts();
 
-            LangAdjustables.Init();
-
+            LocalyssationConfig.Init(Config);
+            SettingsGUI.Init();
+            
 
 
             var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
@@ -68,6 +69,7 @@ namespace Localyssation
             RTUtil.PatchAll(harmony);
             SettingsGUI.Init();
             OnSceneLoaded.Init();
+            LangAdjustables.Init();
         }
         
 #pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Localyssation.LanguageModule;
 using Localyssation.Util;
-using System.Linq;
-using HarmonyLib;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -43,14 +41,11 @@ namespace Localyssation.LangAdjutable
             return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
         }
 
-        public static Dictionary<string, LangAdjustableUIText> registeredTexts = new Dictionary<string, LangAdjustableUIText>();
+        public static Dictionary<UnityEngine.UI.Text, LangAdjustableUIText> registeredTexts = new Dictionary<UnityEngine.UI.Text, LangAdjustableUIText>();
         public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc = null)
         {
-            var key = text.gameObject.scene.name + ":/" + PathUtil.GetPath(text.transform);
-            
-            text.gameObject.GetComponents<LangAdjustableUIText>().Cast<LangAdjustableUIText>()
-                .Do(obj => Component.Destroy(obj)); // remove other LangAdjustables from GameObject
-            var adjustable = registeredTexts[key] = text.gameObject.AddComponent<LangAdjustableUIText>();
+            if (!registeredTexts.TryGetValue(text, out LangAdjustableUIText adjustable))
+                adjustable = registeredTexts[text] = text.gameObject.AddComponent<LangAdjustableUIText>();
 
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
@@ -63,12 +58,6 @@ namespace Localyssation.LangAdjutable
             LangAdjustableTMProUGUIText adjustable;
             if (!registeredTMProUGUITexts.TryGetValue(text, out adjustable))
                 adjustable = registeredTMProUGUITexts[text] = text.gameObject.AddComponent<LangAdjustableTMProUGUIText>();
-            else
-            {
-                text.gameObject.GetComponents<LangAdjustableUIText>().Cast<LangAdjustableUIText>()
-                    .SkipWhile(obj => obj == adjustable)
-                    .Do(obj => Component.Destroy(obj));
-            }
 
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }
@@ -79,12 +68,6 @@ namespace Localyssation.LangAdjutable
             LangAdjustableUIDropdown adjustable;
             if (!registeredDropdowns.TryGetValue(dropdown, out adjustable))
                 adjustable = registeredDropdowns[dropdown] = dropdown.gameObject.AddComponent<LangAdjustableUIDropdown>();
-            else
-            {
-                dropdown.gameObject.GetComponents<LangAdjustableUIText>().Cast<LangAdjustableUIText>()
-                    .SkipWhile(obj => obj == adjustable)
-                    .Do(obj => Component.Destroy(obj));
-            }
 
             if (newTextFuncs != null) adjustable.newTextFuncs = newTextFuncs;
         }
@@ -95,12 +78,6 @@ namespace Localyssation.LangAdjutable
             if (!registeredTextMeshPro.TryGetValue(textMeshPro, out var adjustable))
             {
                 adjustable = registeredTextMeshPro[textMeshPro] = textMeshPro.gameObject.AddComponent<LangAdjustableTextMeshPro>();
-            }
-            else
-            {
-                textMeshPro.gameObject.GetComponents<LangAdjustableUIText>().Cast<LangAdjustableUIText>()
-                    .SkipWhile(obj => obj == adjustable)
-                    .Do(obj => Component.Destroy(obj));
             }
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
         }

@@ -157,7 +157,7 @@ namespace Localyssation.LangAdjutable
         public void OnDestroy()
         {
             Localyssation.instance.OnLanguageChanged -= onLanguageChanged;
-            registeredTexts.Remove(PathUtil.GetPath(text.transform));
+            registeredTexts.Remove(text);
         }
     }
 

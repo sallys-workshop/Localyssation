@@ -10,7 +10,7 @@ namespace Localyssation.LanguageModule
 {
     public static class LanguageManager
     {
-        public static Language DefaultLanguage { get; private set; } = CreateDefaultLanguage();
+        public static Language DefaultLanguage { get; private set; }
         public static Language CurrentLanguage { get; private set; }
 
         public static readonly Dictionary<string, Language> languages = new Dictionary<string, Language>();
@@ -18,14 +18,9 @@ namespace Localyssation.LanguageModule
 
         public static void Init()
         {
-            //DefaultLanguage = CreateDefaultLanguage();
-
-            I18nKeys.Init();
-            //DefaultLanguage.GetStrings().AddRange(I18nKeys.TR_KEYS);
-            I18nKeys.TR_KEYS.Do(kv => DefaultLanguage.RegisterKey(kv.Key, kv.Value));
-
+            DefaultLanguage = CreateDefaultLanguage();
             RegisterLanguage(DefaultLanguage);
-            ChangeLanguage(DefaultLanguage, true);
+            ChangeLanguage(DefaultLanguage);
             LoadLanguagesFromFileSystem();
         }
 
@@ -33,15 +28,15 @@ namespace Localyssation.LanguageModule
         {
             ChangeLanguage(languages[key]);
         }
-        public static void ChangeLanguage(Language newLanguage, bool forced = false)
+        public static void ChangeLanguage(Language newLanguage)
         {
-            if (CurrentLanguage == newLanguage && !forced) return;
+            if (CurrentLanguage == newLanguage) return;
 
             CurrentLanguage = newLanguage;
             Localyssation.instance.CallOnLanguageChanged(newLanguage);
         }
 
-        private static Language CreateDefaultLanguage()
+        internal static Language CreateDefaultLanguage()
         {
             var language = new Language
             {
@@ -49,7 +44,8 @@ namespace Localyssation.LanguageModule
                 fileSystemPath = Path.Combine(Path.GetDirectoryName(Localyssation.dllPath), "defaultLanguage")
             };
 
-            //language.GetStrings().AddRange(I18nKeys.TR_KEYS);
+            I18nKeys.Init();
+            language.GetStrings().AddRange(I18nKeys.TR_KEYS);
             return language;
         }
 

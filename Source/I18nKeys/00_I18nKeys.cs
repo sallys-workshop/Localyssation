@@ -1,5 +1,4 @@
-﻿using Localyssation.LanguageModule;
-using Localyssation.Util;
+﻿using Localyssation.Util;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +24,6 @@ namespace Localyssation
             ScriptableStatusCondition.init();
             Settings.Init();
             SkillMenu.init();
-            SteamLobby.Init();
             TabMenu.Init();
         }
 
@@ -42,8 +40,7 @@ namespace Localyssation
             {
                 throw new ArgumentException($"key `{key}` Already Exists!");
             }
-            LanguageManager.RegisterKey(new TranslationKey(key), defaultString);
-            TR_KEYS.Add(key, defaultString);
+            TR_KEYS[key] = defaultString;
             return new TranslationKey(key);
         }
 

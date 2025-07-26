@@ -93,7 +93,6 @@ namespace Localyssation.LanguageModule
             if (info.code == LanguageManager.DefaultLanguage.info.code) return false;   // skip default language
             try
             {
-                bool found = false;
                 Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml", SearchOption.AllDirectories)
                     .OrderBy(x => Path.GetFileNameWithoutExtension(x))
                     .Do(
@@ -114,10 +113,8 @@ namespace Localyssation.LanguageModule
                             }
                         });
                     file.Close();
-                    found = true;
                 });
-                if (found)
-                    return true;
+                return true;
             }
             catch (Exception e)
             {

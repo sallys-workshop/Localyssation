@@ -7,7 +7,6 @@ namespace Localyssation
     {
         public static class SteamLobby
         {
-            internal static void Init() { }
             private static TranslationKey Create(string key, string defaultValue="")
             {
                 return I18nKeys.Create($"STEAM_LOBBY_{key}", defaultValue);
