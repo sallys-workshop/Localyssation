@@ -1,7 +1,10 @@
-﻿using System;
+﻿using HarmonyLib;
+using Localyssation.Patches.ReplaceText;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Localyssation.Patches
 {
@@ -157,6 +160,7 @@ namespace Localyssation.Patches
 
     public static class TranspilerHelper
     {
+        public static readonly CodeMatch STRING_CONCAT = new CodeMatch(instr => instr.opcode == OpCodes.Call && instr.operand is MethodInfo method && method.DeclaringType == typeof(string) && method.Name == "Concat");
         public static MethodInfo GenerateTargetMethod(TargetInnerMethod target)
         {
             try
@@ -170,5 +174,16 @@ namespace Localyssation.Patches
             }
             return target.GetParentMethodInfo();   // Fallback to edit parent method
         }
+
+        public static IEnumerable<CodeInstruction> MatchAndReplace(IEnumerable<CodeInstruction> instructions, CodeMatch[] matches, CodeInstruction[] replacement)
+        {
+            return new CodeMatcher(instructions)
+                .MatchForward(false, matches)
+                .RemoveInstructions(matches.Length)
+                .Insert(replacement)
+                .Instructions();
+        }
     }
+
+
 }

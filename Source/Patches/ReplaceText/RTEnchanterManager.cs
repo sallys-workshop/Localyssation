@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -85,84 +86,127 @@ namespace Localyssation.Patches.ReplaceText
 
     }
 
-    //[HarmonyPatch]
-    //public class EnchantmentMessagePatch
-    //{
-    //    static MethodBase TargetMethod()
-    //    {
-    //        // 替换为实际的目标方法
-    //        return AccessTools.Method(typeof(EnchanterManager), nameof(EnchanterManager.Init_PurchaseEnchant));
-    //    }
+    [HarmonyPatch]
+    public class EnchantmentMessagePatch
+    {
+        static MethodBase TargetMethod()
+        {
+            // 替换为实际的目标方法
+            return AccessTools.Method(typeof(EnchanterManager), nameof(EnchanterManager.Init_PurchaseEnchant));
+        }
 
-    //    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    //    {
-    //        var matcher = new CodeMatcher(instructions);
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = new CodeMatcher(instructions);
 
-    //        // 查找目标序列
-    //        matcher.MatchForward(false, // 从当前位置向前搜索
-    //            new CodeMatch(OpCodes.Ldstr, "You got the "),
-    //            new CodeMatch(OpCodes.Ldloc), // 匹配任意ldloc指令
-    //            new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableStatModifier), "_modifierTag")),
-    //            new CodeMatch(OpCodes.Ldstr, " enchantment!"),
-    //            new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(string), "Concat", new[] { typeof(string), typeof(string), typeof(string) }))
-    //        );
+            // 查找目标序列
+            matcher.MatchForward(false, // 从当前位置向前搜索
+                new CodeMatch(OpCodes.Ldstr, "You got the "),
+                new CodeMatch(OpCodes.Ldloc_2), // 匹配任意ldloc指令
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableStatModifier), nameof(ScriptableStatModifier._modifierTag))),
+                new CodeMatch(OpCodes.Ldstr, " enchantment!"),
+                TranspilerHelper.STRING_CONCAT
+            //new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ChatBehaviour), "Client_RecieveTriggerMessage", new[] { typeof(string) } ))
+            );
 
-    //        // 如果没找到匹配序列，返回原始指令
-    //        if (matcher.IsInvalid)
-    //        {
-    //            Localyssation.logger.LogError("未找到目标IL序列，注入失败");
-    //            return instructions;
-    //        }
+            // 如果没找到匹配序列，返回原始指令
+            if (matcher.IsInvalid)
+            {
+                Localyssation.logger.LogError("未找到目标IL序列，注入失败");
+                return instructions;
+            }
 
-    //        // 记录匹配位置
-    //        int matchPos = matcher.Pos;
 
-    //        // 获取ldloc指令的操作数（即局部变量索引）
-    //        var ldlocInstruction = matcher.Instructions()[matchPos + 1];
-    //        object localVarIndex = GetLocalVarIndex(ldlocInstruction);
-
-    //        // 创建新的指令列表来替换
-    //        var newInstructions = new List<CodeInstruction>
-    //    {
-    //        // 加载局部变量（ScriptableStatModifier实例）
-    //        new CodeInstruction(OpCodes.Ldloc, localVarIndex),
+            // 创建新的指令列表来替换
+            var newInstructions = new List<CodeInstruction>
+            {
+                // 加载局部变量（ScriptableStatModifier实例）
+                new CodeInstruction(OpCodes.Ldloc_2),
             
-    //        // 调用自定义函数
-    //        new CodeInstruction(OpCodes.Call,
-    //            AccessTools.Method(typeof(EnchantmentMessagePatch),
-    //            "GetCustomEnchantmentMessage"))
-    //    };
+                // 调用自定义函数
+                new CodeInstruction(OpCodes.Call,
+                    AccessTools.Method(typeof(EnchantmentMessagePatch),
+                    "GetCustomEnchantmentMessage"))
+            };
 
-    //        // 使用CodeMatcher替换指令
-    //        matcher
-    //            .RemoveInstructions(5) // 移除5条旧指令
-    //            .Insert(newInstructions); // 插入新指令
 
-    //        Localyssation.logger.LogDebug("成功注入自定义装备消息转换");
+            // 使用CodeMatcher替换指令
+            matcher
+                .RemoveInstructions(5) // 移除5条旧指令
+                .Insert(newInstructions); // 插入新指令
 
-    //        return matcher.InstructionEnumeration();
-    //    }
+            Localyssation.logger.LogDebug("成功注入自定义装备消息转换");
 
-    //    // 辅助方法：从ldloc指令中提取局部变量索引
-    //    static object GetLocalVarIndex(CodeInstruction ldlocInstruction)
-    //    {
-    //        // 处理不同形式的ldloc指令
-    //        if (ldlocInstruction.opcode == OpCodes.Ldloc_0) return 0;
-    //        if (ldlocInstruction.opcode == OpCodes.Ldloc_1) return 1;
-    //        if (ldlocInstruction.opcode == OpCodes.Ldloc_2) return 2;
-    //        if (ldlocInstruction.opcode == OpCodes.Ldloc_3) return 3;
-    //        if (ldlocInstruction.opcode == OpCodes.Ldloc_S) return ldlocInstruction.operand;
-    //        if (ldlocInstruction.opcode == OpCodes.Ldloc) return ldlocInstruction.operand;
+            return matcher.InstructionEnumeration();
+        }
 
-    //        Localyssation.logger.LogError($"未知的ldloc指令: {ldlocInstruction}");
-    //        return 0; // 默认使用索引0
-    //    }
+        // 自定义消息生成函数
+        public static string GetCustomEnchantmentMessage(ScriptableStatModifier modifier)
+        {
+            return Localyssation.Format(I18nKeys.Enchanter.GET_NEW_ENCHANTMENT_FORMAT, KeyUtil.GetForAsset(modifier).Localize());
+        }
+    }
 
-    //    // 自定义消息生成函数
-    //    public static string GetCustomEnchantmentMessage(ScriptableStatModifier modifier)
-    //    {
-    //        // 这里添加您的自定义逻辑
-    //        return Localyssation.GetString(KeyUtil.GetForAsset(modifier));
-    //    }
-    //}
+    [HarmonyPatch]
+    class EnchanterTransmuteMessage
+    {
+        static MethodBase TargetMethod()
+        {
+            return AccessTools.Method(typeof(EnchanterManager), nameof(EnchanterManager.Init_StoneEnchant));
+        }
+
+        private static CodeMatch[] GenerateCodeMatchForTransmuteMessage(DamageType type)
+        {
+            return new CodeMatch[]
+                {
+                    new CodeMatch(OpCodes.Ldstr, "Your "),
+                    new CodeMatch(OpCodes.Ldarg_0),
+                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(EnchanterManager), nameof(EnchanterManager._scriptEquipment))),
+                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
+                    new CodeMatch(OpCodes.Ldstr, $" now scales off {type}!"),
+                    TranspilerHelper.STRING_CONCAT
+                };
+        }
+
+        private static CodeInstruction[] GenerateCodeInstructionsForTransmuteMessage(DamageType type)
+        {
+            return new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(EnchanterManager), nameof(EnchanterManager._scriptEquipment))),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(EnchanterTransmuteMessage), $"GetTransmuteMessage{type}"))
+                };
+        }
+
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+
+            return RTUtil.Wrap(instructions)
+                .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Strength), GenerateCodeInstructionsForTransmuteMessage(DamageType.Strength))
+                .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Dexterity), GenerateCodeInstructionsForTransmuteMessage(DamageType.Dexterity))
+                .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Mind), GenerateCodeInstructionsForTransmuteMessage(DamageType.Mind))
+                .ReplaceStrings( new[] {
+                    I18nKeys.Enchanter.NOT_ENOUGH_TRANSMUTE_STONES_DEXTERITY,
+                    I18nKeys.Enchanter.NOT_ENOUGH_TRANSMUTE_STONES_MIND,
+                    I18nKeys.Enchanter.NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH,
+                    I18nKeys.Enchanter.CANNOT_TRANSMUTE_WEAPON
+                })
+                .Unwrap();
+        }
+
+        public static string GetTransmuteMessageStrength(ScriptableItem item)
+        {
+            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_STRENGTH_FORMAT, KeyUtil.GetForAsset(item));
+        }
+
+        public static string GetTransmuteMessageDexterity(ScriptableItem item)
+        {
+            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_DEXTERITY_FORMAT, KeyUtil.GetForAsset(item));
+        }
+
+        public static string GetTransmuteMessageMind(ScriptableItem item)
+        {
+            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_MIND_FORMAT, KeyUtil.GetForAsset(item));
+        }
+    }
 }

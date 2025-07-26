@@ -12,7 +12,7 @@ namespace Localyssation
         internal static class Enums
         {
             internal static void init() { }
-            private static ImmutableDictionary<string, string> CreateEnumKeys<TEnum>(Func<TEnum, TranslationKey> keyOverride = null, Func<TEnum, string> valueOverride = null)
+            private static ImmutableDictionary<TranslationKey, string> CreateEnumKeys<TEnum>(Func<TEnum, TranslationKey> keyOverride = null, Func<TEnum, string> valueOverride = null)
                 where TEnum : Enum
             {
                 TranslationKey defaultGetString(TEnum item)
@@ -41,20 +41,20 @@ namespace Localyssation
             }
 
 
-            public static readonly ImmutableDictionary<string, string> ITEM_RARITY
+            public static readonly ImmutableDictionary<TranslationKey, string> ITEM_RARITY
                 = CreateEnumKeys<ItemRarity>();
-            public static readonly ImmutableDictionary<string, string> DAMAGE_TYPE
+            public static readonly ImmutableDictionary<TranslationKey, string> DAMAGE_TYPE
                 = CreateEnumKeys<DamageType>();
 
-            public static readonly ImmutableDictionary<string, string> SKILL_CONTROL_TYPE
+            public static readonly ImmutableDictionary<TranslationKey, string> SKILL_CONTROL_TYPE
                 = CreateEnumKeys<SkillControlType>();
-            public static readonly ImmutableDictionary<string, string> COMBAT_COLLIDER_TYPE
+            public static readonly ImmutableDictionary<TranslationKey, string> COMBAT_COLLIDER_TYPE
                 = CreateEnumKeys<CombatColliderType>();
-            public static readonly ImmutableDictionary<string, string> ITEM_TYPE
+            public static readonly ImmutableDictionary<TranslationKey, string> ITEM_TYPE
                 = CreateEnumKeys<ItemType>();
-            public static readonly ImmutableDictionary<string, string> ZONE_TYPE
+            public static readonly ImmutableDictionary<TranslationKey, string> ZONE_TYPE
                 = CreateEnumKeys<ZoneType>();
-            public static readonly ImmutableDictionary<string, string> SKILL_TOOLTIP_REQUIREMENT
+            public static readonly ImmutableDictionary<TranslationKey, string> SKILL_TOOLTIP_REQUIREMENT
                 = CreateEnumKeys<SkillToolTipRequirement>(valueOverride: skillToolTipRequirement => skillToolTipRequirement.ToString().ToLower());
 
             private static IDictionary<ShopTab, string> __SHOP_TABS = new Dictionary<ShopTab, string>()
@@ -64,7 +64,7 @@ namespace Localyssation
                 { ShopTab.TRADE, "Trade Items" },
                 { ShopTab.BUYBACK, "Sold Items" }
             };
-            public static readonly ImmutableDictionary<string, string> SHOP_TAB
+            public static readonly ImmutableDictionary<TranslationKey, string> SHOP_TAB
                 = __SHOP_TABS.ToImmutableDictionary(
                     kv => Create(KeyUtil.GetForAsset(kv.Key).ToString(), kv.Value),
                     kv => kv.Value

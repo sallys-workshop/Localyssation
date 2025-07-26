@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Localyssation.Util;
+using System.Linq;
 
 namespace Localyssation
 {
@@ -6,7 +7,7 @@ namespace Localyssation
     {
         internal static class Enchanter
         {
-            private static string create(string key, string value = "")
+            private static TranslationKey create(string key, string value = "")
             {
                 return I18nKeys.Create($"ENCHANTER_GUI_{key.ToUpper()}", value);
             }
@@ -49,6 +50,24 @@ namespace Localyssation
             public static readonly string STATUS_CURRENT_ENCHANTMENT
                 = create(nameof(STATUS_CURRENT_ENCHANTMENT), "Current enchantment: ");
 
+            public static readonly TranslationKey GET_NEW_ENCHANTMENT_FORMAT 
+                = create("GET_NEW_ENCHANTMENT_FORMAT", "You got the {0} enchantment!");
+            public static readonly TranslationKey TRANSMUTE_TO_STRENGTH_FORMAT 
+                = create("TRANSMUTE_TO_STRENGTH_FORMAT", "Your {0} now scales off Strength!");
+            public static readonly TranslationKey TRANSMUTE_TO_DEXTERITY_FORMAT 
+                = create("TRANSMUTE_TO_DEXTERITY_FORMAT", "Your {0} now scales off Dexterity!");
+            public static readonly TranslationKey TRANSMUTE_TO_MIND_FORMAT 
+                = create("TRANSMUTE_TO_MIND_FORMAT", "Your {0} now scales off Mind!");
+
+            public static readonly TranslationKey NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH 
+                = create("NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH", "Not enough Might Stones");
+            public static readonly TranslationKey NOT_ENOUGH_TRANSMUTE_STONES_DEXTERITY
+                = create("NOT_ENOUGH_TRANSMUTE_STONES_DEXTERITY", "Not enough Agility Stones");
+            public static readonly TranslationKey NOT_ENOUGH_TRANSMUTE_STONES_MIND
+                = create("NOT_ENOUGH_TRANSMUTE_STONES_MIND", "Not enough Flux Stones");
+
+            public static readonly TranslationKey CANNOT_TRANSMUTE_WEAPON
+                = create("CANNOT_TRANSMUTE_WEAPON", "Cannot Transmute Weapon");
         }
     }
 }

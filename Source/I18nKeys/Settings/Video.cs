@@ -1,4 +1,5 @@
 ﻿
+using Localyssation.Util;
 using System;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace Localyssation
             {
                 private static string CreateCell(string key, string defaultString) => Create($"SETTINGS_VIDEO_CELL_{key}", defaultString);
 
-                private static string[] CreateOptions(string parentKey, string[] defaultStrings)
+                private static TranslationKey[] CreateOptions(string parentKey, string[] defaultStrings)
                 {
                     return defaultStrings.Select((value, index) => Create($"{parentKey}_OPTION_{index + 1}", value))
                     .ToArray();
@@ -31,7 +32,7 @@ namespace Localyssation
                     = Create("SETTINGS_VIDEO_HEADER_VIDEO_SETTINGS", "Video Settings");
                 public static readonly string CELL_SCREEN_MODE
                     = CreateCell("SCREEN_MODE", "Screen Mode");
-                public static readonly string[] CELL_SCREEN_MODE_OPTIONS
+                public static readonly TranslationKey[] CELL_SCREEN_MODE_OPTIONS
                     = CreateOptions(CELL_SCREEN_MODE, new string[] { 
                         "Windowed", 
                         "Fullscreen", 
@@ -47,7 +48,7 @@ namespace Localyssation
                     = Create("SETTINGS_VIDEO_CELL_SCREEN_RESOLUTION", "Screen Resolution");
                 public static readonly string CELL_ANTI_ALIASING
                     = Create("SETTINGS_VIDEO_CELL_ANTI_ALIASING", "Anti Aliasing");
-                public static readonly string[] CELL_ANTI_ALIASING_OPTIONS
+                public static readonly TranslationKey[] CELL_ANTI_ALIASING_OPTIONS
                     = CreateOptions(CELL_ANTI_ALIASING, new string[] {
                         "Disabled",
                         "2x Multi Sampling",
@@ -57,7 +58,7 @@ namespace Localyssation
 
                 public static readonly string CELL_TEXTURE_FILTERING
                     = Create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING", "Texture Filtering");
-                public static readonly string[] CELL_TEXTURE_FILTERING_OPTIONS
+                public static readonly TranslationKey[] CELL_TEXTURE_FILTERING_OPTIONS
                     = CreateOptions(CELL_TEXTURE_FILTERING, new string[] {
                         "Bilnear (Smooth)",
                         "Nearest (Crunchy)"
@@ -68,7 +69,7 @@ namespace Localyssation
                 //    = Create("SETTINGS_VIDEO_CELL_TEXTURE_FILTERING_OPTION_2", "Nearest (Crunchy)");
                 public static readonly string CELL_TEXTURE_QUALITY
                     = Create("SETTINGS_VIDEO_CELL_TEXTURE_QUALITY", "Texture Quality");
-                public static readonly string[] CELL_TEXTURE_QUALITY_OPTIONS
+                public static readonly TranslationKey[] CELL_TEXTURE_QUALITY_OPTIONS
                     = CreateOptions(CELL_TEXTURE_QUALITY, new string[] {
                         "High",
                         "Medium",
@@ -96,7 +97,7 @@ namespace Localyssation
                     = Create("SETTINGS_VIDEO_CELL_CAMERA_VERT", "Camera Y Position");
                 public static readonly string CELL_CAMERA_RENDER_DISTANCE
                     = Create("SETTINGS_VIDEO_CELL_CAMERA_RENDER_DISTANCE", "Render Distance");
-                public static readonly string[] CELL_CAMERA_RENDER_DISTANCE_OPTIONS
+                public static readonly TranslationKey[] CELL_CAMERA_RENDER_DISTANCE_OPTIONS
                     = CreateOptions(CELL_CAMERA_RENDER_DISTANCE, new string[] {
                         "Very Near",
                         "Near",

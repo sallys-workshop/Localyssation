@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Localyssation.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Localyssation
@@ -28,7 +29,7 @@ namespace Localyssation
 
         internal static readonly Dictionary<string, string> TR_KEYS = new Dictionary<string, string>();
 
-        private static string Create(string key, string defaultString = "")
+        private static TranslationKey Create(string key, string defaultString = "")
         {
             if (string.IsNullOrEmpty(key)) { throw new ArgumentNullException("key is empty"); }
             if (string.IsNullOrEmpty(defaultString))
@@ -40,7 +41,7 @@ namespace Localyssation
                 throw new ArgumentException($"key `{key}` Already Exists!");
             }
             TR_KEYS[key] = defaultString;
-            return key;
+            return new TranslationKey(key);
         }
 
         public static string GetDefaulted(string key)

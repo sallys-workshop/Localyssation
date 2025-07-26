@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,6 +58,21 @@ namespace Localyssation.Patches.ReplaceText
         internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(
             IEnumerable<CodeInstruction> instructions,
             IEnumerable<string> keyReplacement,
+            bool allowRepeat = false, bool supressNotfoundWarnings = false
+        )
+        {
+            Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
+
+            foreach (var key in keyReplacement)
+            {
+                stringReplacements.Add(I18nKeys.GetDefaulted(key), key);
+            }
+            return SimpleStringReplaceTranspiler(instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
+        }
+
+        internal static IEnumerable<CodeInstruction> SimpleStringReplaceTranspiler(
+            IEnumerable<CodeInstruction> instructions,
+            IEnumerable<TranslationKey> keyReplacement,
             bool allowRepeat = false, bool supressNotfoundWarnings = false
         )
         {
@@ -240,6 +257,20 @@ namespace Localyssation.Patches.ReplaceText
         )
         {
             __instructions = RTUtil.SimpleStringReplaceTranspiler(__instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
+            return this;
+        }
+        public RTTransplierCodeInstructionsWrapper ReplaceStrings(
+            IEnumerable<TranslationKey> stringReplacements,
+            bool allowRepeat = false, bool supressNotfoundWarnings = false
+        )
+        {
+            __instructions = RTUtil.SimpleStringReplaceTranspiler(__instructions, stringReplacements, allowRepeat, supressNotfoundWarnings);
+            return this;
+        }
+
+        public RTTransplierCodeInstructionsWrapper ReplaceInstructions(CodeMatch[] matches, CodeInstruction[] replacements)
+        {
+            __instructions = TranspilerHelper.MatchAndReplace(__instructions, matches, replacements);
             return this;
         }
 

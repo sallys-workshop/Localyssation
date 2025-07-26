@@ -223,6 +223,20 @@ namespace Localyssation
             return ApplyTextEditTags(GetStringRaw(key, defaultValue), fontSize);
         }
 
+        public static string GetString(TranslationKey translationKey, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED, int fontSize = -1)
+        {
+            if (LocalyssationConfig.ShowTranslationKey)
+            {
+                return translationKey.ToString();
+            }
+            return ApplyTextEditTags(GetStringRaw(translationKey.ToString(), defaultValue), fontSize);
+        }
+
+        public static string Format(TranslationKey formatKey, params object[] args)
+        {
+            return string.Format(GetString(formatKey), args);
+        }
+
         public static string GetDefaultString(string key)
         {
             if (!LanguageManager.DefaultLanguage.TryGetString(key, out string result))
