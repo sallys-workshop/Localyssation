@@ -77,13 +77,17 @@ namespace Localyssation.Util
 
             // no fallback for Font!
 
-            TMPfonts.Select(kv => kv.Value).DoIf(
-                font => !font.fallbackFontAssetTable.Contains(TMPfonts["unifont SDF"]),
-                font => font.fallbackFontAssetTable.Add(TMPfonts["unifont SDF"])
-            );
+            var UNIFONT_SDF = TMPfonts["unifont SDF"];
+
+            TMPfonts.Values
+                .SkipWhile(font => font == UNIFONT_SDF)
+                .DoIf(
+                    font => !font.fallbackFontAssetTable.Contains(UNIFONT_SDF),
+                    font => font.fallbackFontAssetTable.Add(UNIFONT_SDF)
+                );
             Resources.LoadAll<TMP_FontAsset>("").Cast<TMP_FontAsset>().DoIf(
-                font => !font.fallbackFontAssetTable.Contains(TMPfonts["unifont SDF"]),
-                font => font.fallbackFontAssetTable.Add(TMPfonts["unifont SDF"])
+                font => !font.fallbackFontAssetTable.Contains(UNIFONT_SDF),
+                font => font.fallbackFontAssetTable.Add(UNIFONT_SDF)
             );
 
 
