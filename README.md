@@ -1,41 +1,58 @@
 # Localyssation
-A work-in-progress localisation library mod for the video game [ATLYSS](https://store.steampowered.com/app/2768430/ATLYSS/).
-Originally created by [TheMysticSword](https://github.com/TheMysticSword/Localyssation).
-This fork is mainly maintained by TowardtheStars, as a part of CHS translation project, but should be applicable to other languages.
+
+A work-in-progress localization library mod for [ATLYSS](https://store.steampowered.com/app/2768430/ATLYSS/). Check [Github page](https://github.com/sallys-workshop/Localyssation/) for newest update.
 
 ## Requirements
-- BepInEx 5
+
+- BepInEx 5.4
 - EasySettings
 
 ## :warning: Important note :warning:
-~~This mod is not finished yet!~~ This mod is mostly finished. The pre-release versions you see are unfinished versions of the mod intended for translators to make their own languages early.
+
+This mod **REQUIRES** a translation patch of your language to show in-game translation, it is **NOT** intended to include translations on its own, while translators can make translation patches with this mod (see below).
+
+Currently listed translation patch(es):
+
+| Language |                            Author                            |                          Patch Link                          |
+| :------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| 简体中文 |                莎莉工作室(Sallys's Workshop)                 | [Github](https://github.com/sallys-workshop/zh-CN-patch-for-Localyssation) [Thunder Store] |
+| 繁体中文 |  [jasonpepe](https://thunderstore.io/c/atlyss/p/jasonpepe/)  | [LocalyssationZHTW](https://thunderstore.io/c/atlyss/p/jasonpepe/LocalyssationZHTW) |
+| Español  |    [Alhenix](https://thunderstore.io/c/atlyss/p/Alhenix/)    | [LocalyssationESLA](https://thunderstore.io/c/atlyss/p/Alhenix/localyssationESLA/) |
+|  한국어  | [KR_Kemonoz](https://thunderstore.io/c/atlyss/p/KR_Kemonoz/) | [AtlyssKr](https://thunderstore.io/c/atlyss/p/KR_Kemonoz/AtlyssKr/) |
+|Brasileiro|[Guachenim](https://thunderstore.io/c/atlyss/p/Guachenim/)|[Thunder Store](https://thunderstore.io/c/atlyss/p/Guachenim/Ordem_e_Atlyss_a_Braziliant_PTBR_Translation/)|
+
+## How to use
+
+1. Install BepInEx.
+2. Install EasySettings and Localyssation.
+3. Put a translation patch inside the `plugins` folder. 
 
 ## Current features
-* New "Language" option in the "Interface" settings tab
-* Loading all custom languages found in the BepInEx plugins folder
-  * A language consists of the following files:
-    * `localyssationLanguage.json` with information about the language
-    * `strings.tsv` with text keys and corresponding translated text
-* Exporting game data for translators' convenience
-  * Item icons, translation keys and names
-  * Quest givers, translation keys, types, subtypes, and names
-* Some in-game text gets translated according to the selected language:
-  * Main menu
-  * Settings
-  * Character select menu
-  * Character creation menu
-  * Equipment tooltips
-  * Tab menu:
-    * ESC menu
-    * Stats
-    * Skills
-    * Items
-    * Quests
-    * Who
-  * Quests
-  * Dialogues
-  * Map splash titles
+
+* Add "Language" options in the "mods" tab of settings (Install EasySettings if missing).
+  * Where you can change languages or fonts (unifont by default).
+* Show correct texts in chat box and chat bubbles, if the words can be found in font bundle you use.
+* Load translation patches found in the BepInEx plugins folder.
+  * A patch consists of the following things:
+    * `localyssationLanguage.json` with information about the language.
+    * `strings.yml` with text keys and corresponding translated text.
+    * A folder to keep them together.
+* Useful features for translators' convenience.
+  * Exporting original `strings.yml`.
+  * Generate `.md` files for items and quests by detail inside the mod folder.
+    * `ScriptableItem.md`: icons, translation keys and names
+    * `ScriptableQuest.md`: givers, translation keys, types, subtypes, and names
+  * Option to show KEY of empty translations in game.
+  * Reload strings with hot key in game.
 
 ## For translators
-You do not have to ask me if you can make a translation. This mod is a library that lets others easily make their own translations. It is not intended to include translations on its own.  
-Go to the [For Translators](https://github.com/TheMysticSword/Localyssation/wiki/For-Translators) wiki page for a guide on installing the mod and creating your own language...
+
+Feel free to create your own translation patch for your language. Send issues to let me put your patch link in this README. 
+
+Go to the [For Translators](https://github.com/TheMysticSword/Localyssation/wiki/For-Translators) wiki page for guidance of installing the mod and creating your own language translation patch, as well as making your own [Font Bundles](https://github.com/TheMysticSword/Localyssation/wiki/Font-Bundles) (make sure using **profitable & embeddable** fonts to avoid potential legal issues).
+
+Also, this mod can't help with the texts inside pictures. Try texture swapping if you'd like to translate them.
+
+## Credit
+
+Originally created by [TheMysticSword](https://github.com/TheMysticSword/Localyssation), then forked and maintained by [TowardtheStars](https://github.com/TowardtheStars) as part of the CHS translation project held by team **Sally's Workshop**(莎莉小店).
