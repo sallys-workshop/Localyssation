@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Localyssation.LanguageModule;
+using Localyssation.Util;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -31,6 +32,11 @@ namespace Localyssation.LangAdjutable
 
         // handy function to slot into the newTextFunc param when you need a simple key->string replacement
         public static System.Func<int, string> GetStringFunc(string key, string defaultValue = Localyssation.GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
+        {
+            return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
+        }
+
+        public static Func<int, string> GetStringFunc(TranslationKey key, string defaultValue = Localyssation.GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
             return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
         }

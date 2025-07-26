@@ -173,6 +173,11 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
+        public static void RemapChildTextsByPath(Transform parentTransform, IDictionary<string, TranslationKey> textRemaps, Action<Transform, string> onRemap = null, bool supressNotfoundWarnings = false, bool rawText = false)
+        {
+            RemapChildTextsByPath(parentTransform, textRemaps.ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), onRemap, supressNotfoundWarnings, rawText);
+        }
+
         public static string GetPath(Transform transform) => PathUtil.GetPath(transform);
 
         /// <summary>

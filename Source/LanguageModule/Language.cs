@@ -83,6 +83,7 @@ namespace Localyssation.LanguageModule
             try
             {
                 info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
+                Localyssation.logger.LogMessage($"Loading language name={info.name}, id={info.code}");
             }
             catch (Exception e)
             {
@@ -92,9 +93,12 @@ namespace Localyssation.LanguageModule
             if (info.code == LanguageManager.DefaultLanguage.info.code) return false;   // skip default language
             try
             {
-                Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml").Do(
+                Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml", SearchOption.AllDirectories)
+                    .OrderBy(x => Path.GetFileNameWithoutExtension(x))
+                    .Do(
                 stringsFilePath =>
                 {
+                    Localyssation.logger.LogMessage($"Found translation file {stringsFilePath}");
                     var file = File.OpenText(stringsFilePath);
                     Parallel.ForEach(YAML_DESERIALIZER.Deserialize<Dictionary<string, string>>(file),
                         kv =>
@@ -110,11 +114,11 @@ namespace Localyssation.LanguageModule
                         });
                     file.Close();
                 });
+                return true;
             }
             catch (Exception e)
             {
                 Localyssation.logger.LogError(e);
-                return false;
             }
 
             var stringsFilePathTSV = Path.Combine(fileSystemPath, "strings.tsv");

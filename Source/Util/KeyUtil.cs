@@ -6,8 +6,10 @@ namespace Localyssation.Util
 {
     public class TranslationKey
     {
+        public static TranslationKey EMPTY = new TranslationKey(""); 
+
         public readonly string key;
-        public TranslationKey(string _key) { key = _key; }
+        internal TranslationKey(string _key) { key = _key; }
         public TranslationKey Name { get => new TranslationKey(key + "_NAME"); }
         public TranslationKey NamePlural { get => new TranslationKey(key + "_NAME_PLURAL"); }
         public TranslationKey Description { get => new TranslationKey(key + "_DESCRIPTION"); }
@@ -38,6 +40,21 @@ namespace Localyssation.Util
         public TranslationKey CompleteReturnMessage { get => new TranslationKey(key + "_COMPLETE_RETURN_MESSAGE"); }
     }
 
+    public class NetTriggerTranslationKey : TranslationKey
+    {
+        public readonly int MessageArrayLength;
+        public NetTriggerTranslationKey(string _key, int messageArraySize) : base(_key) 
+        {
+            MessageArrayLength = messageArraySize;
+        }
+
+        public TranslationKey SingleMessage { get => new TranslationKey(key + "_SINGLE_MESSAGE"); }
+        public TranslationKey MessageArray(int index)
+        {
+            return new TranslationKey(key + $"_MESSAGE_ARRAY_{index}");
+        }
+    }
+
     public static class KeyUtil
     {
         public static string Normalize(string key)
@@ -46,6 +63,16 @@ namespace Localyssation.Util
                 key.ToUpper().Replace(" ", "_").Replace("/", "_")
                 .Where(x => "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789".Contains(x))
                 .ToArray());
+        }
+
+        public static NetTriggerTranslationKey GetForAsset(NetTrigger asset)
+        {
+            string sceneName = asset.gameObject.scene.name;
+            string triggerName = asset.name;
+            return new NetTriggerTranslationKey(
+                $"{Normalize(sceneName)}_NET_TRIGGER_{Normalize(triggerName.Substring(1))}",
+                asset._triggerMessage._triggerMessageArray.Length
+                );
         }
 
         
@@ -154,11 +181,11 @@ namespace Localyssation.Util
             return new TranslationKey($"ZONE_TYPE_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForMapRegionTag(string regionTag)
+        public static TranslationKey GetForMapRegionTag(string regionTag)
         {
             if (!string.IsNullOrEmpty(regionTag))
-                return $"MAP_REGION_TAG_{Normalize(regionTag)}";
-            return "";
+                return new TranslationKey($"MAP_REGION_TAG_{Normalize(regionTag)}");
+            return TranslationKey.EMPTY;
         }
 
         public static TranslationKey GetForAsset(SkillToolTipRequirement asset)
@@ -166,9 +193,9 @@ namespace Localyssation.Util
             return new TranslationKey($"SKILL_TOOLTIP_REQUIREMENT_{Normalize(asset.ToString())}");
         }
 
-        public static string GetForMapName(string name)
+        public static TranslationKey GetForMapName(string name)
         {
-            return $"MAP_NAME_{Normalize(name)}";
+            return new TranslationKey($"MAP_NAME_{Normalize(name)}");
         }
 
         public static TranslationKey GetForAsset(ScriptableShopkeep asset)

@@ -85,11 +85,12 @@ namespace Localyssation.Util
                     font => !font.fallbackFontAssetTable.Contains(UNIFONT_SDF),
                     font => font.fallbackFontAssetTable.Add(UNIFONT_SDF)
                 );
+
+            Resources.UnloadUnusedAssets();
             Resources.LoadAll<TMP_FontAsset>("").Cast<TMP_FontAsset>().DoIf(
                 font => !font.fallbackFontAssetTable.Contains(UNIFONT_SDF),
                 font => font.fallbackFontAssetTable.Add(UNIFONT_SDF)
             );
-
 
         }
 
@@ -104,6 +105,7 @@ namespace Localyssation.Util
     {
         public static void DetectVanillaFonts()
         {
+            Resources.UnloadUnusedAssets();
             Localyssation.logger.LogInfo("Fonts used by Vanilla:");
             Resources.LoadAll<Font>("").Cast<Font>().Do(font =>
             {

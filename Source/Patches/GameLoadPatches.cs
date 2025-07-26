@@ -253,7 +253,7 @@ namespace Localyssation.Patches
                     var scene = SceneManager.GetSceneByPath(scenePath);
                     if (scene.IsValid())
                     {
-                        var sceneName = scene.name;
+                        string sceneName = scene.name;
                         foreach (var dialogTrigger in GameObject.FindObjectsOfType<DialogTrigger>(true))
                         {
                             if (dialogTrigger._useLocalDialogBranch && dialogTrigger.gameObject.scene.name == sceneName)
@@ -274,14 +274,60 @@ namespace Localyssation.Patches
                             }
                         }
 
-                        foreach (var mapInstance in GameObject.FindObjectsOfType<MapInstance>(true).Where(o => o.gameObject.scene.name == sceneName))
-                        {
-                            string mapName = mapInstance._mapName;
-                            LanguageManager.RegisterKey(
-                                KeyUtil.GetForMapName(mapName),
-                                mapName
-                            );
-                        }
+                        GameObject.FindObjectsOfType<MapInstance>(true)
+                            .Where(o => o.gameObject.scene.name == sceneName)
+                            .Do(mapInstance =>
+                            {
+                                string mapName = mapInstance._mapName;
+                                LanguageManager.RegisterKey(
+                                    KeyUtil.GetForMapName(mapName),
+                                    mapName
+                                );
+                            });
+
+                        GameObject.FindObjectsOfType<NetTrigger>(true).Cast<NetTrigger>()
+                            .Where(netTrigger => 
+                                netTrigger._triggerMessage != null 
+                                && netTrigger.gameObject.scene.name == sceneName
+                            )
+                            .Do(netTrigger =>
+                            {
+                                string triggerName = netTrigger.name;
+                                TriggerMessage triggerMessage = netTrigger._triggerMessage;
+                                if (!string.IsNullOrEmpty(triggerMessage._singleMessage))
+                                {
+                                    LanguageManager.RegisterKey(
+                                        KeyUtil.GetForAsset(netTrigger).SingleMessage,
+                                        triggerMessage._singleMessage
+                                    );
+                                }
+                                if (triggerMessage._triggerMessageArray.Length > 0) 
+                                {
+                                    
+                                    triggerMessage._triggerMessageArray.Select((msg, idx) => {
+                                        if (!string.IsNullOrEmpty(triggerMessage._triggerMessageArray[idx]))
+                                        {
+                                            LanguageManager.RegisterKey(
+                                                KeyUtil.GetForAsset(netTrigger).MessageArray(idx),
+                                                triggerMessage._triggerMessageArray[idx]
+                                            );
+                                        }
+                                        return true;
+                                    }).All(o => o); // finalizer to make sure code above get done 
+
+                                    //for (int j = 0; j < triggerMessage._triggerMessageArray.Length; i++)
+                                    //{
+                                    //    if (!string.IsNullOrEmpty(triggerMessage._triggerMessageArray[j]))
+                                    //    {
+                                    //        LanguageManager.RegisterKey(
+                                    //            $"{KeyUtil.Normalize(sceneName)}_NET_TRIGGER_{KeyUtil.Normalize(triggerName)}_MESSAGE_ARRAY_{j}",
+                                    //            triggerMessage._triggerMessageArray[j]
+                                    //        );
+                                    //    }
+                                    //}
+                                }
+
+                            });
 
                         yield return SceneManager.UnloadSceneAsync(scene);
                     }

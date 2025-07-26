@@ -112,6 +112,9 @@
             <HintPath>$(ATLYSS_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.TextRenderingModule">
             <HintPath>$(ATLYSS_MANAGED)\UnityEngine.TextRenderingModule.dll</HintPath>
             <Private>False</Private>
