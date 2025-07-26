@@ -38,4 +38,4 @@ This fork is mainly maintained by TowardtheStars, as a part of CHS translation p
 
 ## For translators
 You do not have to ask me if you can make a translation. This mod is a library that lets others easily make their own translations. It is not intended to include translations on its own.  
-Go to the [For Translators](https://github.com/TheMysticSword/Localyssation/wiki/For-Translators) wiki page for a guide on installing the mod and creating your own language.
+Go to the [For Translators](https://github.com/TheMysticSword/Localyssation/wiki/For-Translators) wiki page for a guide on installing the mod and creating your own language...
