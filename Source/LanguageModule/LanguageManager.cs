@@ -10,7 +10,7 @@ namespace Localyssation.LanguageModule
 {
     public static class LanguageManager
     {
-        public static Language DefaultLanguage { get; private set; }
+        public static Language DefaultLanguage { get; private set; } = CreateDefaultLanguage();
         public static Language CurrentLanguage { get; private set; }
 
         public static readonly Dictionary<string, Language> languages = new Dictionary<string, Language>();
@@ -18,9 +18,11 @@ namespace Localyssation.LanguageModule
 
         public static void Init()
         {
-            DefaultLanguage = CreateDefaultLanguage();
+            //DefaultLanguage = CreateDefaultLanguage();
+
+            I18nKeys.Init();
             RegisterLanguage(DefaultLanguage);
-            ChangeLanguage(DefaultLanguage);
+            ChangeLanguage(DefaultLanguage, true);
             LoadLanguagesFromFileSystem();
         }
 
@@ -28,15 +30,15 @@ namespace Localyssation.LanguageModule
         {
             ChangeLanguage(languages[key]);
         }
-        public static void ChangeLanguage(Language newLanguage)
+        public static void ChangeLanguage(Language newLanguage, bool forced = false)
         {
-            if (CurrentLanguage == newLanguage) return;
+            if (CurrentLanguage == newLanguage && !forced) return;
 
             CurrentLanguage = newLanguage;
             Localyssation.instance.CallOnLanguageChanged(newLanguage);
         }
 
-        internal static Language CreateDefaultLanguage()
+        private static Language CreateDefaultLanguage()
         {
             var language = new Language
             {
@@ -44,8 +46,7 @@ namespace Localyssation.LanguageModule
                 fileSystemPath = Path.Combine(Path.GetDirectoryName(Localyssation.dllPath), "defaultLanguage")
             };
 
-            I18nKeys.Init();
-            language.GetStrings().AddRange(I18nKeys.TR_KEYS);
+            //language.GetStrings().AddRange(I18nKeys.TR_KEYS);
             return language;
         }
 

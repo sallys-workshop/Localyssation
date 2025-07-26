@@ -38,6 +38,11 @@ namespace Localyssation.Util
         internal static ConfigEntry<KeyCode> configReloadLanguageKeybind { get; private set; }
         public static KeyCode ReloadLanguageKeybind { get => configReloadLanguageKeybind.Value; }
 
+        public static void PreInit()
+        {
+
+        }
+
         public static void Init(ConfigFile _config)
         {
             config = _config;
@@ -138,7 +143,7 @@ namespace Localyssation.Util
             showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
             showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
             {
-                LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage);    // refresh all
+                LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage, true);    // refresh all
             });
             LangAdjustables.RegisterText(showTranslationKeyToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.SHOW_TRANSLATION_KEY));
 
@@ -149,7 +154,9 @@ namespace Localyssation.Util
             LangAdjustables.RegisterText(reloadLanguageKeybind.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.RELOAD_LANGUAGE_KEYBIND));
 
             exportExtraToggle = tab.AddToggle(LocalyssationConfig.configExportExtra);
+            
             LangAdjustables.RegisterText(exportExtraToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.EXPORT_EXTRA));
+            
 
             createMissingForCurrentLangButton = tab.AddButton(
                 Localyssation.GetDefaultString(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE), 
