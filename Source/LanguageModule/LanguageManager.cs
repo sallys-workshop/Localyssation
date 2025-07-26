@@ -28,9 +28,9 @@ namespace Localyssation.LanguageModule
         {
             ChangeLanguage(languages[key]);
         }
-        public static void ChangeLanguage(Language newLanguage)
+        public static void ChangeLanguage(Language newLanguage, bool forced = false)
         {
-            if (CurrentLanguage == newLanguage) return;
+            if (CurrentLanguage == newLanguage && !forced) return;
 
             CurrentLanguage = newLanguage;
             Localyssation.instance.CallOnLanguageChanged(newLanguage);

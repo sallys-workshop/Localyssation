@@ -138,7 +138,7 @@ namespace Localyssation.Util
             showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
             showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
             {
-                LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage);    // refresh all
+                LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage, true);    // refresh all
             });
             LangAdjustables.RegisterText(showTranslationKeyToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.SHOW_TRANSLATION_KEY));
 
