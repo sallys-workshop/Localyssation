@@ -29,7 +29,7 @@ Currently listed translation patch(es):
 
 ## Current features
 
-* Add "Language" options in the "mods" tab of settings (Install EasySettings if missing).
+* Add Localyssation options in the mods tab of settings (Install EasySettings if missing).
   * Where you can change languages or fonts (unifont by default).
 * Show correct texts in chat box and chat bubbles, if the words can be found in font bundle you use.
 * Load translation patches found in the BepInEx plugins folder.
@@ -37,19 +37,22 @@ Currently listed translation patch(es):
     * `localyssationLanguage.json` with information about the language.
     * `strings.yml` with text keys and corresponding translated text.
     * A folder to keep them together.
+  * Including translation for mods (if the modder provides).
 * Useful features for translators' convenience.
-  * Exporting original `strings.yml`.
+  * Exporting original `strings.yml` to begin with.
   * Generate `.md` files for items and quests by detail inside the mod folder.
     * `ScriptableItem.md`: icons, translation keys and names
     * `ScriptableQuest.md`: givers, translation keys, types, subtypes, and names
   * Option to show KEY of empty translations in game.
   * Reload strings with hot key in game.
 
-## For translators
+## For translators or mod creaters
 
 Feel free to create your own translation patch for your language. Send issues to let me put your patch link in this README. 
 
-Go to the [For Translators](https://github.com/TheMysticSword/Localyssation/wiki/For-Translators) wiki page for guidance of installing the mod and creating your own language translation patch, as well as making your own [Font Bundles](https://github.com/TheMysticSword/Localyssation/wiki/Font-Bundles) (make sure using **profitable & embeddable** fonts to avoid potential legal issues).
+Go to this [wiki](https://github.com/sallys-workshop/Localyssation/wiki/To-create-a-game-translation) page for guidance of installing the mod and creating your own language translation patch, as well as making your own [Font Bundles](https://github.com/sallys-workshop/Localyssation/wiki/Font-Bundle-aka.-Why-characters-don't-get-displayed-(2.0)) (make sure using **profitable & embeddable** fonts to avoid potential legal issues).
+
+Localyssation supports mod translation after `2.0.0`, check this [wiki page](https://github.com/sallys-workshop/Localyssation/wiki/To-create-a-mod-translation) for more information.
 
 Also, this mod can't help with the texts inside pictures. Try texture swapping if you'd like to translate them.
 
