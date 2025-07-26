@@ -21,6 +21,9 @@ namespace Localyssation.LanguageModule
             //DefaultLanguage = CreateDefaultLanguage();
 
             I18nKeys.Init();
+            //DefaultLanguage.GetStrings().AddRange(I18nKeys.TR_KEYS);
+            I18nKeys.TR_KEYS.Do(kv => DefaultLanguage.RegisterKey(kv.Key, kv.Value));
+
             RegisterLanguage(DefaultLanguage);
             ChangeLanguage(DefaultLanguage, true);
             LoadLanguagesFromFileSystem();
@@ -92,6 +95,13 @@ namespace Localyssation.LanguageModule
         {
             Directory.CreateDirectory(DefaultLanguage.fileSystemPath);
             DefaultLanguage.WriteToFileSystem("default_language", true);
+        }
+
+        public static string GetDefaultString(string key)
+        {
+            if (DefaultLanguage.TryGetString(key, out var result))
+                return result;
+            return key;
         }
     }
 }

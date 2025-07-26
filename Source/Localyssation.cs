@@ -25,7 +25,6 @@ namespace Localyssation
     {
 
         public static Localyssation instance;
-        public static Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
 
         internal static System.Reflection.Assembly assembly;
@@ -52,7 +51,6 @@ namespace Localyssation
             dllPath = new System.Uri(assembly.CodeBase).LocalPath;
 
             //GameAssetCache.Load();
-            LocalyssationConfig.PreInit();
             LanguageManager.Init();
             LocalyssationConfig.Init(Config);
             //ExportUtil.InitExports();
@@ -60,14 +58,15 @@ namespace Localyssation
             FontHelper.DetectVanillaFonts();
 
             LangAdjustables.Init();
-            SettingsGUI.Init();
-            
 
 
+
+            var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
             FRUtil.PatchAll(harmony);
             RTUtil.PatchAll(harmony);
+            SettingsGUI.Init();
             OnSceneLoaded.Init();
         }
         

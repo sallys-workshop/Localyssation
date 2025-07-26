@@ -43,7 +43,7 @@ namespace Localyssation
                 throw new ArgumentException($"key `{key}` Already Exists!");
             }
             LanguageManager.RegisterKey(new TranslationKey(key), defaultString);
-            //TR_KEYS.Add(key, defaultString);
+            TR_KEYS.Add(key, defaultString);
             return new TranslationKey(key);
         }
 

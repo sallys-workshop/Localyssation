@@ -105,7 +105,7 @@ namespace Localyssation.Patches.ReplaceText
         public static void RemapAllTextUnderObject(GameObject gameObject, Dictionary<string, string> textRemaps, Action<Transform, string> onRemap = null)
         {
             HashSet<string> remappedString = new HashSet<string>();
-            Localyssation.logger.LogInfo($"Remapping for {gameObject.name}");
+            Localyssation.logger.LogDebug($"Remapping for {gameObject.name}");
             bool TryRemapSingle(Transform lookupNameTransform, Text text)
             {
                 if (textRemaps.TryGetValue(lookupNameTransform.name, out var key))
