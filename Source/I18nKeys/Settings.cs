@@ -12,6 +12,7 @@ namespace Localyssation
                 Audio.Init();
                 Input.init();
                 Network.Init();
+                Mod.Init();
             }
             public static readonly string BUTTON_VIDEO
                 = Create("SETTINGS_TAB_BUTTON_VIDEO", "Display");

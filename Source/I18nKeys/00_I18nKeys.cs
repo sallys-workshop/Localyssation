@@ -24,6 +24,7 @@ namespace Localyssation
             ScriptableStatusCondition.init();
             Settings.Init();
             SkillMenu.init();
+            SteamLobby.Init();
             TabMenu.Init();
         }
 

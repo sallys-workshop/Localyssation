@@ -10,6 +10,7 @@ namespace Localyssation
         {
             public static class Mod
             {
+                internal static void Init() { }
                 private static string Create(string key, string defaultValue="")
                 {
                     return I18nKeys.Create($"SETTINGS_MOD_CELL_LOCALYSSATION_{key}", defaultValue);
@@ -23,22 +24,22 @@ namespace Localyssation
                 
 
                 public static readonly string LANGUAGE
-                    = Create(LocalyssationConfig.configLanguageDefinition);
+                    = Create(ConfigDefinitions.configLanguageDefinition);
                 public static readonly string TRANSLATOR_MODE
-                    = Create(LocalyssationConfig.configTraslatorModeDefinition);
+                    = Create(ConfigDefinitions.configTraslatorModeDefinition);
                 public static readonly string CREATE_DEFAULT_LANGUAGE_FILES
-                    = Create(LocalyssationConfig.configCreateDefaultLanguageFilesDefinition);
+                    = Create(ConfigDefinitions.configCreateDefaultLanguageFilesDefinition);
                 public static readonly string SHOW_TRANSLATION_KEY
-                    = Create(LocalyssationConfig.configShowTranslationKeyDefinition);
+                    = Create(ConfigDefinitions.configShowTranslationKeyDefinition);
                 public static readonly string EXPORT_EXTRA
-                    = Create(LocalyssationConfig.configExportExtraDefinition);
+                    = Create(ConfigDefinitions.configExportExtraDefinition);
                 public static readonly string RELOAD_LANGUAGE_KEYBIND
-                    = Create(LocalyssationConfig.configReloadLanguageKeybindDefinition);
+                    = Create(ConfigDefinitions.configReloadLanguageKeybindDefinition);
 
                 public static readonly string ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE
-                    = Create(nameof(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE), "Add Missing Keys to Current Language");
+                    = Create("ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE", "Add Missing Keys to Current Language");
                 public static readonly string LOG_UNTRANSLATED_STRINGS
-                    = Create(nameof(LOG_UNTRANSLATED_STRINGS), "Log Untranslated Strings");
+                    = Create("LOG_UNTRANSLATED_STRINGS", "Log Untranslated Strings");
             }
 
         }

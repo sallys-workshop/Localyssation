@@ -93,6 +93,7 @@ namespace Localyssation.LanguageModule
             if (info.code == LanguageManager.DefaultLanguage.info.code) return false;   // skip default language
             try
             {
+                bool foundYML = false;
                 Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml", SearchOption.AllDirectories)
                     .OrderBy(x => Path.GetFileNameWithoutExtension(x))
                     .Do(
@@ -113,8 +114,10 @@ namespace Localyssation.LanguageModule
                             }
                         });
                     file.Close();
+                    foundYML = true;
                 });
-                return true;
+                if (foundYML)
+                    return true;
             }
             catch (Exception e)
             {
@@ -124,6 +127,7 @@ namespace Localyssation.LanguageModule
             var stringsFilePathTSV = Path.Combine(fileSystemPath, "strings.tsv");
             try
             {
+                Localyssation.logger.LogMessage($"Parsing legacy file {stringsFilePathTSV}");
                 foreach (var tsvRow in TSVUtil.parseTsvWithHeaders(File.ReadAllText(stringsFilePathTSV)))
                 {
                     if (!forceOverwrite) RegisterKey(tsvRow["key"], tsvRow["value"]);
