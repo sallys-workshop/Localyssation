@@ -1,3 +1,17 @@
+## 2.1.0
+- Fixed YML file searching logic
+- Fixed tsv file loading logic
+- Fixed Localyssation config panel translation
+- Added translations of `NetTrigger`s. Thanks to [Marioalexsan](https://github.com/Marioalexsan)
+	- Diva dialogs
+	- Dungeon and boss dialogs
+
+## 2.0.1
+Added `unifont` to vanilla `TMP_FontAsset` fallback.
+
+## 2.0.0
+Nothing much, basically 1.99.0 with small fixes
+
 ## 1.99.0
 - Remake font bundle
 	- Remove json descriptor
