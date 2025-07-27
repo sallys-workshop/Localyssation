@@ -50,7 +50,8 @@ namespace Localyssation.Util
     {
         private static readonly Dictionary<string, Font> availableFonts = new Dictionary<string, Font>();
         private static readonly Dictionary<string, TMP_FontAsset> availableTMP_FontAssets = new Dictionary<string, TMP_FontAsset>();
-
+        public static TMP_FontAsset UNIFONT_SDF { get; private set; }
+        public static bool UnifontLoaded { get; private set; } = false;
         public static IDictionary<string, Font> Fonts { get { return availableFonts; } }
         public static IDictionary<string, TMP_FontAsset> TMPfonts { get { return availableTMP_FontAssets; } }
 
@@ -74,7 +75,8 @@ namespace Localyssation.Util
 
             // no fallback for Font!
 
-            var UNIFONT_SDF = TMPfonts["unifont SDF"];
+            UNIFONT_SDF = TMPfonts["unifont SDF"];
+            UnifontLoaded = true;
 
             TMPfonts.Values
                 .SkipWhile(font => font == UNIFONT_SDF)
