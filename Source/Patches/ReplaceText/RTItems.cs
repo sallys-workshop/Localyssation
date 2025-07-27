@@ -1,21 +1,20 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 namespace Localyssation.Patches.ReplaceText
 {
     internal static partial class RTReplacer
     {
-        private static ImmutableList<string> consumableEffectDescKeys = ImmutableList.Create(
+        private static readonly List<string> consumableEffectDescKeys = new List<string> {
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_HEALTH_APPLY,
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_MANA_APPLY,
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_STAMINA_APPLY,
             I18nKeys.Item.TOOLTIP_CONSUMABLE_DESCRIPTION_EXP_GAIN
-        );
+        };
         // Note: use dictionary if possible, depends on kissoft's code
 
-        private static string generateConsumableDescString(ScriptableStatusConsumable consumable)
+        private static string GenerateConsumableDescString(ScriptableStatusConsumable consumable)
         {
             const string header = "<color=lime>";
             const string ender = "</color>";

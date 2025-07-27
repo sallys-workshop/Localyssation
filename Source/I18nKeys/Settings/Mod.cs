@@ -11,7 +11,7 @@ namespace Localyssation
             public static class Mod
             {
                 internal static void Init() { }
-                private static string Create(string key, string defaultValue="")
+                private static string Create(string key, string defaultValue = "")
                 {
                     return I18nKeys.Create($"SETTINGS_MOD_CELL_LOCALYSSATION_{key}", defaultValue);
                 }
@@ -21,7 +21,7 @@ namespace Localyssation
                     return Create(KeyUtil.Normalize(configEntry.Key), configEntry.Key);
                 }
 
-                
+
 
                 public static readonly string LANGUAGE
                     = Create(ConfigDefinitions.configLanguageDefinition);

@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
+using Localyssation.LanguageModule;
+using Localyssation.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
-using Localyssation.LanguageModule;
-using Localyssation.Util;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -51,7 +51,7 @@ namespace Localyssation.Patches.ReplaceText
             else
             {
                 formattedQuestString += " " + Localyssation.GetString(
-                    $"QUEST_TYPE_{__instance._scriptableQuest._questSubType.ToString().ToUpper()}",
+                    KeyUtil.GetForAsset(__instance._scriptableQuest._questSubType),
                     fontSize: __instance._dataNameText.fontSize);
 
                 __instance._dataNameText.text = $"<color=#f7e98e>{formattedQuestString}</color>";
@@ -164,7 +164,7 @@ namespace Localyssation.Patches.ReplaceText
                         //case QuestSubType.MASTERY:
                         //    __instance._slotTag.text = $"<color=#f7e98e>{questName}</color>\n<color=#f7e98e>{Localyssation.GetString("QUEST_TYPE_MASTERY", null, fontSize)}</color>";
                         //    break;
-                    
+
                 }
             }
             else
@@ -442,7 +442,7 @@ namespace Localyssation.Patches.ReplaceText
         private static readonly string[] REPLACEMENT = new string[] {
             I18nKeys.Lore.EXP_COUNTER_MAX,
         };
-        
+
         public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__TARGET);
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => RTUtil.SimpleStringReplaceTranspiler(instructions, REPLACEMENT);
     }

@@ -1,10 +1,9 @@
-﻿using System.Linq;
+﻿using Localyssation.LanguageModule;
+using Localyssation.Util;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
-using Localyssation.LanguageModule;
-using Localyssation.Util;
 
 namespace Localyssation.LangAdjutable
 {
@@ -88,8 +87,8 @@ namespace Localyssation.LangAdjutable
         private static bool GetLoadedFont(Language.BundledFontLookupInfo replacementFontLookupInfo, out TMP_FontAsset loadedFont)
         {
             if (replacementFontLookupInfo != null)
-            { 
-                return FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out loadedFont); 
+            {
+                return FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out loadedFont);
             }
             loadedFont = null;
             return false;

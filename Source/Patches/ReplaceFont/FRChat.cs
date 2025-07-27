@@ -15,14 +15,14 @@ namespace Localyssation.Patches.ReplaceFont
             var text = __instance._chatTextMesh;
             var replacementFontLookupInfo = LanguageManager.CurrentLanguage.info.chatFont;
 
-            FRUtil.replaceTmpFont(text, replacementFontLookupInfo);
+            FRUtil.ReplaceTmpFont(text, replacementFontLookupInfo);
         }
 
         [HarmonyPatch(typeof(ChatBehaviourAssets), nameof(ChatBehaviourAssets.Update))]
         [HarmonyPostfix]
         public static void FixChatBehaviourAssets(ChatBehaviourAssets __instance)
         {
-            FRUtil.replaceTmpFont(__instance._chatText, LanguageManager.CurrentLanguage.info.chatFont);
+            FRUtil.ReplaceTmpFont(__instance._chatText, LanguageManager.CurrentLanguage.info.chatFont);
         }
     }
 }

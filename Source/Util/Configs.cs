@@ -2,11 +2,9 @@
 using Localyssation.LangAdjutable;
 using Localyssation.LanguageModule;
 using Nessie.ATLYSS.EasySettings.UIElements;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using static Localyssation.I18nKeys.Settings.Mod;
 
 namespace Localyssation.Util
@@ -14,17 +12,17 @@ namespace Localyssation.Util
     public static class ConfigDefinitions
     {
 
-        public static readonly ConfigDefinition configLanguageDefinition 
+        public static readonly ConfigDefinition configLanguageDefinition
             = new ConfigDefinition("General", "Language");
-        public static readonly ConfigDefinition configTraslatorModeDefinition 
+        public static readonly ConfigDefinition configTraslatorModeDefinition
             = new ConfigDefinition("Translators", "Translator Mode");
-        public static readonly ConfigDefinition configCreateDefaultLanguageFilesDefinition 
+        public static readonly ConfigDefinition configCreateDefaultLanguageFilesDefinition
             = new ConfigDefinition("Translators", "Create Default Language Files On Load");
-        public static readonly ConfigDefinition configShowTranslationKeyDefinition 
+        public static readonly ConfigDefinition configShowTranslationKeyDefinition
             = new ConfigDefinition("Translators", "Show Translation Key");
-        public static readonly ConfigDefinition configExportExtraDefinition 
+        public static readonly ConfigDefinition configExportExtraDefinition
             = new ConfigDefinition("Translators", "Export Extra Info");
-        public static readonly ConfigDefinition configReloadLanguageKeybindDefinition 
+        public static readonly ConfigDefinition configReloadLanguageKeybindDefinition
             = new ConfigDefinition("Translators", "Reload Language Keybind");
     }
 
@@ -50,36 +48,36 @@ namespace Localyssation.Util
         {
             config = _config;
             configLanguage = config.Bind(
-                ConfigDefinitions.configLanguageDefinition, 
-                LanguageManager.DefaultLanguage.info.code, 
+                ConfigDefinitions.configLanguageDefinition,
+                LanguageManager.DefaultLanguage.info.code,
                 new ConfigDescription("Currently selected language's code")
                 );
             if (LanguageManager.GetLanguage(Language, out var previouslySelectedLanguage))
                 LanguageManager.ChangeLanguage(previouslySelectedLanguage);
 
             configTranslatorMode = config.Bind(
-                ConfigDefinitions.configTraslatorModeDefinition, 
-                false, 
+                ConfigDefinitions.configTraslatorModeDefinition,
+                false,
                 new ConfigDescription("Enables the features of this section")
                 );
             configCreateDefaultLanguageFiles = config.Bind(
-                ConfigDefinitions.configCreateDefaultLanguageFilesDefinition, 
-                true, 
+                ConfigDefinitions.configCreateDefaultLanguageFilesDefinition,
+                true,
                 new ConfigDescription("If enabled, files for the default game language will be created in the mod's directory on game load")
                 );
             configReloadLanguageKeybind = config.Bind(
-                ConfigDefinitions.configReloadLanguageKeybindDefinition, 
-                KeyCode.F10, 
+                ConfigDefinitions.configReloadLanguageKeybindDefinition,
+                KeyCode.F10,
                 new ConfigDescription("When you press this button, your current language's files will be reloaded mid-game")
                 );
             configShowTranslationKey = config.Bind(
-                ConfigDefinitions.configShowTranslationKeyDefinition, 
-                false, 
+                ConfigDefinitions.configShowTranslationKeyDefinition,
+                false,
                 new ConfigDescription("Show translation keys instead of translated string for debugging.")
                 );
             configExportExtra = config.Bind(
-                ConfigDefinitions.configExportExtraDefinition, 
-                false, 
+                ConfigDefinitions.configExportExtraDefinition,
+                false,
                 new ConfigDescription("Export quest and item data and image to markdown for translation referencing.")
                 );
 
@@ -164,14 +162,14 @@ namespace Localyssation.Util
             LangAdjustables.RegisterText(exportExtraToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.EXPORT_EXTRA));
 
             createMissingForCurrentLangButton = tab.AddButton(
-                Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE), 
+                Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE),
                 OnAddMissingKeyButtonPressed
                 );
             //LangAdjustables.RegisterText(createMissingForCurrentLangButton.ButtonLabel,
             //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE));
 
             logUntranslatedStringsButton = tab.AddButton(
-                Localyssation.GetString(LOG_UNTRANSLATED_STRINGS), 
+                Localyssation.GetString(LOG_UNTRANSLATED_STRINGS),
                 OnLogUntranslated
                 );
             //LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
@@ -281,7 +279,7 @@ namespace Localyssation.Util
         }
 
         ~SettingsGUI()
-        { 
+        {
             Localyssation.instance.OnLanguageChanged -= this.OnLanguageChanged;
         }
 

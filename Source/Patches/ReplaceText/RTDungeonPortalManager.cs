@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Localyssation.Util;
+using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -17,7 +13,7 @@ namespace Localyssation.Patches.ReplaceText
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new string[]
             {
                 I18nKeys.Lore.DUNGEON_PORTAL_ENTER_LEVELED_FORMAT
-            }, allowRepeat:true);
+            }, allowRepeat: true);
         }
 
         [HarmonyPatch(typeof(DungeonPortalManager), nameof(DungeonPortalManager.Update))]

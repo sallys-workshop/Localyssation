@@ -1,8 +1,8 @@
 using HarmonyLib;
 using Localyssation.LangAdjutable;
+using Localyssation.LanguageModule;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using Localyssation.LanguageModule;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -17,7 +17,7 @@ namespace Localyssation.Patches.ReplaceText
             // it gets auto-replaced with a <scalefallback> tag that gets parsed here instead
             if (__instance != null && value != null && value.Contains("scalefallback"))
             {
-                value = Localyssation.ApplyTextEditTags(value, __instance.fontSize, RTUtil.getFallbackTextEditTags());
+                value = Localyssation.ApplyTextEditTags(value, __instance.fontSize, RTUtil.GetFallbackTextEditTags());
             }
         }
 

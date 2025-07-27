@@ -1,14 +1,11 @@
-﻿using HarmonyLib;
-using Newtonsoft.Json;
-using System;
+﻿using BepInEx;
+using HarmonyLib;
+using MonoMod.Utils;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using BepInEx;
-using MonoMod.Utils;
-using System.Collections.Frozen;
 
 namespace Localyssation.Util
 {
@@ -54,8 +51,8 @@ namespace Localyssation.Util
         private static readonly Dictionary<string, Font> availableFonts = new Dictionary<string, Font>();
         private static readonly Dictionary<string, TMP_FontAsset> availableTMP_FontAssets = new Dictionary<string, TMP_FontAsset>();
 
-        public static FrozenDictionary<string, Font> Fonts { get { return availableFonts.ToFrozenDictionary(); } }
-        public static FrozenDictionary<string, TMP_FontAsset> TMPfonts { get { return availableTMP_FontAssets.ToFrozenDictionary(); } }
+        public static IDictionary<string, Font> Fonts { get { return availableFonts; } }
+        public static IDictionary<string, TMP_FontAsset> TMPfonts { get { return availableTMP_FontAssets; } }
 
 
         public static void LoadFontBundlesFromFileSystem()

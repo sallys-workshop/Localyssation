@@ -50,16 +50,16 @@ namespace Localyssation
             public static readonly string STATUS_CURRENT_ENCHANTMENT
                 = create(nameof(STATUS_CURRENT_ENCHANTMENT), "Current enchantment: ");
 
-            public static readonly TranslationKey GET_NEW_ENCHANTMENT_FORMAT 
+            public static readonly TranslationKey GET_NEW_ENCHANTMENT_FORMAT
                 = create("GET_NEW_ENCHANTMENT_FORMAT", "You got the {0} enchantment!");
-            public static readonly TranslationKey TRANSMUTE_TO_STRENGTH_FORMAT 
+            public static readonly TranslationKey TRANSMUTE_TO_STRENGTH_FORMAT
                 = create("TRANSMUTE_TO_STRENGTH_FORMAT", "Your {0} now scales off Strength!");
-            public static readonly TranslationKey TRANSMUTE_TO_DEXTERITY_FORMAT 
+            public static readonly TranslationKey TRANSMUTE_TO_DEXTERITY_FORMAT
                 = create("TRANSMUTE_TO_DEXTERITY_FORMAT", "Your {0} now scales off Dexterity!");
-            public static readonly TranslationKey TRANSMUTE_TO_MIND_FORMAT 
+            public static readonly TranslationKey TRANSMUTE_TO_MIND_FORMAT
                 = create("TRANSMUTE_TO_MIND_FORMAT", "Your {0} now scales off Mind!");
 
-            public static readonly TranslationKey NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH 
+            public static readonly TranslationKey NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH
                 = create("NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH", "Not enough Might Stones");
             public static readonly TranslationKey NOT_ENOUGH_TRANSMUTE_STONES_DEXTERITY
                 = create("NOT_ENOUGH_TRANSMUTE_STONES_DEXTERITY", "Not enough Agility Stones");

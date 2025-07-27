@@ -1,10 +1,10 @@
 ﻿
+using Localyssation.LanguageModule;
+using Localyssation.Util;
 using System.Linq;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
-using Localyssation.LanguageModule;
 using static Localyssation.LanguageModule.Language;
-using Localyssation.Util;
 
 namespace Localyssation.LangAdjutable
 {

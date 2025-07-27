@@ -75,7 +75,7 @@ namespace Localyssation.Patches.ReplaceText
                 { "Image_06", I18nKeys.Settings.Input.GAME_PAD_WIP },
                 { "Image_07", I18nKeys.Settings.Input.CELL_RESET_BINDINGS },
                 { "InputDefaults_button", I18nKeys.Settings.Input.CELL_RESET_BINDINGS },
-                
+
                 { "Image_08", I18nKeys.Settings.Input.HEADER_CAMERA_CONTROL },
                 { "_cell_cameraSensitivity", I18nKeys.Settings.Input.CELL_CAMERA_SENSITIVITY },
                 { "_cell_invertXCameraAxis", I18nKeys.Settings.Input.CELL_INVERT_X_CAMERA_AXIS },

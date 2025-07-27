@@ -11,7 +11,7 @@ namespace Localyssation.Patches.ReplaceFont
         {
             if (__instance != null && __instance._itemNametagTextMesh)
             {
-                FRUtil.replaceTmpFont(__instance._itemNametagTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
+                FRUtil.ReplaceTmpFont(__instance._itemNametagTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
             }
         }
 

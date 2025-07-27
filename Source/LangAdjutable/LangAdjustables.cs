@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 using Localyssation.LanguageModule;
 using Localyssation.Util;
+using System;
+using System.Collections.Generic;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable

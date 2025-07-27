@@ -12,9 +12,9 @@ namespace Localyssation.Patches.ReplaceFont
         public static void Player_Handle_ClientParameter_Postfix(Player __instance)
         {
             if (__instance._nicknameTextMesh.enabled)
-                FRUtil.replaceTmpFont(__instance._nicknameTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
+                FRUtil.ReplaceTmpFont(__instance._nicknameTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
             if (__instance._globalNicknameTextMesh.enabled)
-                FRUtil.replaceTmpFont(__instance._globalNicknameTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
+                FRUtil.ReplaceTmpFont(__instance._globalNicknameTextMesh, LanguageManager.CurrentLanguage.info.chatFont);
         }
     }
 }

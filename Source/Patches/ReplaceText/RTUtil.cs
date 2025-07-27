@@ -3,11 +3,8 @@ using Localyssation.LangAdjutable;
 using Localyssation.Util;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -207,14 +204,14 @@ namespace Localyssation.Patches.ReplaceText
             "scalefallback"
         };
 
-        public static List<string> getFallbackTextEditTags()
+        public static List<string> GetFallbackTextEditTags()
         {
             return fallbackTextEditTags;
         }
 
-        private static readonly ImmutableList<Type> PATCH_CLASSES = ImmutableList.Create(
+        private static readonly List<Type> PATCH_CLASSES = new List<Type> {
             typeof(RTReplacer)
-        );
+        };
 
         public static void PatchAll(Harmony harmony)
         {

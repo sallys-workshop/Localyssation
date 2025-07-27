@@ -1,12 +1,11 @@
-﻿using Localyssation.LanguageModule;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace Localyssation.Util
 {
     public class TranslationKey
     {
-        public static TranslationKey EMPTY = new TranslationKey(""); 
+        public static TranslationKey EMPTY = new TranslationKey("");
 
         public readonly string key;
         internal TranslationKey(string _key) { key = _key; }
@@ -29,7 +28,7 @@ namespace Localyssation.Util
 
         public TranslationKey NameByQuantity(int quantity)
         {
-            return Math.Abs(quantity) > 1? NamePlural : Name;
+            return Math.Abs(quantity) > 1 ? NamePlural : Name;
         }
     }
 
@@ -43,7 +42,7 @@ namespace Localyssation.Util
     public class NetTriggerTranslationKey : TranslationKey
     {
         public readonly int MessageArrayLength;
-        public NetTriggerTranslationKey(string _key, int messageArraySize) : base(_key) 
+        public NetTriggerTranslationKey(string _key, int messageArraySize) : base(_key)
         {
             MessageArrayLength = messageArraySize;
         }
@@ -75,7 +74,11 @@ namespace Localyssation.Util
                 );
         }
 
-        
+        public static TranslationKey GetForAsset(QuestSubType asset)
+        {
+            return new TranslationKey($"QUEST_SUBTYPE_{Normalize(asset.ToString())}");
+        }
+
         public static TranslationKey GetForAsset(ScriptableItem asset)
         {
             return new TranslationKey($"ITEM_{Normalize(asset._itemName)}");

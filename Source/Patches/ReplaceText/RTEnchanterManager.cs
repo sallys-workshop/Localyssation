@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -185,7 +184,7 @@ namespace Localyssation.Patches.ReplaceText
                 .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Strength), GenerateCodeInstructionsForTransmuteMessage(DamageType.Strength))
                 .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Dexterity), GenerateCodeInstructionsForTransmuteMessage(DamageType.Dexterity))
                 .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Mind), GenerateCodeInstructionsForTransmuteMessage(DamageType.Mind))
-                .ReplaceStrings( new[] {
+                .ReplaceStrings(new[] {
                     I18nKeys.Enchanter.NOT_ENOUGH_TRANSMUTE_STONES_DEXTERITY,
                     I18nKeys.Enchanter.NOT_ENOUGH_TRANSMUTE_STONES_MIND,
                     I18nKeys.Enchanter.NOT_ENOUGH_TRANSMUTE_STONES_STRENGTH,

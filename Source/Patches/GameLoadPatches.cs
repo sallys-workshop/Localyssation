@@ -1,13 +1,13 @@
 using HarmonyLib;
 using Localyssation.Exporter;
+using Localyssation.LanguageModule;
 using Localyssation.Patches.ReplaceText;
+using Localyssation.Util;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Localyssation.LanguageModule;
-using Localyssation.Util;
 
 namespace Localyssation.Patches
 {
@@ -286,8 +286,8 @@ namespace Localyssation.Patches
                             });
 
                         GameObject.FindObjectsOfType<NetTrigger>(true).Cast<NetTrigger>()
-                            .Where(netTrigger => 
-                                netTrigger._triggerMessage != null 
+                            .Where(netTrigger =>
+                                netTrigger._triggerMessage != null
                                 && netTrigger.gameObject.scene.name == sceneName
                             )
                             .Do(netTrigger =>
@@ -301,10 +301,11 @@ namespace Localyssation.Patches
                                         triggerMessage._singleMessage
                                     );
                                 }
-                                if (triggerMessage._triggerMessageArray.Length > 0) 
+                                if (triggerMessage._triggerMessageArray.Length > 0)
                                 {
-                                    
-                                    triggerMessage._triggerMessageArray.Select((msg, idx) => {
+
+                                    triggerMessage._triggerMessageArray.Select((msg, idx) =>
+                                    {
                                         if (!string.IsNullOrEmpty(triggerMessage._triggerMessageArray[idx]))
                                         {
                                             LanguageManager.RegisterKey(

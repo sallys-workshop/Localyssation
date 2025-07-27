@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -187,9 +186,9 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> CharacterSelectManager_Update_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableArray.Create(
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new [] { 
                 I18nKeys.MainMenu.PAGER
-            ));
+            });
         }
         //[HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_CharacterSelectControl))]
         //[HarmonyTranspiler]

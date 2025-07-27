@@ -9,10 +9,7 @@ namespace Localyssation
             internal static void init() { }
             public static readonly string FORMAT_REQUIRED_LEVEL
                 = Create("FORMAT_QUEST_REQUIRED_LEVEL", "(lv-{0})");
-            public static readonly string TYPE_CLASS
-                = Create("QUEST_TYPE_CLASS", "(Class Tome)");
-            public static readonly string TYPE_MASTERY
-                = Create("QUEST_TYPE_MASTERY", "(Mastery Scroll)");
+
             public static readonly string MENU_SUMMARY_NO_QUESTS
                 = Create("QUEST_MENU_SUMMARY_NO_QUESTS", "No Quests in Quest Log.");
             public static readonly string MENU_HEADER_UNSELECTED

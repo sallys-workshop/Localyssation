@@ -66,7 +66,7 @@ namespace Localyssation.LanguageModule
         public static void LoadLanguagesFromFileSystem()
         {
             var filePaths = Directory.GetFiles(Paths.PluginPath, "localyssationLanguage.json", SearchOption.AllDirectories);
-            filePaths.Do(filePath => 
+            filePaths.Do(filePath =>
             {
                 var langPath = Path.GetDirectoryName(filePath);
 

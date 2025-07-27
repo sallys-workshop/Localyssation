@@ -1,15 +1,13 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using Localyssation.LangAdjutable;
+using Localyssation.LanguageModule;
 using Localyssation.Patches.ReplaceFont;
 using Localyssation.Patches.ReplaceText;
+using Localyssation.Util;
 using System.Collections.Generic;
-using System.IO;
 using System.Security;
 using System.Security.Permissions;
-using UnityEngine;
-using Localyssation.LanguageModule;
-using Localyssation.Util;
 
 #pragma warning disable CS0618
 
@@ -59,7 +57,7 @@ namespace Localyssation
 
             LocalyssationConfig.Init(Config);
             SettingsGUI.Init();
-            
+
 
 
             var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
@@ -71,7 +69,7 @@ namespace Localyssation
             OnSceneLoaded.Init();
             LangAdjustables.Init();
         }
-        
+
 #pragma warning disable IDE0051 // Suppress unused private method warning, this method is used by BepInEx
         private void Update()
         {

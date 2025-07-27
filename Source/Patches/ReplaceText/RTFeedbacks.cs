@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -10,9 +9,9 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> PlayerDropItem_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableList.Create(
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new[] {
                 I18nKeys.Feedback.DROP_ITEM_FORMAT
-            ));
+            });
         }
     }
 }

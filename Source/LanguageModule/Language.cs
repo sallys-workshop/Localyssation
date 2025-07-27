@@ -1,14 +1,15 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using Localyssation.Util;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using YamlDotNet.Serialization;
-using YamlDotNet.Core;
 using System.Threading.Tasks;
-using Localyssation.Util;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization;
 
 namespace Localyssation.LanguageModule
 {
@@ -45,9 +46,9 @@ namespace Localyssation.LanguageModule
 
         public LanguageInfo info = new LanguageInfo();
         public string fileSystemPath;
-        readonly Dictionary<string, string> strings = new Dictionary<string, string>();
+        readonly ConcurrentDictionary<string, string> strings = new ConcurrentDictionary<string, string>();
 
-        public Dictionary<string, string> GetStrings() => strings;
+        public IDictionary<string, string> GetStrings() => strings;
 
         public void RegisterKey(string key, string defaultValue)
         {
@@ -94,6 +95,15 @@ namespace Localyssation.LanguageModule
             try
             {
                 bool foundYML = false;
+                Action<KeyValuePair<string, string>> registerAction;
+                if (!forceOverwrite)
+                {
+                    registerAction = kv => RegisterKey(kv.Key, kv.Value);
+                }
+                else
+                {
+                    registerAction = kv => strings[kv.Key] = kv.Value;
+                }
                 Directory.GetFiles(Paths.PluginPath, $"*.{info.code}.yml", SearchOption.AllDirectories)
                     .OrderBy(x => Path.GetFileNameWithoutExtension(x))
                     .Do(
@@ -101,18 +111,7 @@ namespace Localyssation.LanguageModule
                 {
                     Localyssation.logger.LogMessage($"Found translation file {stringsFilePath}");
                     var file = File.OpenText(stringsFilePath);
-                    Parallel.ForEach(YAML_DESERIALIZER.Deserialize<Dictionary<string, string>>(file),
-                        kv =>
-                        {
-                            if (!forceOverwrite)
-                            {
-                                RegisterKey(kv.Key, kv.Value);
-                            }
-                            else
-                            {
-                                strings[kv.Key] = kv.Value;
-                            }
-                        });
+                    Parallel.ForEach(YAML_DESERIALIZER.Deserialize<Dictionary<string, string>>(file), registerAction);
                     file.Close();
                     foundYML = true;
                 });
@@ -152,7 +151,7 @@ namespace Localyssation.LanguageModule
                 Directory.CreateDirectory(fileSystemPath);
                 var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
                 File.WriteAllText(infoFilePath, JsonConvert.SerializeObject(info, Formatting.Indented));
-                string translationFilePath = Path.Combine(fileSystemPath, noLangCode? $"{fileName}.yml" :$"{fileName}.{info.code}.yml");
+                string translationFilePath = Path.Combine(fileSystemPath, noLangCode ? $"{fileName}.yml" : $"{fileName}.{info.code}.yml");
                 var file = new StreamWriter(translationFilePath);
                 YAML_SERIALIZER.Serialize(file, strings, typeof(Dictionary<string, string>));
                 file.Close();

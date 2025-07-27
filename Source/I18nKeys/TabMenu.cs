@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Localyssation
 {
@@ -146,10 +148,10 @@ namespace Localyssation
             public static readonly string CELL_ITEMS_INVENTORY_SORT_ITEMS
                 = CreateCellItems("INVENTORY_SORT_ITEMS", "Sort Items");
 
-            public static readonly ImmutableDictionary<string, string> CELL_ITEMS_PROMPT_BUTTONS
-                = ImmutableArray.Create(
+            public static readonly IDictionary<string, string> CELL_ITEMS_PROMPT_BUTTONS
+                = new[] {
                     "equip", "transmogrify", "remove", "use", "split", "drop", "cancel"
-                ).ToImmutableDictionary(
+                }.ToDictionary(
                     x => x,
                     x => CreateCellItems($"PROMPT_BUTTON_{x.ToUpper()}", char.ToUpper(x[0]) + x.Substring(1))
                 );

@@ -7,7 +7,7 @@
 		
 		
 		<TARGET_ATLYSS_VERSION>72025.a8</TARGET_ATLYSS_VERSION>
-		<VersionPrefix>2.1.0</VersionPrefix>
+		<VersionPrefix>2.1.1</VersionPrefix>
 		
 		
 		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
@@ -17,18 +17,15 @@
 	
 	<PropertyGroup Label="MSBuild">
         <Configurations>Debug;Release</Configurations>
-		<MSBuildFileVersion>1.5</MSBuildFileVersion>
+		<MSBuildFileVersion>2.1</MSBuildFileVersion>
         <TargetFramework>net481</TargetFramework>
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
 
     </PropertyGroup>
 	
 	<ItemGroup>
-	  <Compile Remove="I18nKeys\Settings\模板.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <None Include="I18nKeys\Settings\模板.cs" />
+	    <Compile Remove="I18nKeys\Settings\模板.cs" />
+		<Compile Remove="I18nKeys\模板.cs" />
 	</ItemGroup>
 
 
@@ -57,9 +54,6 @@
     <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
     <ItemGroup>
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" ExcludeAssets="runtime" />
-		<PackageReference Include="System.Collections.Immutable" Version="9.0.7">
-			<Private>true</Private>
-		</PackageReference>
 		<PackageReference Include="YamlDotNet" Version="16.3.0" />
     </ItemGroup>
 
@@ -114,6 +108,7 @@
         </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
           <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+          <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TextRenderingModule">
             <HintPath>$(ATLYSS_MANAGED)\UnityEngine.TextRenderingModule.dll</HintPath>

@@ -1,10 +1,9 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using UnityEngine;
-using UnityEngine.UI;
 using Localyssation.LanguageModule;
 using Localyssation.Util;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -75,10 +74,10 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> SkillsMenuCell_Handle_CellUpdate_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableArray.Create(
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new[] {
                 I18nKeys.TabMenu.PAGER_1_PAGE,
                 I18nKeys.TabMenu.PAGER_FORMAT
-            ));
+            });
         }
 
         [HarmonyPatch(typeof(SkillsMenuCell), nameof(SkillsMenuCell.Handle_CellUpdate))]
@@ -197,7 +196,7 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> SkillToolTip_Apply_SkillStats_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, ImmutableArray.Create(
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new[] {
                 I18nKeys.SkillMenu.TOOLTIP_MANA_COST,
                 I18nKeys.SkillMenu.TOOLTIP_HEALTH_COST,
                 I18nKeys.SkillMenu.TOOLTIP_STAMINA_COST,
@@ -205,7 +204,7 @@ namespace Localyssation.Patches.ReplaceText
                 I18nKeys.SkillMenu.TOOLTIP_ITEM_COST,
                 I18nKeys.SkillMenu.TOOLTIP_CAST_TIME_INSTANT,
                 I18nKeys.SkillMenu.TOOLTIP_COOLDOWN
-            ));
+            });
         }
 
 

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Localyssation.LanguageModule;
+using System.Collections.Generic;
 using UnityEngine;
 using static Localyssation.LangAdjutable.LangAdjustables;
-using Localyssation.LanguageModule;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable

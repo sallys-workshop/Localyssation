@@ -1,6 +1,5 @@
 ﻿
 using Localyssation.Util;
-using System;
 using System.Linq;
 
 namespace Localyssation
@@ -33,10 +32,10 @@ namespace Localyssation
                 public static readonly string CELL_SCREEN_MODE
                     = CreateCell("SCREEN_MODE", "Screen Mode");
                 public static readonly TranslationKey[] CELL_SCREEN_MODE_OPTIONS
-                    = CreateOptions(CELL_SCREEN_MODE, new string[] { 
-                        "Windowed", 
-                        "Fullscreen", 
-                        "Fullscreen (Borderless)" 
+                    = CreateOptions(CELL_SCREEN_MODE, new string[] {
+                        "Windowed",
+                        "Fullscreen",
+                        "Fullscreen (Borderless)"
                     });
                 public static readonly string CELL_FULLSCREEN_TOGGLE
                     = Create("SETTINGS_VIDEO_CELL_FULLSCREEN_TOGGLE", "Fullscreen Mode");
@@ -104,7 +103,7 @@ namespace Localyssation
                         "Far",
                         "Very Far"
                     });
-                
+
                 public static readonly string HEADER_CURSOR_SETTINGS
                     = Create("SETTINGS_VIDEO_HEADER_CURSOR_SETTINGS", "Cursor Settings");
                 public static readonly string CELL_CURSOR_GRAPHIC

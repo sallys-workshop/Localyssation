@@ -1,14 +1,14 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Immutable;
 using Localyssation.LanguageModule;
 using Localyssation.Util;
+using System;
+using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceFont
 {
     internal static class FRUtil
     {
-        public static void replaceTmpFont(TMPro.TMP_Text text, Language.BundledFontLookupInfo replacementFontLookupInfo)
+        public static void ReplaceTmpFont(TMPro.TMP_Text text, Language.BundledFontLookupInfo replacementFontLookupInfo)
         {
             if (
                 replacementFontLookupInfo != null &&
@@ -26,11 +26,12 @@ namespace Localyssation.Patches.ReplaceFont
             }
         }
 
-        private static readonly ImmutableList<Type> PATCH_CLASSES = ImmutableList.Create(
+        private static readonly List<Type> PATCH_CLASSES = new List<Type>()
+        { 
             typeof(FRChat),
             typeof(FRItemObjectVisual),
             typeof(FRPlayerNickname)
-        );
+        };
 
         public static void PatchAll(Harmony harmony)
         {
