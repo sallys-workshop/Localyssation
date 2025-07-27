@@ -16,34 +16,20 @@ namespace Localyssation
         public static void Init()
         {
 
-            void InitNestedType(Type t)
-            {
-                t.GetMethod("Init",
-                    System.Reflection.BindingFlags.Static
-                    | System.Reflection.BindingFlags.NonPublic
-                    | System.Reflection.BindingFlags.Public
-                    )
-                    .Invoke(t, null);   // Invoke static method, if null, that means something breaks
-                
-                t.GetNestedTypes().ToList().ForEach(InitNestedType);
-            }
-
-            typeof(I18nKeys).GetNestedTypes().ToList().ForEach(InitNestedType);
-
-            //CharacterCreation.Init();
-            //CharacterSelect.Init();
-            //Enums.Init();
-            //Equipment.Init();
-            //Feedback.Init();
-            //Item.Init();
-            //Lore.Init();
-            //MainMenu.Init();
-            //Quest.Init();
-            //ScriptableStatusCondition.init();
-            //Settings.Init();
-            //SkillMenu.Init();
-            //SteamLobby.Init();
-            //TabMenu.Init();
+            CharacterCreation.Init();
+            CharacterSelect.Init();
+            Enums.Init();
+            Equipment.Init();
+            Feedback.Init();
+            Item.Init();
+            Lore.Init();
+            MainMenu.Init();
+            Quest.Init();
+            ScriptableStatusCondition.Init();
+            Settings.Init();
+            SkillMenu.Init();
+            SteamLobby.Init();
+            TabMenu.Init();
         }
 
         internal static readonly Dictionary<string, string> TR_KEYS = new Dictionary<string, string>();

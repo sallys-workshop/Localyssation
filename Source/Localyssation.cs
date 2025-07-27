@@ -8,6 +8,7 @@ using Localyssation.Util;
 using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
+using UnityEngine;
 
 #pragma warning disable CS0618
 
@@ -75,7 +76,7 @@ namespace Localyssation
         {
             if (LocalyssationConfig.TranslatorMode)
             {
-                if (UnityInput.Current.GetKeyDown(LocalyssationConfig.ReloadLanguageKeybind))
+                if (Input.GetKeyDown(LocalyssationConfig.ReloadLanguageKeybind))
                 {
                     LanguageManager.CurrentLanguage.LoadFromFileSystem(true);
                     CallOnLanguageChanged(LanguageManager.CurrentLanguage);

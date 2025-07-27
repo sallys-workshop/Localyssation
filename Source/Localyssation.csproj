@@ -95,8 +95,12 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ImageConversionModule">
-          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+          <HintPath>$(ATLYSS_MANAGED)\UnityEngine.ImageConversionModule.dll</HintPath>
           <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+		  <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.JSONSerializeModule">
             <HintPath>$(ATLYSS_MANAGED)\UnityEngine.JSONSerializeModule.dll</HintPath>
@@ -107,7 +111,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
-          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+          <HintPath>$(ATLYSS_MANAGED)\UnityEngine.PhysicsModule.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TextRenderingModule">
@@ -195,7 +199,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UIModule">
-          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+          <HintPath>$(ATLYSS_MANAGED)\UnityEngine.UIModule.dll</HintPath>
           <Private>False</Private>
         </Reference>
     </ItemGroup>
