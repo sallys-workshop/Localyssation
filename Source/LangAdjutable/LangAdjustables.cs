@@ -2,6 +2,7 @@ using Localyssation.LanguageModule;
 using Localyssation.Util;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 #pragma warning disable IDE0130
 namespace Localyssation.LangAdjutable
@@ -40,13 +41,17 @@ namespace Localyssation.LangAdjutable
             return (fontSize) => Localyssation.GetString(key, defaultValue, fontSize);
         }
 
-        public static Dictionary<UnityEngine.UI.Text, LangAdjustableUIText> registeredTexts = new Dictionary<UnityEngine.UI.Text, LangAdjustableUIText>();
-        public static void RegisterText(UnityEngine.UI.Text text, System.Func<int, string> newTextFunc = null)
+        public static Dictionary<Text, LangAdjustableUIText> registeredTexts = new Dictionary<Text, LangAdjustableUIText>();
+        public static void RegisterText(Text text, System.Func<int, string> newTextFunc = null)
         {
             if (!registeredTexts.TryGetValue(text, out LangAdjustableUIText adjustable))
                 adjustable = registeredTexts[text] = text.gameObject.AddComponent<LangAdjustableUIText>();
 
             if (newTextFunc != null) adjustable.newTextFunc = newTextFunc;
+        }
+        public static void RegisterText(Text text, TranslationKey key)
+        {
+            RegisterText(text, GetStringFunc(key));
         }
 
 

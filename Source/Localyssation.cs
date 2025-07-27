@@ -24,6 +24,7 @@ namespace Localyssation
     {
 
         public static Localyssation instance;
+        public static bool ShowTranslation { get; private set; } = true;
 
 
         internal static System.Reflection.Assembly assembly;
@@ -81,6 +82,18 @@ namespace Localyssation
                     LanguageManager.CurrentLanguage.LoadFromFileSystem(true);
                     CallOnLanguageChanged(LanguageManager.CurrentLanguage);
                 }
+
+                if (Input.GetKeyDown(LocalyssationConfig.ReloadFontBundlesKeybind))
+                {
+                    FontManager.LoadFontBundlesFromFileSystem();
+                    CallOnLanguageChanged(LanguageManager.CurrentLanguage);
+                }
+
+                if (Input.GetKeyDown(LocalyssationConfig.SwitchTranslationKeybind))
+                {
+                    ShowTranslation = !ShowTranslation;
+                    CallOnLanguageChanged(LanguageManager.CurrentLanguage);
+                }
             }
         }
 #pragma warning restore IDE0051
@@ -88,7 +101,11 @@ namespace Localyssation
         public const string GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED = "SAME_AS_KEY";
         public static string GetStringRaw(string key, string defaultValue = GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED)
         {
-            if (LanguageManager.CurrentLanguage.TryGetString(key, out string result)) return result;
+            string result;
+            if (ShowTranslation)
+            {
+                if (LanguageManager.CurrentLanguage.TryGetString(key, out result)) return result;
+            }
             if (LanguageManager.DefaultLanguage.TryGetString(key, out result)) return result;
             return (defaultValue == GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED ? key : defaultValue);
         }

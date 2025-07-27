@@ -1,4 +1,5 @@
-﻿
+﻿using Localyssation.Util;
+
 namespace Localyssation
 {
     internal static partial class I18nKeys
@@ -14,24 +15,24 @@ namespace Localyssation
                 Network.Init();
                 Mod.Init();
             }
-            public static readonly string BUTTON_VIDEO
+            public static readonly TranslationKey BUTTON_VIDEO
                 = Create("SETTINGS_TAB_BUTTON_VIDEO", "Display");
-            public static readonly string BUTTON_AUDIO
+            public static readonly TranslationKey BUTTON_AUDIO
                 = Create("SETTINGS_TAB_BUTTON_AUDIO", "Audio");
-            public static readonly string BUTTON_INPUT
+            public static readonly TranslationKey BUTTON_INPUT
                 = Create("SETTINGS_TAB_BUTTON_INPUT", "Input");
-            public static readonly string BUTTON_NETWORK
+            public static readonly TranslationKey BUTTON_NETWORK
                 = Create("SETTINGS_TAB_BUTTON_NETWORK", "Interface");
-            public static readonly string BUTTON_MODS
+            public static readonly TranslationKey BUTTON_MODS
                 = Create("SETTINGS_TAB_BUTTON_MODS", "Mods");
 
-            public static readonly string BUTTON_RESET_TO_DEFAULTS
+            public static readonly TranslationKey BUTTON_RESET_TO_DEFAULTS
                 = Create("SETTINGS_BUTTON_RESET_TO_DEFAULTS", "Reset to Defaults");
-            public static readonly string BUTTON_RESET
+            public static readonly TranslationKey BUTTON_RESET
                 = Create("SETTINGS_BUTTON_RESET", "Reset");
-            public static readonly string BUTTON_CANCEL
+            public static readonly TranslationKey BUTTON_CANCEL
                 = Create("SETTINGS_BUTTON_CANCEL", "Cancel");
-            public static readonly string BUTTON_APPLY
+            public static readonly TranslationKey BUTTON_APPLY
                 = Create("SETTINGS_BUTTON_APPLY", "Apply");
 
 

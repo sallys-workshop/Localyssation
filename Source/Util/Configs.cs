@@ -12,18 +12,23 @@ namespace Localyssation.Util
     public static class ConfigDefinitions
     {
 
-        public static readonly ConfigDefinition configLanguageDefinition
+        public static readonly ConfigDefinition Language
             = new ConfigDefinition("General", "Language");
-        public static readonly ConfigDefinition configTraslatorModeDefinition
+        public static readonly ConfigDefinition TraslatorMode
             = new ConfigDefinition("Translators", "Translator Mode");
-        public static readonly ConfigDefinition configCreateDefaultLanguageFilesDefinition
+        public static readonly ConfigDefinition CreateDefaultLanguageFiles
             = new ConfigDefinition("Translators", "Create Default Language Files On Load");
-        public static readonly ConfigDefinition configShowTranslationKeyDefinition
+        public static readonly ConfigDefinition ShowTranslationKey
             = new ConfigDefinition("Translators", "Show Translation Key");
-        public static readonly ConfigDefinition configExportExtraDefinition
+        public static readonly ConfigDefinition ExportExtra
             = new ConfigDefinition("Translators", "Export Extra Info");
-        public static readonly ConfigDefinition configReloadLanguageKeybindDefinition
+        public static readonly ConfigDefinition ReloadLanguageKeybind
             = new ConfigDefinition("Translators", "Reload Language Keybind");
+
+        public static readonly ConfigDefinition ReloadFontBundlesKeybind
+            = new ConfigDefinition("Translators", "Reload Font Bundles Keybind");
+        public static readonly ConfigDefinition SwitchTranslationKeybind
+            = new ConfigDefinition("Translators", "Switch Translation Keybind");
     }
 
     public static class LocalyssationConfig
@@ -44,11 +49,17 @@ namespace Localyssation.Util
         internal static ConfigEntry<KeyCode> configReloadLanguageKeybind { get; private set; }
         public static KeyCode ReloadLanguageKeybind { get => configReloadLanguageKeybind.Value; }
 
+        internal static ConfigEntry<KeyCode> configReloadFontBundlesKeybind { get; private set; }
+        public static KeyCode ReloadFontBundlesKeybind { get => configReloadFontBundlesKeybind.Value; }
+
+        internal static ConfigEntry<KeyCode> configSwitchTranslationKeybind { get; private set; }
+        public static KeyCode SwitchTranslationKeybind { get => configSwitchTranslationKeybind.Value; }
+
         public static void Init(ConfigFile _config)
         {
             config = _config;
             configLanguage = config.Bind(
-                ConfigDefinitions.configLanguageDefinition,
+                ConfigDefinitions.Language,
                 LanguageManager.DefaultLanguage.info.code,
                 new ConfigDescription("Currently selected language's code")
                 );
@@ -56,29 +67,41 @@ namespace Localyssation.Util
                 LanguageManager.ChangeLanguage(previouslySelectedLanguage);
 
             configTranslatorMode = config.Bind(
-                ConfigDefinitions.configTraslatorModeDefinition,
+                ConfigDefinitions.TraslatorMode,
                 false,
                 new ConfigDescription("Enables the features of this section")
                 );
             configCreateDefaultLanguageFiles = config.Bind(
-                ConfigDefinitions.configCreateDefaultLanguageFilesDefinition,
+                ConfigDefinitions.CreateDefaultLanguageFiles,
                 true,
                 new ConfigDescription("If enabled, files for the default game language will be created in the mod's directory on game load")
                 );
             configReloadLanguageKeybind = config.Bind(
-                ConfigDefinitions.configReloadLanguageKeybindDefinition,
+                ConfigDefinitions.ReloadLanguageKeybind,
                 KeyCode.F10,
                 new ConfigDescription("When you press this button, your current language's files will be reloaded mid-game")
                 );
             configShowTranslationKey = config.Bind(
-                ConfigDefinitions.configShowTranslationKeyDefinition,
+                ConfigDefinitions.ShowTranslationKey,
                 false,
                 new ConfigDescription("Show translation keys instead of translated string for debugging.")
                 );
             configExportExtra = config.Bind(
-                ConfigDefinitions.configExportExtraDefinition,
+                ConfigDefinitions.ExportExtra,
                 false,
                 new ConfigDescription("Export quest and item data and image to markdown for translation referencing.")
+                );
+
+            configReloadFontBundlesKeybind = config.Bind(
+                ConfigDefinitions.ReloadFontBundlesKeybind,
+                KeyCode.F9,
+                new ConfigDescription("When you press this button, the font bundles will be reloaded mid-game")
+                );
+
+            configSwitchTranslationKeybind = config.Bind(
+                ConfigDefinitions.SwitchTranslationKeybind,
+                KeyCode.F11,
+                new ConfigDescription("When you press this button, the translation mode will be switched mid-game")
                 );
 
         }
@@ -101,9 +124,8 @@ namespace Localyssation.Util
         private AtlyssToggle exportExtraToggle;
         private AtlyssButton createMissingForCurrentLangButton;
         private AtlyssButton logUntranslatedStringsButton;
-
-        private static Color ENABLED_COLOR = Color.white;
-        private static Color DISABLED_COLOR = Color.grey;
+        private AtlyssKeyButton reloadFontBundlesKeybind;
+        private AtlyssKeyButton switchTranslationKeybind;
 
         private static SettingsGUI instance = null;
         public static void Init()
@@ -130,36 +152,47 @@ namespace Localyssation.Util
             //settingsTabSetup = true;
 
             var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
-            LangAdjustables.RegisterText(tab.TabButton.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.BUTTON_MODS));
+            LangAdjustables.RegisterText(tab.TabButton.Label, I18nKeys.Settings.BUTTON_MODS);
 
             tab.AddHeader("Localyssation");
 
             languageKeys = LanguageManager.languages.Select(kv => kv.Key).ToList();
             var currentLanguageIndex = languageKeys.IndexOf(LanguageManager.CurrentLanguage.info.code);
-            languageDropdown = tab.AddDropdown("Language", languageKeys.Select(key => LanguageManager.languages[key].info.name).ToList(), currentLanguageIndex);
+            languageDropdown = tab.AddDropdown("Language", 
+                languageKeys.Select(key => LanguageManager.languages[key].info.name).ToList(), 
+                currentLanguageIndex
+                );
             languageDropdown.OnValueChanged.AddListener(OnLanguageDropdownChanged);
-            LangAdjustables.RegisterText(languageDropdown.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LANGUAGE));
+            LangAdjustables.RegisterText(languageDropdown.Label, LANGUAGE);
 
 
             translatorModeToggle = tab.AddToggle(LocalyssationConfig.configTranslatorMode);
             translatorModeToggle.OnValueChanged.AddListener(OnTranslatorModeChanged);
-            LangAdjustables.RegisterText(translatorModeToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.TRANSLATOR_MODE));
+            LangAdjustables.RegisterText(translatorModeToggle.Label, TRANSLATOR_MODE);
 
             showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
             showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
             {
                 LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage, true);    // refresh all
             });
-            LangAdjustables.RegisterText(showTranslationKeyToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.SHOW_TRANSLATION_KEY));
+            LangAdjustables.RegisterText(showTranslationKeyToggle.Label, SHOW_TRANSLATION_KEY);
 
             createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles);
-            LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.CREATE_DEFAULT_LANGUAGE_FILES));
+            LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, CREATE_DEFAULT_LANGUAGE_FILES);
 
             reloadLanguageKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadLanguageKeybind);
-            LangAdjustables.RegisterText(reloadLanguageKeybind.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.RELOAD_LANGUAGE_KEYBIND));
+            LangAdjustables.RegisterText(reloadLanguageKeybind.Label, RELOAD_LANGUAGE_KEYBIND);
 
             exportExtraToggle = tab.AddToggle(LocalyssationConfig.configExportExtra);
-            LangAdjustables.RegisterText(exportExtraToggle.Label, LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.EXPORT_EXTRA));
+            LangAdjustables.RegisterText(exportExtraToggle.Label, EXPORT_EXTRA);
+
+            reloadFontBundlesKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadFontBundlesKeybind);
+            LangAdjustables.RegisterText(reloadFontBundlesKeybind.Label, RELOAD_FONT_BUNDLES_KEYBIND);
+
+            switchTranslationKeybind = tab.AddKeyButton(LocalyssationConfig.configSwitchTranslationKeybind);
+            LangAdjustables.RegisterText(switchTranslationKeybind.Label, SWITCH_TRANSLATION_KEYBIND);
+
+
 
             createMissingForCurrentLangButton = tab.AddButton(
                 Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE),
@@ -183,34 +216,9 @@ namespace Localyssation.Util
         }
 
         private static void ChangeAtlyssSettingsElementsEnabled<T>(T uiElement, bool enabled)
+            where T : BaseAtlyssElement
         {
-            if (uiElement is AtlyssButton button)
-            {
-                //button.ButtonLabel.enabled = enabled;
-                //button.Button.enabled = enabled;
-                button.Root.gameObject.SetActive(enabled);
-                //button.ButtonLabel.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
-                return;
-            }
-            if (uiElement is AtlyssKeyButton keyButton)
-            {
-                //keyButton.Label.enabled = enabled;
-                //keyButton.Button.enabled = enabled;
-                keyButton.Root.gameObject.SetActive(enabled);
-                //keyButton.ButtonLabel.enabled = enabled;
-                //keyButton.Label.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
-                //keyButton.ButtonLabel.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
-                return;
-            }
-            if (uiElement is AtlyssToggle toggle)
-            {
-                //toggle.Label.enabled = enabled;
-                //toggle.Toggle.enabled = enabled;
-                toggle.Root.gameObject.SetActive(enabled);
-                //toggle.Label.color = enabled ? ENABLED_COLOR : DISABLED_COLOR;
-                return;
-            }
-            Localyssation.logger.LogError($"Unknown UI element type: {uiElement.GetType()}");
+            uiElement.Root.gameObject.SetActive(enabled);
         }
 
         private void OnTranslatorModeChanged(bool value)
