@@ -3,6 +3,7 @@ using Localyssation.Exporter;
 using Localyssation.LanguageModule;
 using Localyssation.Patches.ReplaceText;
 using Localyssation.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,20 +29,20 @@ namespace Localyssation.Patches
             }
             // cached scriptables
             // items
-            foreach (var item in __instance._cachedScriptableItems.Values)
+            __instance._cachedScriptableItems.Values.Do(item =>
             {
                 var key = KeyUtil.GetForAsset(item);
                 LanguageManager.RegisterKey(key.Name, item._itemName);
                 LanguageManager.RegisterKey(key.NamePlural, item._itemName);
                 LanguageManager.RegisterKey(key.Description, item._itemDescription);
-            }
+            });
             // creeps
-            foreach (var creep in __instance._cachedScriptableCreeps.Values)
+            __instance._cachedScriptableCreeps.Values.Do(creep =>
             {
                 var key = KeyUtil.GetForAsset(creep);
                 LanguageManager.RegisterKey(key.Name, creep._creepName);
                 LanguageManager.RegisterKey(key.NamePlural, creep._creepName + "s");
-            }
+            });
             // quests
             foreach (var quest in __instance._cachedScriptableQuests.Values)
             {
@@ -236,13 +237,12 @@ namespace Localyssation.Patches
                 }
             }
         }
-
+        static readonly List<string> excludedSceneNames = new List<string>()
+        {
+            "00_bootStrapper", "01_rootScene"
+        };
         static IEnumerator RegisterSceneSpecificStrings()
         {
-            var excludedSceneNames = new List<string>()
-            {
-                "00_bootStrapper", "01_rootScene"
-            };
             for (var i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
                 var scenePath = SceneUtility.GetScenePathByBuildIndex(i);
@@ -254,72 +254,11 @@ namespace Localyssation.Patches
                     if (scene.IsValid())
                     {
                         string sceneName = scene.name;
-                        foreach (var dialogTrigger in GameObject.FindObjectsOfType<DialogTrigger>(true))
-                        {
-                            if (dialogTrigger._useLocalDialogBranch && dialogTrigger.gameObject.scene.name == sceneName)
-                            {
-                                var key = KeyUtil.GetForAsset(dialogTrigger._scriptDialogData);
-                                RegisterKeysForDialogBranch(key, KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{PathUtil.GetChildTransformPath(dialogTrigger.transform, 2)}"), dialogTrigger._localDialogBranch);
-                            }
-                        }
 
-                        foreach (var mapVisualOverrideTrigger in GameObject.FindObjectsOfType<MapVisualOverrideTrigger>(true))
-                        {
-                            if (mapVisualOverrideTrigger.gameObject.scene.name == sceneName)
-                            {
-                                string regionTag = mapVisualOverrideTrigger._reigonName;
-                                LanguageManager.RegisterKey(
-                                    KeyUtil.GetForMapRegionTag(regionTag), regionTag
-                                );
-                            }
-                        }
-
-                        GameObject.FindObjectsOfType<MapInstance>(true)
-                            .Where(o => o.gameObject.scene.name == sceneName)
-                            .Do(mapInstance =>
-                            {
-                                string mapName = mapInstance._mapName;
-                                LanguageManager.RegisterKey(
-                                    KeyUtil.GetForMapName(mapName),
-                                    mapName
-                                );
-                            });
-
-                        GameObject.FindObjectsOfType<NetTrigger>(true).Cast<NetTrigger>()
-                            .Where(netTrigger =>
-                                netTrigger._triggerMessage != null
-                                && netTrigger.gameObject.scene.name == sceneName
-                            )
-                            .Do(netTrigger =>
-                            {
-                                string triggerName = netTrigger.name;
-                                TriggerMessage triggerMessage = netTrigger._triggerMessage;
-                                if (!string.IsNullOrEmpty(triggerMessage._singleMessage))
-                                {
-                                    LanguageManager.RegisterKey(
-                                        KeyUtil.GetForAsset(netTrigger).SingleMessage,
-                                        triggerMessage._singleMessage
-                                    );
-                                }
-                                if (triggerMessage._triggerMessageArray.Length > 0)
-                                {
-
-                                    triggerMessage._triggerMessageArray.Select((msg, idx) =>
-                                    {
-                                        if (!string.IsNullOrEmpty(triggerMessage._triggerMessageArray[idx]))
-                                        {
-                                            LanguageManager.RegisterKey(
-                                                KeyUtil.GetForAsset(netTrigger).MessageArray(idx),
-                                                triggerMessage._triggerMessageArray[idx]
-                                            );
-                                        }
-                                        return true;
-                                    }).All(o => o); // finalizer to make sure code above get done 
-
-                                }
-
-                            });
-
+                        RegisterDialogTriggers(sceneName);
+                        RegisterMapVisualOverrideTrigger(sceneName);
+                        RegisterMapInstance(sceneName);
+                        RegisterNetTriggers(sceneName);
                         yield return SceneManager.UnloadSceneAsync(scene);
                     }
                 }
@@ -332,7 +271,90 @@ namespace Localyssation.Patches
             yield break;
         }
 
+        private static Func<MonoBehaviour, bool> IsInSceneGenerator(string sceneName)
+        {
+            return (MonoBehaviour o) => o.gameObject.scene.name == sceneName;
+        }
+        private static void RegisterDialogTriggers(string sceneName)
+        {
+            GameObject.FindObjectsOfType<DialogTrigger>(true)
+                .Where(IsInSceneGenerator(sceneName)).Cast<DialogTrigger>()
+                .Where(o => o._useLocalDialogBranch)
+                .Do(dialogTrigger =>
+                {
+                    var key = KeyUtil.GetForAsset(dialogTrigger._scriptDialogData);
+                    RegisterKeysForDialogBranch(
+                        key,
+                        KeyUtil.Normalize($"LOCAL_BRANCH_{sceneName}_{PathUtil.GetChildTransformPath(dialogTrigger.transform, 2)}"),
+                        dialogTrigger._localDialogBranch
+                        );
+                });
+        }
 
-        private static void Register
+
+        private static void RegisterMapVisualOverrideTrigger(string sceneName)
+        {
+            GameObject.FindObjectsOfType<MapVisualOverrideTrigger>(true)
+                .Where(IsInSceneGenerator(sceneName)).Cast<MapVisualOverrideTrigger>()
+                .Do(mapVisualOverrideTrigger =>
+                {
+                    string regionTag = mapVisualOverrideTrigger._reigonName;
+                    LanguageManager.RegisterKey(
+                        KeyUtil.GetForMapRegionTag(regionTag), regionTag
+                    );
+                });
+
+        }
+
+        private static void RegisterMapInstance(string sceneName)
+        {
+            GameObject.FindObjectsOfType<MapInstance>(true)
+                .Where(IsInSceneGenerator(sceneName)).Cast<MapInstance>()
+                .Do(mapInstance =>
+                {
+                    string mapName = mapInstance._mapName;
+                    LanguageManager.RegisterKey(
+                        KeyUtil.GetForMapName(mapName),
+                        mapName
+                    );
+                });
+        }
+
+        private static void RegisterNetTriggers(string sceneName)
+        {
+            GameObject.FindObjectsOfType<NetTrigger>(true)
+                .Where(IsInSceneGenerator(sceneName)).Cast<NetTrigger>()
+                .Where(netTrigger => netTrigger._triggerMessage != null)
+                .Do(netTrigger =>
+                {
+                    string triggerName = netTrigger.name;
+                    TriggerMessage triggerMessage = netTrigger._triggerMessage;
+                    if (!string.IsNullOrEmpty(triggerMessage._singleMessage))
+                    {
+                        LanguageManager.RegisterKey(
+                            KeyUtil.GetForAsset(netTrigger).SingleMessage,
+                            triggerMessage._singleMessage
+                        );
+                    }
+                    if (triggerMessage._triggerMessageArray.Length > 0)
+                    {
+
+                        triggerMessage._triggerMessageArray.Select((msg, idx) =>
+                        {
+                            if (!string.IsNullOrEmpty(triggerMessage._triggerMessageArray[idx]))
+                            {
+                                LanguageManager.RegisterKey(
+                                    KeyUtil.GetForAsset(netTrigger).MessageArray(idx),
+                                    triggerMessage._triggerMessageArray[idx]
+                                );
+                            }
+                            return true;
+                        }).All(o => o); // finalizer to make sure code above get done 
+
+                    }
+
+                });
+
+        }
     }
 }

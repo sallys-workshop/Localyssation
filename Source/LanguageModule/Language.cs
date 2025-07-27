@@ -78,20 +78,35 @@ namespace Localyssation.LanguageModule
         /// <returns></returns>
         public bool LoadFromFileSystem(bool forceOverwrite = false)
         {
-            if (string.IsNullOrEmpty(fileSystemPath)) return false;
+            if (string.IsNullOrEmpty(fileSystemPath)) return false; // no path
 
+            if (!LoadJsonDescriptor()) return false;    // not a valid language descriptor
+            if (info.code == LanguageManager.DefaultLanguage.info.code) return false;   // skip default language
+
+            if (TryLoadYMLFiles(forceOverwrite)) return true;   // load yml files
+
+            return TryLoadTSVFiles(forceOverwrite); // load tsv files
+        }
+
+
+        private bool LoadJsonDescriptor()
+        {
             var infoFilePath = Path.Combine(fileSystemPath, "localyssationLanguage.json");
             try
             {
                 info = JsonConvert.DeserializeObject<LanguageInfo>(File.ReadAllText(infoFilePath));
                 Localyssation.logger.LogMessage($"Loading language name={info.name}, id={info.code}");
+                return true;
             }
             catch (Exception e)
             {
                 Localyssation.logger.LogError(e);
                 return false;
             }
-            if (info.code == LanguageManager.DefaultLanguage.info.code) return false;   // skip default language
+        }
+
+        private bool TryLoadYMLFiles(bool forceOverwrite)
+        {
             try
             {
                 bool foundYML = false;
@@ -122,7 +137,11 @@ namespace Localyssation.LanguageModule
             {
                 Localyssation.logger.LogError(e);
             }
+            return false;
+        }
 
+        private bool TryLoadTSVFiles(bool forceOverwrite)
+        {
             var stringsFilePathTSV = Path.Combine(fileSystemPath, "strings.tsv");
             try
             {

@@ -27,7 +27,7 @@ namespace Localyssation.Patches.ReplaceFont
         }
 
         private static readonly List<Type> PATCH_CLASSES = new List<Type>()
-        { 
+        {
             typeof(FRChat),
             typeof(FRItemObjectVisual),
             typeof(FRPlayerNickname)

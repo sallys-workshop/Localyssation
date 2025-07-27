@@ -186,7 +186,7 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> CharacterSelectManager_Update_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new [] { 
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new[] {
                 I18nKeys.MainMenu.PAGER
             });
         }
