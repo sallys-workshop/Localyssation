@@ -1,6 +1,8 @@
 ﻿using Localyssation.Util;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Localyssation
 {
@@ -10,22 +12,38 @@ namespace Localyssation
     {
 
         // In case of lazy loading (experience from Java)
+        // So there is a lazy static loading feature just like Java
         public static void Init()
         {
-            CharacterCreation.init();
-            CharacterSelect.Init();
-            Enums.Init();
-            Equipment.Init();
-            Feedback.Init();
-            Item.Init();
-            Lore.Init();
-            MainMenu.init();
-            Quest.init();
-            ScriptableStatusCondition.init();
-            Settings.Init();
-            SkillMenu.init();
-            SteamLobby.Init();
-            TabMenu.Init();
+
+            void InitNestedType(Type t)
+            {
+                t.GetMethod("Init",
+                    System.Reflection.BindingFlags.Static
+                    | System.Reflection.BindingFlags.NonPublic
+                    | System.Reflection.BindingFlags.Public
+                    )
+                    .Invoke(t, null);   // Invoke static method, if null, that means something breaks
+                
+                t.GetNestedTypes().ToList().ForEach(InitNestedType);
+            }
+
+            typeof(I18nKeys).GetNestedTypes().ToList().ForEach(InitNestedType);
+
+            //CharacterCreation.Init();
+            //CharacterSelect.Init();
+            //Enums.Init();
+            //Equipment.Init();
+            //Feedback.Init();
+            //Item.Init();
+            //Lore.Init();
+            //MainMenu.Init();
+            //Quest.Init();
+            //ScriptableStatusCondition.init();
+            //Settings.Init();
+            //SkillMenu.Init();
+            //SteamLobby.Init();
+            //TabMenu.Init();
         }
 
         internal static readonly Dictionary<string, string> TR_KEYS = new Dictionary<string, string>();

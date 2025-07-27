@@ -6,7 +6,7 @@ namespace Localyssation
 
         internal static class MainMenu
         {
-            internal static void init() { }
+            internal static void Init() { }
             public static readonly string BUTTON_SINGLEPLAY
                 = Create("MAIN_MENU_BUTTON_SINGLEPLAY", "Singleplayer");
             public static readonly string BUTTON_SINGLEPLAY_TOOLTIP

@@ -6,7 +6,7 @@ namespace Localyssation
 
         internal static class SkillMenu
         {
-            internal static void init() { }
+            internal static void Init() { }
 
             public static readonly string RANK_SOULBOUND
                 = Create("SKILL_RANK_SOULBOUND", "Soulbound Skill");

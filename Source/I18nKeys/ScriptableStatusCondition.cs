@@ -5,7 +5,7 @@ namespace Localyssation
     {
         internal static class ScriptableStatusCondition
         {
-            internal static void init() { }
+            internal static void Init() { }
             public static readonly string DURATION_FORMAT
                 = Create("SCRIPTABLE_STATUS_CONDITION_DURATION_FORMAT", "<color=yellow>Lasts for {0} sec</color>.");
             public static readonly string RATE_FORMAT

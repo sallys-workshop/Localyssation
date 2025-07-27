@@ -13,7 +13,7 @@ namespace Localyssation.Patches.ReplaceText
             var baseKey = KeyUtil.GetForAsset(__instance);
             if (!NetworkServer.active)
                 return false;
-            string _msg = baseKey.SingleMessage.Localize();
+            string _msg = baseKey.SingleMessage.Localize(defaultString:"");
             if (baseKey.MessageArrayLength != 0)
                 _msg = baseKey.MessageArray(UnityEngine.Random.Range(0, baseKey.MessageArrayLength)).Localize();
             if (string.IsNullOrEmpty(_msg))

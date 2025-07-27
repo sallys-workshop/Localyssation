@@ -136,7 +136,7 @@ namespace Localyssation.Patches.ReplaceText
                             str = Localyssation.GetString(
                                 KeyUtil.GetForAsset(
                                     GameManager._current.Locate_StatModifier(__instance._itemObject._local_itemData._modifierID)
-                                ) + "_TAG"
+                                )
                             ) + " ";
 
                         }

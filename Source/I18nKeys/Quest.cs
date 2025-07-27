@@ -6,7 +6,7 @@ namespace Localyssation
 
         internal static class Quest
         {
-            internal static void init() { }
+            internal static void Init() { }
             public static readonly string FORMAT_REQUIRED_LEVEL
                 = Create("FORMAT_QUEST_REQUIRED_LEVEL", "(lv-{0})");
 

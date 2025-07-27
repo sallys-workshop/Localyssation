@@ -6,7 +6,7 @@ namespace Localyssation
 
         internal static class CharacterCreation
         {
-            internal static void init() { }
+            internal static void Init() { }
             public static readonly string HEADER
                 = Create("CHARACTER_CREATION_HEADER", "Character Creation");
             public static readonly string HEADER_RACE_NAME

@@ -16,9 +16,9 @@ namespace Localyssation.Util
         public static implicit operator string(TranslationKey key) => key.key;
         public override string ToString() => key;
 
-        public string Localize()
+        public string Localize(string defaultString = "")
         {
-            return Localyssation.GetString(key);
+            return Localyssation.GetString(key, defaultString);
         }
 
         public string DefaultString()
