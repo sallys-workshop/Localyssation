@@ -316,16 +316,6 @@ namespace Localyssation.Patches
                                         return true;
                                     }).All(o => o); // finalizer to make sure code above get done 
 
-                                    //for (int j = 0; j < triggerMessage._triggerMessageArray.Length; i++)
-                                    //{
-                                    //    if (!string.IsNullOrEmpty(triggerMessage._triggerMessageArray[j]))
-                                    //    {
-                                    //        LanguageManager.RegisterKey(
-                                    //            $"{KeyUtil.Normalize(sceneName)}_NET_TRIGGER_{KeyUtil.Normalize(triggerName)}_MESSAGE_ARRAY_{j}",
-                                    //            triggerMessage._triggerMessageArray[j]
-                                    //        );
-                                    //    }
-                                    //}
                                 }
 
                             });
@@ -341,5 +331,8 @@ namespace Localyssation.Patches
 
             yield break;
         }
+
+
+        private static void Register
     }
 }
