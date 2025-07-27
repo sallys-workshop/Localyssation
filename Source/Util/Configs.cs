@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using HarmonyLib;
 using Localyssation.LangAdjutable;
 using Localyssation.LanguageModule;
 using Nessie.ATLYSS.EasySettings.UIElements;
@@ -127,6 +128,8 @@ namespace Localyssation.Util
         private AtlyssKeyButton reloadFontBundlesKeybind;
         private AtlyssKeyButton switchTranslationKeybind;
 
+        private readonly List<BaseAtlyssElement> translatorModeElements = new List<BaseAtlyssElement>();
+
         private static SettingsGUI instance = null;
         public static void Init()
         {
@@ -135,7 +138,7 @@ namespace Localyssation.Util
         }
 
         // Require language loaded
-        public SettingsGUI()
+        private SettingsGUI()
         {
             //TrySetupSettingsTab();
             Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(TrySetupSettingsTab);
@@ -156,6 +159,21 @@ namespace Localyssation.Util
 
             tab.AddHeader("Localyssation");
 
+
+            void RegisterTranslatorModeElement<T>(T element, TranslationKey key)
+                where T : BaseAtlyssElement
+            {
+                var labelField = AccessTools.Field(typeof(T), "Label");
+                if (labelField != null && labelField.FieldType == typeof(UnityEngine.UI.Text))
+                {
+                    if (labelField.GetValue(element) is UnityEngine.UI.Text text)
+                    {
+                        LangAdjustables.RegisterText(text, key);
+                    }
+                }
+                translatorModeElements.Add(element);
+            }
+
             languageKeys = LanguageManager.languages.Select(kv => kv.Key).ToList();
             var currentLanguageIndex = languageKeys.IndexOf(LanguageManager.CurrentLanguage.info.code);
             languageDropdown = tab.AddDropdown("Language", 
@@ -169,28 +187,34 @@ namespace Localyssation.Util
             translatorModeToggle = tab.AddToggle(LocalyssationConfig.configTranslatorMode);
             translatorModeToggle.OnValueChanged.AddListener(OnTranslatorModeChanged);
             LangAdjustables.RegisterText(translatorModeToggle.Label, TRANSLATOR_MODE);
-
+            
             showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
             showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
             {
                 LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage, true);    // refresh all
             });
-            LangAdjustables.RegisterText(showTranslationKeyToggle.Label, SHOW_TRANSLATION_KEY);
+            //LangAdjustables.RegisterText(showTranslationKeyToggle.Label, SHOW_TRANSLATION_KEY);
+            RegisterTranslatorModeElement(showTranslationKeyToggle, SHOW_TRANSLATION_KEY);
 
             createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles);
-            LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, CREATE_DEFAULT_LANGUAGE_FILES);
+            //LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, CREATE_DEFAULT_LANGUAGE_FILES);
+            RegisterTranslatorModeElement(createDefaultLanguageFilesToggle, CREATE_DEFAULT_LANGUAGE_FILES);
 
             reloadLanguageKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadLanguageKeybind);
-            LangAdjustables.RegisterText(reloadLanguageKeybind.Label, RELOAD_LANGUAGE_KEYBIND);
+            //LangAdjustables.RegisterText(reloadLanguageKeybind.Label, RELOAD_LANGUAGE_KEYBIND);
+            RegisterTranslatorModeElement(reloadLanguageKeybind, RELOAD_LANGUAGE_KEYBIND);
 
             exportExtraToggle = tab.AddToggle(LocalyssationConfig.configExportExtra);
-            LangAdjustables.RegisterText(exportExtraToggle.Label, EXPORT_EXTRA);
+            //LangAdjustables.RegisterText(exportExtraToggle.Label, EXPORT_EXTRA);
+            RegisterTranslatorModeElement(exportExtraToggle, EXPORT_EXTRA);
 
             reloadFontBundlesKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadFontBundlesKeybind);
-            LangAdjustables.RegisterText(reloadFontBundlesKeybind.Label, RELOAD_FONT_BUNDLES_KEYBIND);
+            //LangAdjustables.RegisterText(reloadFontBundlesKeybind.Label, RELOAD_FONT_BUNDLES_KEYBIND);
+            RegisterTranslatorModeElement(reloadFontBundlesKeybind, RELOAD_FONT_BUNDLES_KEYBIND);
 
             switchTranslationKeybind = tab.AddKeyButton(LocalyssationConfig.configSwitchTranslationKeybind);
-            LangAdjustables.RegisterText(switchTranslationKeybind.Label, SWITCH_TRANSLATION_KEYBIND);
+            //LangAdjustables.RegisterText(switchTranslationKeybind.Label, SWITCH_TRANSLATION_KEYBIND);
+            RegisterTranslatorModeElement(switchTranslationKeybind, SWITCH_TRANSLATION_KEYBIND);
 
 
 
@@ -223,12 +247,7 @@ namespace Localyssation.Util
 
         private void OnTranslatorModeChanged(bool value)
         {
-            ChangeAtlyssSettingsElementsEnabled(showTranslationKeyToggle, value);
-            ChangeAtlyssSettingsElementsEnabled(createDefaultLanguageFilesToggle, value);
-            ChangeAtlyssSettingsElementsEnabled(reloadLanguageKeybind, value);
-            ChangeAtlyssSettingsElementsEnabled(exportExtraToggle, value);
-            ChangeAtlyssSettingsElementsEnabled(createMissingForCurrentLangButton, value);
-            ChangeAtlyssSettingsElementsEnabled(logUntranslatedStringsButton, value);
+            translatorModeElements.ForEach(v => ChangeAtlyssSettingsElementsEnabled(v, value));
         }
 
 
