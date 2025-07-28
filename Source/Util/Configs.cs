@@ -141,7 +141,7 @@ namespace Localyssation.Util
         private SettingsGUI()
         {
             //TrySetupSettingsTab();
-            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(TrySetupSettingsTab);
+            Nessie.ATLYSS.EasySettings.Settings.OnInitialized.AddListener(SetupSettingsTab);
 
             Nessie.ATLYSS.EasySettings.Settings.OnApplySettings.AddListener(() =>
             {
@@ -149,17 +149,9 @@ namespace Localyssation.Util
             });
         }
 
-        private void TrySetupSettingsTab()
+        private void SetupTranslatorModeElements()
         {
-            //if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
-            //settingsTabSetup = true;
-
             var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
-            LangAdjustables.RegisterText(tab.TabButton.Label, I18nKeys.Settings.BUTTON_MODS);
-
-            tab.AddHeader("Localyssation");
-
-
             void RegisterTranslatorModeElement<T>(T element, TranslationKey key)
                 where T : BaseAtlyssElement
             {
@@ -174,20 +166,7 @@ namespace Localyssation.Util
                 translatorModeElements.Add(element);
             }
 
-            languageKeys = LanguageManager.languages.Select(kv => kv.Key).ToList();
-            var currentLanguageIndex = languageKeys.IndexOf(LanguageManager.CurrentLanguage.info.code);
-            languageDropdown = tab.AddDropdown("Language", 
-                languageKeys.Select(key => LanguageManager.languages[key].info.name).ToList(), 
-                currentLanguageIndex
-                );
-            languageDropdown.OnValueChanged.AddListener(OnLanguageDropdownChanged);
-            LangAdjustables.RegisterText(languageDropdown.Label, LANGUAGE);
 
-
-            translatorModeToggle = tab.AddToggle(LocalyssationConfig.configTranslatorMode);
-            translatorModeToggle.OnValueChanged.AddListener(OnTranslatorModeChanged);
-            LangAdjustables.RegisterText(translatorModeToggle.Label, TRANSLATOR_MODE);
-            
             showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
             showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
             {
@@ -232,8 +211,37 @@ namespace Localyssation.Util
             //LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
             //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
             //    );
-            OnTranslatorModeChanged(LocalyssationConfig.TranslatorMode);
+        }
 
+        private void SetupSettingsTab()
+        {
+            //if (settingsTabSetup || !settingsTabReady || !languagesLoaded) return;
+            //settingsTabSetup = true;
+
+            var tab = Nessie.ATLYSS.EasySettings.Settings.ModTab;
+            LangAdjustables.RegisterText(tab.TabButton.Label, I18nKeys.Settings.BUTTON_MODS);
+
+            tab.AddHeader("Localyssation");
+
+
+            languageKeys = LanguageManager.languages.Select(kv => kv.Key).ToList();
+            var currentLanguageIndex = languageKeys.IndexOf(LanguageManager.CurrentLanguage.info.code);
+            languageDropdown = tab.AddDropdown("Language", 
+                languageKeys.Select(key => LanguageManager.languages[key].info.name).ToList(), 
+                currentLanguageIndex
+                );
+            languageDropdown.OnValueChanged.AddListener(OnLanguageDropdownChanged);
+            LangAdjustables.RegisterText(languageDropdown.Label, LANGUAGE);
+
+
+            translatorModeToggle = tab.AddToggle(LocalyssationConfig.configTranslatorMode);
+            translatorModeToggle.OnValueChanged.AddListener(OnTranslatorModeChanged);
+            LangAdjustables.RegisterText(translatorModeToggle.Label, TRANSLATOR_MODE);
+
+
+            SetupTranslatorModeElements();
+
+            OnTranslatorModeChanged(LocalyssationConfig.TranslatorMode);
             Localyssation.instance.OnLanguageChanged += this.OnLanguageChanged;
             OnLanguageChange();
 

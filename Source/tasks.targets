@@ -69,6 +69,8 @@ File.WriteAllText(FilePath, content);
 		<PropertyGroup>
 			<OutputLibDir>$(TargetDir)libs</OutputLibDir>
 		</PropertyGroup>
+
+		<Delete Files="@(OutputLibDir)" />
 		<MakeDir Directories="$(OutputLibDir)" />
 		<ItemGroup>
 			<DllsToMove Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(AssemblyName).dll" />

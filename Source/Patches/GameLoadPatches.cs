@@ -29,7 +29,7 @@ namespace Localyssation.Patches
             }
             // cached scriptables
             // items
-            __instance._cachedScriptableItems.Values.Do(item =>
+            RegisterCachedScriptableObjects(__instance._cachedScriptableItems, item =>
             {
                 var key = KeyUtil.GetForAsset(item);
                 LanguageManager.RegisterKey(key.Name, item._itemName);
@@ -50,6 +50,7 @@ namespace Localyssation.Patches
                 LanguageManager.RegisterKey(key.Name, quest._questName);
                 LanguageManager.RegisterKey(key.Description, quest._questDescription);
                 LanguageManager.RegisterKey(key.CompleteReturnMessage, quest._questCompleteReturnMessage);
+                
                 foreach (var questTriggerRequirement in quest._questObjective._questTriggerRequirements)
                 {
                     LanguageManager.RegisterKey($"{KeyUtil.GetForAsset(questTriggerRequirement)}_PREFIX", questTriggerRequirement._prefix);
@@ -215,32 +216,11 @@ namespace Localyssation.Patches
                 LanguageManager.UpdateDefaultLanguageFile();
         }
 
-        private static void RegisterKeysForDialogBranch(string dialogDataKey, string keySuffixBranch, DialogBranch branch)
+        private static void RegisterCachedScriptableObjects<KeyType, ValueType>(IDictionary<KeyType, ValueType> scriptables, Action<ValueType> action)
         {
-            for (var dialogIndex = 0; dialogIndex < branch.dialogs.Length; dialogIndex++)
-            {
-                var dialog = branch.dialogs[dialogIndex];
-                LanguageManager.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_INPUT", dialog._dialogInput);
-
-                if (dialog._altInputs != null && dialog._altInputs.Length != 0)
-                {
-                    for (var altInputIndex = 0; altInputIndex < dialog._altInputs.Length; altInputIndex++)
-                    {
-                        LanguageManager.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_INPUT_ALT_{altInputIndex}", dialog._altInputs[altInputIndex]);
-                    }
-                }
-
-                for (var selectionIndex = 0; selectionIndex < dialog._dialogSelections.Length; selectionIndex++)
-                {
-                    var selection = dialog._dialogSelections[selectionIndex];
-                    LanguageManager.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_SELECTION_{selectionIndex}", selection._selectionCaption);
-                }
-            }
+            scriptables.Values.ToList().ForEach(action);
         }
-        static readonly List<string> excludedSceneNames = new List<string>()
-        {
-            "00_bootStrapper", "01_rootScene"
-        };
+
         static IEnumerator RegisterSceneSpecificStrings()
         {
             for (var i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
@@ -271,10 +251,40 @@ namespace Localyssation.Patches
             yield break;
         }
 
+        private static void RegisterKeysForDialogBranch(string dialogDataKey, string keySuffixBranch, DialogBranch branch)
+        {
+            for (var dialogIndex = 0; dialogIndex < branch.dialogs.Length; dialogIndex++)
+            {
+                var dialog = branch.dialogs[dialogIndex];
+                LanguageManager.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_INPUT", dialog._dialogInput);
+
+                if (dialog._altInputs != null && dialog._altInputs.Length != 0)
+                {
+                    for (var altInputIndex = 0; altInputIndex < dialog._altInputs.Length; altInputIndex++)
+                    {
+                        LanguageManager.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_INPUT_ALT_{altInputIndex}", dialog._altInputs[altInputIndex]);
+                    }
+                }
+
+                for (var selectionIndex = 0; selectionIndex < dialog._dialogSelections.Length; selectionIndex++)
+                {
+                    var selection = dialog._dialogSelections[selectionIndex];
+                    LanguageManager.RegisterKey($"{dialogDataKey}_{keySuffixBranch}_DIALOG_{dialogIndex}_SELECTION_{selectionIndex}", selection._selectionCaption);
+                }
+            }
+        }
+
+        static readonly List<string> excludedSceneNames = new List<string>()
+        {
+            "00_bootStrapper", "01_rootScene"
+        };
+        
+
         private static Func<MonoBehaviour, bool> IsInSceneGenerator(string sceneName)
         {
             return (MonoBehaviour o) => o.gameObject.scene.name == sceneName;
         }
+
         private static void RegisterDialogTriggers(string sceneName)
         {
             GameObject.FindObjectsOfType<DialogTrigger>(true)

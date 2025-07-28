@@ -430,7 +430,7 @@ namespace Localyssation.Patches.ReplaceText
     }
 
     [HarmonyPatch]
-    public class QuestSelectionManager__Update
+    class QuestSelectionManager__Update
     {
         private static readonly TargetInnerMethod __TARGET = new TargetInnerMethod()
         {
@@ -445,5 +445,79 @@ namespace Localyssation.Patches.ReplaceText
 
         public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__TARGET);
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => RTUtil.SimpleStringReplaceTranspiler(instructions, REPLACEMENT);
+    }
+
+    [HarmonyPatch]
+    class PlayerQuesting__Client_CompleteQuest
+    {
+        private static readonly TargetInnerMethod __TARGET = new TargetInnerMethod()
+        {
+            Type = typeof(PlayerQuesting),
+            ParentMethodName = nameof(PlayerQuesting.Client_CompleteQuest),
+            InnerMethodName = "Finish_Quest"
+        };
+        public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__TARGET);
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = new CodeMatcher(instructions);
+            var matches = new[]
+            {
+                new CodeMatch(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableDialogData), nameof(ScriptableDialogData._questCompleteResponses))),
+                new CodeMatch(OpCodes.Ldc_I4_0),
+                new CodeMatch(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableDialogData), nameof(ScriptableDialogData._questCompleteResponses))),
+                new CodeMatch(OpCodes.Ldlen),
+                new CodeMatch(OpCodes.Conv_I4),
+                new CodeMatch(OpCodes.Call, AccessTools.Method(
+                    typeof(UnityEngine.Random), nameof(UnityEngine.Random.Range), new []{typeof(int), typeof(int)}
+                    )),
+                new CodeMatch(OpCodes.Ldelem_Ref)
+            };
+            matcher.MatchForward(false, matches);
+            Localyssation.logger.LogDebug("成功匹配到完成任务文本替换点");
+            matcher.RemoveInstructions(matches.Length);
+            matcher.Insert(new[]
+            {
+                // key = KeyUtil.GetForAsset(ScriptableDialogData)
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(KeyUtil), nameof(KeyUtil.GetForAsset), new []{ typeof(ScriptableDialogData) })),
+                
+                // Format string
+                new CodeInstruction(OpCodes.Ldstr, "_QUEST_COMPLETE_RESPONSE_"),  
+                // Range(0, length)
+                // 0
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                // DialogManager._current._scriptableDialog._questCompleteResponses.Length
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableDialogData), nameof(ScriptableDialogData._questCompleteResponses))),
+                new CodeInstruction(OpCodes.Ldlen),
+                // (int)
+                new CodeInstruction(OpCodes.Conv_I4),
+                // call
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(
+                    typeof(UnityEngine.Random), nameof(UnityEngine.Random.Range), new []{ typeof(int), typeof(int)}
+                    )),
+                // to string
+                new CodeInstruction(OpCodes.Box, typeof(int)),
+
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(string), "Concat", new []{typeof(string), typeof(string), typeof(string)})),
+
+                // default params for Localyssation.GetString
+                new CodeInstruction(OpCodes.Ldstr, Localyssation.GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Localyssation), nameof(Localyssation.GetString), new[]
+                {
+                    typeof(string), typeof(string), typeof(int)
+                }))
+            });
+
+            return matcher.Instructions();
+        }
     }
 }
