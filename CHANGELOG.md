@@ -2,10 +2,11 @@
 - Bug fixes
 	- Fixed a bug that enchantment on items are not properly displayed when dropping on ground
 	- Fixed a bug that quest accepting and completing messages do not display translated strings
-
+	- Fixed translation of "Points" in stat tab menu
 - New translation keys
 	- Added new translation keys for game logic and chat strings when accepting tasks
 	- Added some task-related error messages
+	- Added translation to "Points Avaliable" hint when points avaliable
 
 
 ## 2.1.0
