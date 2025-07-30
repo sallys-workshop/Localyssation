@@ -183,11 +183,11 @@ namespace Localyssation.Patches
                 .Instructions();
         }
 
-        public static CodeMatch MatchMethodCall(MethodInfo method)
+        public static CodeMatch MatchMethodCall(MethodInfo method, OpCode? opcode = null)
         {
             return
                 new CodeMatch(
-                    method.IsStatic ? OpCodes.Call : OpCodes.Callvirt,
+                    opcode ?? (method.IsStatic ? OpCodes.Call : OpCodes.Callvirt),
                     method
                     );
         }
@@ -197,11 +197,19 @@ namespace Localyssation.Patches
             return matcher.Advance(-length).RemoveInstructions(length);
         }
 
-        public static CodeMatcher ReplaceMethodCallParamsStackForward(
-            CodeMatcher matcher, MethodInfo method, int _ILCodeLength)
+        /// <summary>
+        /// Remove method params stack, searching forward
+        /// </summary>
+        /// <param name="matcher"></param>
+        /// <param name="method">the method you want to remove its param evaluation stack</param>
+        /// <param name="_ILCodeLength">IL code length of params evaluation stack, count by you own</param>
+        /// <param name="opcode">OpCode of method call if you want to forcefully match a specific opcode. If leave null, will auto calculate.</param>
+        /// <returns></returns>
+        public static CodeMatcher RemoveMethodCallParamsStackForward(
+            CodeMatcher matcher, MethodInfo method, int _ILCodeLength, OpCode? opcode = null)
         {
             return ReplaceParamsStack(
-                matcher.MatchForward(true, MatchMethodCall(method)), _ILCodeLength);
+                matcher.MatchForward(true, MatchMethodCall(method, opcode)), _ILCodeLength);
                 
         }
     }

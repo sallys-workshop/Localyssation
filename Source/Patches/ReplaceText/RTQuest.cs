@@ -472,7 +472,7 @@ namespace Localyssation.Patches.ReplaceText
         {
             var matcher = new CodeMatcher(instructions);
 
-            TranspilerHelper.ReplaceMethodCallParamsStackForward(
+            TranspilerHelper.RemoveMethodCallParamsStackForward(
                 matcher,
                 MessageCallbacks.Start_QuickSentence, 
                 11
@@ -517,7 +517,7 @@ namespace Localyssation.Patches.ReplaceText
                 .MatchForward(false, new CodeMatch(OpCodes.Ldstr, "Retrieved Quest Objective Item: "));
 
             TranspilerHelper
-                .ReplaceMethodCallParamsStackForward(matcher, MessageCallbacks.New_ChatMessage, 7)
+                .RemoveMethodCallParamsStackForward(matcher, MessageCallbacks.New_ChatMessage, 7)
                 .InsertAndAdvance(new[] {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     Transpilers.EmitDelegate<Func<ScriptableQuest, string>>( quest =>
@@ -529,7 +529,7 @@ namespace Localyssation.Patches.ReplaceText
                     });
 
             TranspilerHelper
-                .ReplaceMethodCallParamsStackForward(matcher, MessageCallbacks.Init_GameLogicMessage, 5)
+                .RemoveMethodCallParamsStackForward(matcher, MessageCallbacks.Init_GameLogicMessage, 5)
                 .InsertAndAdvance(new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -541,7 +541,7 @@ namespace Localyssation.Patches.ReplaceText
                         )
                 });
             TranspilerHelper
-                .ReplaceMethodCallParamsStackForward(matcher, MessageCallbacks.Start_QuickSentence, 11)
+                .RemoveMethodCallParamsStackForward(matcher, MessageCallbacks.Start_QuickSentence, 11)
                 .InsertAndAdvance(new[]
                 {
                     Transpilers.EmitDelegate<Func<string>>(() =>
