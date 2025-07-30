@@ -13,9 +13,9 @@ namespace Localyssation
                 return I18nKeys.Create($"ENCHANTER_GUI_{key.ToUpper()}", value);
             }
 
-            public static readonly string HEADER
+            public static readonly TranslationKey HEADER
                 = create("HEADER", "- Item Enchant -");
-            public static readonly string BUTTON_CLEAR_SELECTION
+            public static readonly TranslationKey BUTTON_CLEAR_SELECTION
                 = create("BUTTON_CLEAR_SELECTION", "Clear Selection");
 
 
@@ -36,19 +36,19 @@ namespace Localyssation
                         .Select(free => generateTransmuteButton(type, free))
                 ).ToArray();
 
-            public static readonly string BUTTON_ENCHANT_REROLL
+            public static readonly TranslationKey BUTTON_ENCHANT_REROLL
                 = create("BUTTON_ENCHANT_REROLL", "Re-roll Enchant");
-            public static readonly string BUTTON_ENCHANT_ENCHANT
+            public static readonly TranslationKey BUTTON_ENCHANT_ENCHANT
                 = create("BUTTON_ENCHANT_ENCHANT", "Enchant Item");
-            public static readonly string BUTTON_ENCHANT_UNABLE
+            public static readonly TranslationKey BUTTON_ENCHANT_UNABLE
                 = create("BUTTON_ENCHANT_UNABLE", "Cannot enchant");
-            public static readonly string STATUS_NO_ENCHANT
+            public static readonly TranslationKey STATUS_NO_ENCHANT
                 = create("STATUS_NO_ENCHANT", "No enchantment applied on this item");
-            public static readonly string STATUS_UNABLE_TO_ENCHANT
+            public static readonly TranslationKey STATUS_UNABLE_TO_ENCHANT
                 = create("STATUS_UNABLE_TO_ENCHANT", "Item cannot be enchanted");
-            public static readonly string BUTTON_ENCHANT_INSERT_ITEM
+            public static readonly TranslationKey BUTTON_ENCHANT_INSERT_ITEM
                 = create(nameof(BUTTON_ENCHANT_INSERT_ITEM), "Insert item to enchant");
-            public static readonly string STATUS_CURRENT_ENCHANTMENT
+            public static readonly TranslationKey STATUS_CURRENT_ENCHANTMENT
                 = create(nameof(STATUS_CURRENT_ENCHANTMENT), "Current enchantment: ");
 
             public static readonly TranslationKey GET_NEW_ENCHANTMENT_FORMAT

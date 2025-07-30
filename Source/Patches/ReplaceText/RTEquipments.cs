@@ -13,17 +13,29 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(TooltipElement), nameof(TooltipElement.Awake))]
         [HarmonyPostfix]
-        public static void TooltipElement__Awak__Postfix(TooltipElement __instance)
+        public static void EquipToolTip__Awake__Postfix(TooltipElement __instance)
         {
             const string TAG_NAME_REGEX = @"_statCell_(\w*)Tag";
             if (__instance is EquipToolTip equipToolTip)
-                foreach (var tag in equipToolTip.transform.GetComponentsInChildren<Text>(true).Where(text => Regex.IsMatch(text.transform.name, TAG_NAME_REGEX)))
+            {
+                var nameMap = new Dictionary<string, string>();
+                foreach (var statCell in equipToolTip.GetComponentsInChildren<Text>())
                 {
-                    string statName = Regex.Match(tag.transform.name, TAG_NAME_REGEX).Groups[1].Value;
-                    string key = I18nKeys.Equipment.statDisplayKey(statName);
-                    //Localyssation.logger.LogDebug($"public static readonly string {key.Replace("ITEM_", "")}\n\t= create(statDisplayKey(\"{statName}\"), \"{tag.text}\");");
-                    tag.text = Localyssation.GetString(key);
+                    var match = Regex.Match(statCell.name, TAG_NAME_REGEX);
+                    if (match.Success)
+                    {
+                        var statName = match.Groups[1].Value;
+                        var path = $"_statCell_{statName}/_statCell_{statName}Tag";
+                        if (Regex.IsMatch(statName, @"resist[A-Z][a-z]*"))
+                        {
+                            path = $"_statCell_{Regex.Replace(statName, "[A-Z]", s => "_" + s.Value.ToLower())}/_statCell_{statName}Tag";
+                        }
+                        var key = I18nKeys.Equipment.statDisplayKey(statName);
+                        nameMap[path] = key;
+                    }
                 }
+                RTUtil.RemapChildTextsByPath(equipToolTip._attackPowerTag.transform.parent.parent , nameMap);
+            }    
         }
 
         // equipment
