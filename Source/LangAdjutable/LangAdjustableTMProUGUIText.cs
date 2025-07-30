@@ -75,7 +75,8 @@ namespace Localyssation.LangAdjutable
                 )
             {
                 if (
-                    FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
+                    FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont)
+                    )
                 {
                     if (text.font == loadedFont) return true;
                     text.font = loadedFont;

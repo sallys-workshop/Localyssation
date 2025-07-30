@@ -48,7 +48,8 @@ namespace Localyssation.Util
                 path = current.name + "/" + path; // 从根向子节点拼接
             }
 
-            return "/" + path; // 添加根路径斜杠
+            //return "/" + path; // 添加根路径斜杠
+            return path;    // 不添加根路径斜杠
         }
     }
 
