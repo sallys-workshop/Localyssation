@@ -59,6 +59,9 @@ namespace Localyssation.Util
 
         public static void LoadFontBundlesFromFileSystem()
         {
+            availableFonts.Clear(); 
+            availableTMP_FontAssets.Clear();
+            Resources.UnloadUnusedAssets();
             string[] filePaths = Directory.GetFiles(Paths.PluginPath, "*.fontbundle", SearchOption.AllDirectories);
             Localyssation.logger.LogInfo($"Found {filePaths.Length} fontBundles");
             foreach (var filePath in filePaths)
@@ -87,10 +90,10 @@ namespace Localyssation.Util
                 );
 
             //Resources.UnloadUnusedAssets();
-            Resources.LoadAll<TMP_FontAsset>("").Cast<TMP_FontAsset>().DoIf(
-                font => !font.fallbackFontAssetTable.Contains(UNIFONT_SDF),
-                font => font.fallbackFontAssetTable.Add(UNIFONT_SDF)
-            );
+            //Resources.LoadAll<TMP_FontAsset>("").Cast<TMP_FontAsset>().DoIf(
+            //    font => !font.fallbackFontAssetTable.Contains(UNIFONT_SDF),
+            //    font => font.fallbackFontAssetTable.Add(UNIFONT_SDF)
+            //);
 
         }
 
@@ -116,6 +119,7 @@ namespace Localyssation.Util
             {
                 Localyssation.logger.LogInfo($"\t - {font.name}");
             });
+            Resources.UnloadUnusedAssets();
         }
     }
 }
