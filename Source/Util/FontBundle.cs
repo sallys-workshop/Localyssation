@@ -40,6 +40,7 @@ namespace Localyssation.Util
                 TMPfonts.Add(font.name, font);
             });
 
+            bundle.Unload(false);
 
             return true;
         }
