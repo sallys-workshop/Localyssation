@@ -1,7 +1,11 @@
 ﻿using HarmonyLib;
 using Localyssation.LanguageModule;
 using Localyssation.Util;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -218,7 +222,7 @@ namespace Localyssation.Patches.ReplaceText
         /// <returns></returns>
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_SkillDescriptorInfo))]
         [HarmonyPrefix]
-        public static bool SkillToolTip_Apply_SkillDescriptorInfo_Prefix(SkillToolTip __instance)
+        public static bool SkillToolTip__Apply_SkillDescriptorInfo__Prefix(SkillToolTip __instance)
         {
             PlayerStats _pStats = Player._mainPlayer._pStats;
             int _skillPower = 0;
@@ -321,7 +325,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(ScriptableStatusCondition), nameof(ScriptableStatusCondition.Generate_ConditionDescriptor))]
         [HarmonyPrefix]
-        public static bool ScriptableStatusCondition_Generate_ConditionDescriptor_Prefix(
+        public static bool ScriptableStatusCondition__Generate_ConditionDescriptor__Prefix(
             ScriptableStatusCondition __instance,
             StatStruct _parentStatStruct, int _bonusPower, int _bonusDuration,
             ref string __result)
@@ -364,7 +368,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(SkillToolTip), nameof(SkillToolTip.Apply_ConditionRankInfo))]
         [HarmonyPrefix]
-        public static bool SkillToolTip_Apply_ConditionRankInfo_Prefix(SkillToolTip __instance)
+        public static bool SkillToolTip__Apply_ConditionRankInfo__Prefix(SkillToolTip __instance)
         {
             if (__instance._scriptSkill._skillRankParams._selfConditionOutput == null)
             {
@@ -396,5 +400,154 @@ namespace Localyssation.Patches.ReplaceText
         }
 
     }
+
+    //[HarmonyPatch]
+    //class SkillToolTip__Apply_SkillDescriptorInfo__Transpiler
+    //{
+    //    private static readonly TargetInnerMethod __CONDITION = new TargetInnerMethod()
+    //    {
+    //        InnerMethodName = "Init_TermMacros",
+    //        ParentMethodName = nameof(SkillToolTip.Apply_SkillDescriptorInfo),
+    //        Type = typeof(SkillToolTip)
+    //    };
+    //    public static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(__CONDITION);
+
+    //    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //    {
+    //        Localyssation.logger.LogDebug("Transpiling " + TargetMethod().Name);
+    //        instructions.Do((c) => Localyssation.logger.LogDebug(c.ToString()));
+    //        var matcher = RTUtil.Wrap(instructions)
+    //            .ReplaceStrings(new string[]
+    //            {
+    //                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_COOLDOWN,
+    //                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_MANACOST,
+    //                I18nKeys.SkillMenu.TOOLTIP_HEALTH_COST,
+    //                I18nKeys.SkillMenu.TOOLTIP_STAMINA_COST,
+    //                I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CAST_TIME_INSTANT,
+    //                I18nKeys.SkillMenu.TOOLTIP_CAST_TIME,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_SHIELD,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_MELEE_WEAPON,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_RANGED_WEAPON,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_MAGIC_WEAPON,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_HEAVY_MELEE_WEAPON,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_HEAVY_RANGED_WEAPON,
+    //                I18nKeys.SkillMenu.TOOLTIP_REQUIRE_HEAVY_MAGIC_WEAPON,
+    //            }).Matcher();
+    //        Localyssation.logger.LogDebug("Transpiling " + TargetMethod().Name);
+    //        instructions.Do((c) => Localyssation.logger.LogDebug(c.ToString()));
+    //        // string skillDescription = _scriptSkill._skillDescription;
+    //        matcher.MatchForward(false, new[]
+    //        {
+    //            new CodeMatch(OpCodes.Stloc_0)
+    //        })
+    //            .RemoveInstructionsWithOffsets(-2, -1)
+    //            .Advance(-3)
+    //            .InsertAndAdvance(new CodeInstruction[] {
+    //                Transpilers.EmitDelegate<Func<SkillToolTip, string>>(instance =>
+    //                {
+    //                    return KeyUtil.GetForAsset(instance._scriptSkill).Description.Localize();
+    //                })
+    //            });
+
+    //        Localyssation.logger.LogDebug("Replaced `string skillDescription = _scriptSkill._skillDescription;`");
+
+    //        //string conditionDescriptor = scriptableCondition.Generate_ConditionDescriptor(_pStats._statStruct, bonusPower, bonusDuration);
+    //        byte conditionDescriptor = 6;
+
+    //        // str3 = string.Format("\n\n<color=cyan>{0} - ({1}) ({2}% Chance)</color>", (object) scriptableCondition._conditionName, (object) scriptableCondition._conditionGroup._conditionGroupTag, (object) (float) ((double) skillObjectCondition._chance * 100.0)) + "\n" + conditionDescriptor;
+    //        matcher
+    //            .Start()
+    //            .MatchForward(false, new CodeMatch(OpCodes.Switch))
+    //            .MatchForward(false, new CodeMatch(OpCodes.Brfalse))
+    //            .MatchForward(false, new CodeMatch(OpCodes.Brtrue));
+
+    //        var replaceEnd = matcher.MatchForward(false, new[]
+    //        {
+    //            new CodeMatch(OpCodes.Call, typeof(string).GetMethod("Format", new System.Type[] { typeof(string), typeof(object), typeof(object), typeof(object) })),
+    //        }).Pos;
+    //        if (matcher.IsInvalid)
+    //        {
+    //            Localyssation.logger.LogError("Cannot locate end of if - str3");
+    //        }
+
+    //        var replaceStart = matcher.MatchBack(false, new[]
+    //        {
+    //            new CodeMatch(OpCodes.Ldstr, "\n\n<color=cyan>{0} - ({1}) ({2}% Chance)</color>"),
+    //        }).Pos;
+    //        Localyssation.logger.LogDebug(matcher.Instruction.ToString());
+    //        if (matcher.IsInvalid)
+    //        {
+    //            Localyssation.logger.LogError("Cannot locate start of if - str3");
+    //        }
+            
+    //        Localyssation.logger.LogDebug(matcher.Instruction.ToString());
+    //        matcher.RemoveInstructionsInRange(replaceStart, replaceEnd);
+    //        matcher.Insert(new CodeInstruction[]{
+    //            new CodeInstruction(OpCodes.Ldloc_1),   // scriptableCondition
+    //            new CodeInstruction(OpCodes.Ldloc_2),   // skillObjectCondition
+    //            Transpilers.EmitDelegate<Func<ScriptableCondition, ConditionSlot, string>>((scriptableCondition, skillObjectCondition) =>
+    //            {
+    //                return I18nKeys.SkillMenu.TOOLTIP_DESCRIPTOR_CONDITION_CHANCE.Format(
+    //                    KeyUtil.GetForAsset(scriptableCondition).Name.Localize(),
+    //                    KeyUtil.GetForAsset(scriptableCondition._conditionGroup).Name.Localize(),
+    //                    skillObjectCondition._chance * 100
+    //                    );
+    //            })
+    //        });
+    //        Localyssation.logger.LogDebug("After replace:");
+    //        matcher.Instructions().GetRange(matcher.Pos, 10).Do(ins => Localyssation.logger.LogDebug(ins));
+            
+    //        Localyssation.logger.LogDebug("Replaced `str3 = string.Format(\"\\n\\n<color=cyan>{0} - ({1}) ({2}% Chance)</color>\", (object) scriptableCondition._conditionName, ...`");
+
+
+
+    //        // str3 = "\n\n<color=cyan>" + scriptableCondition._conditionName + " - (" + scriptableCondition._conditionGroup._conditionGroupTag + ")</color>\n" + conditionDescriptor;
+    //        matcher.Start()
+    //            .MatchForward(false, new CodeMatch(OpCodes.Ldstr, "\n\n<color=cyan>"));
+
+    //        replaceEnd = matcher.MatchForward(false, new[]
+    //        {
+    //            new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(string), nameof(string.Concat), new[]{ typeof(string[])}))
+    //        }).Pos;
+    //        if (matcher.IsInvalid)
+    //        {
+    //            Localyssation.logger.LogError("Cannot locate end of else - str3");
+    //        }
+
+    //        replaceStart = matcher.MatchBack(false, new[]
+    //        {
+    //            new CodeMatch(OpCodes.Ldc_I4_6),
+    //            new CodeMatch(OpCodes.Newarr, typeof(string)),
+    //            new CodeMatch(OpCodes.Dup),
+    //        }).Pos;
+    //        if (matcher.IsInvalid)
+    //        {
+    //            Localyssation.logger.LogError("Cannot locate start of else - str3");
+    //        }
+
+    //        Localyssation.logger.LogDebug("Before replace:");
+    //        matcher.Instructions().GetRange(matcher.Pos, 10).Do(ins => Localyssation.logger.LogDebug(ins));
+    //        matcher.RemoveInstructionsInRange(replaceStart, replaceEnd);
+
+
+
+    //        matcher.InsertAndAdvance(new CodeInstruction[]{
+    //            new CodeInstruction(OpCodes.Ldloc_1),
+    //            new CodeInstruction(OpCodes.Ldloc_S, conditionDescriptor),
+    //            Transpilers.EmitDelegate<Func<ScriptableCondition, string, string>>((_sc, _str) =>{
+    //                return "\n\n<color=cyan>"
+    //                    + KeyUtil.GetForAsset(_sc).Name.Localize()
+    //                    + " - ("
+    //                    + KeyUtil.GetForAsset(_sc._conditionGroup).Name.Localize()
+    //                    + ")</color>\n"
+    //                    + _str;
+    //            })
+    //        });
+    //        Localyssation.logger.LogDebug("Replaced `str3 = \"\\n\\n<color=cyan>\" + scriptableCondition._conditionName + \" - (\" + ...`");
+
+    //        return matcher.Instructions();
+
+    //    }
+    //}
 
 }

@@ -1,6 +1,10 @@
 ## 2.1.4
 - New translation keys
 	- Add new translation keys for chats
+- Bug fix
+	- Fixed enchanter translation keys registration
+	- Fixed an issue that buttons for translation mode will not disappear when translation mode is off
+	- Stat discriptor tag in equipment tooltip now update with language changes
 - New feature
 	- New configuration `Log Vanilla Fonts` to control whether to log vanilla fonts, making loading faster.
 	- `TestMeshProUGUI` type of text components now are available to replace font in `componentSpecifiedFontReplacement`
