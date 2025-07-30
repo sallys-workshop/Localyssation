@@ -1,4 +1,4 @@
-## 2.1.2
+## 2.1.3
 - Bug fixes
 	- Fixed a bug that enchantment on items are not properly displayed when dropping on ground
 	- Fixed a bug that quest accepting and completing messages do not display translated strings
