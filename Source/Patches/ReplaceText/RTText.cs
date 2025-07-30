@@ -74,6 +74,16 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
+        [HarmonyPatch(typeof(TextMeshProUGUI), nameof(TextMeshProUGUI.OnEnable))]
+        [HarmonyPostfix]
+        public static void TextMeshProUGUI__OnEnable__Postfix(TextMeshProUGUI __instance)
+        {
+            if (LanguageManager.CurrentLanguage != null && __instance != null && __instance.font != null)
+            {
+                LangAdjustables.RegisterText(__instance);
+            }
+        }
+
     }
 
 }

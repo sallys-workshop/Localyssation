@@ -26,7 +26,7 @@ namespace Localyssation.LangAdjutable
         public float orig_resizeTextMaxSize;
         public float orig_resizeTextMinSize;
 
-        public static List<string> FONT_NAMES = new List<string>();
+        //public static List<string> FONT_NAMES = new List<string>();
 
         public void Awake()
         {
@@ -51,7 +51,7 @@ namespace Localyssation.LangAdjutable
             )
             {
                 if (text.font == loadedFont) return true;
-                if (Regex.IsMatch(text.font.name, originalFontName + @"\s*SDF\w*"))
+                if (Regex.IsMatch(text.font.name, originalFontName))
                 {
                     text.font = loadedFont;
                     text.fontSize = (int)(orig_fontSize);
@@ -65,10 +65,16 @@ namespace Localyssation.LangAdjutable
 
         private bool ReplaceFontForPath(string path, BundledFontLookupInfo replacementFontLookupInfo)
         {
-            if (PathUtil.GetPath(text.transform) == path)
+            Localyssation.logger.LogDebug($"this.path = {PathUtil.GetPath(text.transform)}");
+            Localyssation.logger.LogDebug($"path = {path}");
+            Localyssation.logger.LogDebug($"replacementFontLookupInfo = {replacementFontLookupInfo}");
+
+            if (PathUtil.GetPath(text.transform) == path 
+                && replacementFontLookupInfo != null
+                && !string.IsNullOrEmpty(replacementFontLookupInfo.fontName)
+                )
             {
                 if (
-                    replacementFontLookupInfo != null &&
                     FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedFont))
                 {
                     if (text.font == loadedFont) return true;
@@ -77,6 +83,12 @@ namespace Localyssation.LangAdjutable
                     text.lineSpacing = orig_lineSpacing;
                     fontReplaced = true;
                     return true;
+                }
+                else
+                {
+                    Localyssation.logger.LogWarning(
+                        $"Cannot find font `{replacementFontLookupInfo.fontName}` in loaded fonts."
+                        );
                 }
             }
             return false;

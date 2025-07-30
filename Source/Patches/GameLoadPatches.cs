@@ -23,6 +23,7 @@ namespace Localyssation.Patches
         [HarmonyPostfix]
         public static void GameManager_Cache_ScriptableAssets(GameManager __instance)
         {
+            Localyssation.logger.LogMessage("Dynamically registering I18n keys for scriptables and dialogs.");
             if (LocalyssationConfig.ExportExtra)
             {
                 ExportUtil.InitExports();
@@ -214,6 +215,7 @@ namespace Localyssation.Patches
 
             if (LocalyssationConfig.TranslatorMode && LocalyssationConfig.CreateDefaultLanguageFiles)
                 LanguageManager.UpdateDefaultLanguageFile();
+            Resources.UnloadUnusedAssets();
         }
 
         private static void RegisterCachedScriptableObjects<KeyType, ValueType>(IDictionary<KeyType, ValueType> scriptables, Action<ValueType> action)
