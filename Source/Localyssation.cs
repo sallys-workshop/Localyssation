@@ -53,12 +53,10 @@ namespace Localyssation
             //GameAssetCache.Load();
 
             LanguageManager.Init();
-
-            
-            //ExportUtil.InitExports();
             FontManager.LoadFontBundlesFromFileSystem();
 
             LocalyssationConfig.Init(Config);
+
             if (LocalyssationConfig.TranslatorMode && LocalyssationConfig.LogVanillaFonts)
             {
                 FontHelper.DetectVanillaFonts();

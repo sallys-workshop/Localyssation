@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
@@ -10,7 +12,7 @@ namespace Localyssation.Patches.ReplaceText
     {
         [HarmonyPatch(typeof(TabMenu), nameof(TabMenu.Handle_TabMenuControl))]
         [HarmonyPostfix]
-        public static void TabMenu_Handle_TabMenuControl_Postfix(TabMenu __instance)
+        public static void TabMenu__Handle_TabMenuControl__Postfix(TabMenu __instance)
         {
             if (__instance._currentCellSelection > 0)
             {
@@ -45,7 +47,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Cell_OnAwake))]
         [HarmonyPostfix]
-        public static void ItemsMenu_Cell_OnAwake_Postfix(ItemMenuCell __instance)
+        public static void ItemsMenu__Cell_OnAwake__Postfix(ItemMenuCell __instance)
         {
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>() {
                 { "_text_itemHeader", I18nKeys.TabMenu.CELL_ITEMS_HEADER }
@@ -54,7 +56,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Init_ItemPromptWindow))]
         [HarmonyPostfix]
-        public static void ItemMenuCell_Init_ItemPromptWindow(ItemMenuCell __instance, ItemListDataEntry _listEntry)
+        public static void ItemMenuCell__Init_ItemPromptWindow__Postfix(ItemMenuCell __instance, ItemListDataEntry _listEntry)
         {
 
 
@@ -71,7 +73,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Handle_CellUpdate))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> ItemMenuCell_Handle_CellUpdate_Transpiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> ItemMenuCell__Handle_CellUpdate__Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>()
             {
@@ -81,7 +83,7 @@ namespace Localyssation.Patches.ReplaceText
         }
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Init_ItemTabToolTip))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> ItemMenuCell_Init_ItemTabToolTip_Transpiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> ItemMenuCell__Init_ItemTabToolTip__Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>()
             {
@@ -93,7 +95,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Init_InventoryTooltip))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> ItemMenuCell_Init_InventoryTooltip_Transpiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> ItemMenuCell__Init_InventoryTooltip__Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>()
             {

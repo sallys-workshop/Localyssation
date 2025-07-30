@@ -151,6 +151,11 @@ namespace Localyssation
             public static readonly string CELL_ITEMS_INVENTORY_SORT_ITEMS
                 = CreateCellItems("INVENTORY_SORT_ITEMS", "Sort Items");
 
+
+            public static readonly TranslationKey DROP_ITEM_ABANDON_QUEST_FORMAT
+                = Create("TAB_MENU_DROP_ITEM_ABANDON_QUEST_FORMAT", "Abandoned Quest: {0}");
+
+
             public static readonly IDictionary<string, string> CELL_ITEMS_PROMPT_BUTTONS
                 = new[] {
                     "equip", "transmogrify", "remove", "use", "split", "drop", "cancel"

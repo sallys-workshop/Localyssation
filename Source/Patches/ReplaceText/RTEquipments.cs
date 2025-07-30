@@ -13,7 +13,7 @@ namespace Localyssation.Patches.ReplaceText
 
         [HarmonyPatch(typeof(TooltipElement), nameof(TooltipElement.Awake))]
         [HarmonyPostfix]
-        public static void replaceStatTags(TooltipElement __instance)
+        public static void TooltipElement__Awak__Postfix(TooltipElement __instance)
         {
             const string TAG_NAME_REGEX = @"_statCell_(\w*)Tag";
             if (__instance is EquipToolTip equipToolTip)
