@@ -223,16 +223,16 @@ namespace Localyssation.Util
             void SetupButton()
             {
                 createMissingForCurrentLangButton = tab.AddButton(
-                Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE),
-                OnAddMissingKeyButtonPressed
+                    Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE),
+                    OnAddMissingKeyButtonPressed
                 );
-                //LangAdjustables.RegisterText(createMissingForCurrentLangButton.ButtonLabel,
-                //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE));
+                translatorModeElements.Add(createMissingForCurrentLangButton);
 
                 logUntranslatedStringsButton = tab.AddButton(
                     Localyssation.GetString(LOG_UNTRANSLATED_STRINGS),
                     OnLogUntranslated
                     );
+                translatorModeElements.Add(logUntranslatedStringsButton);
 
                 //LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
                 //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
