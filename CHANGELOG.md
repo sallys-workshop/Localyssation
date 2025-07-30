@@ -1,4 +1,4 @@
-## 2.1.4
+## 2.2.0
 - New translation keys
 	- Add new translation keys for chats
 - Bug fix
