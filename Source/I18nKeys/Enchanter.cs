@@ -7,6 +7,7 @@ namespace Localyssation
     {
         internal static class Enchanter
         {
+            internal static void Init() { }
             private static TranslationKey create(string key, string value = "")
             {
                 return I18nKeys.Create($"ENCHANTER_GUI_{key.ToUpper()}", value);
