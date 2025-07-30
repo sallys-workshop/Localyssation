@@ -155,15 +155,15 @@ namespace Localyssation.Util
             void RegisterTranslatorModeElement<T>(T element, TranslationKey key)
                 where T : BaseAtlyssElement
             {
-                var labelField = AccessTools.Field(typeof(T), "Label");
-                if (labelField != null && labelField.FieldType == typeof(UnityEngine.UI.Text))
-                {
-                    if (labelField.GetValue(element) is UnityEngine.UI.Text text)
-                    {
-                        LangAdjustables.RegisterText(text, key);
-                    }
-                }
                 translatorModeElements.Add(element);
+                if (element is BaseAtlyssLabelElement labelElement)
+                {
+                    LangAdjustables.RegisterText(labelElement.Label, key);
+                }
+                if (element is AtlyssButton button)
+                {
+                    LangAdjustables.RegisterText(button.ButtonLabel, key);
+                }
             }
 
 
