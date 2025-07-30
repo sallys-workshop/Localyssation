@@ -1,3 +1,13 @@
+## 2.1.2
+- Bug fixes
+	- Fixed a bug that enchantment on items are not properly displayed when dropping on ground
+	- Fixed a bug that quest accepting and completing messages do not display translated strings
+
+- New translation keys
+	- Added new translation keys for game logic and chat strings when accepting tasks
+	- Added some task-related error messages
+
+
 ## 2.1.0
 - Fixed YML file searching logic
 - Fixed tsv file loading logic

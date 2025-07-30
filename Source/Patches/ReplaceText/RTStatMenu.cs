@@ -14,7 +14,7 @@ namespace Localyssation.Patches.ReplaceText
             RTUtil.RemapAllTextUnderObject(__instance.gameObject, new Dictionary<string, string>()
             {
                 { "_text_statsHeader", "TAB_MENU_CELL_STATS_HEADER" },
-                { "_text_attributePointCounter (1)", "TAB_MENU_CELL_STATS_ATTRIBUTE_POINT_COUNTER" },
+                { "_text_attributePointCounter", "TAB_MENU_CELL_STATS_ATTRIBUTE_POINT_COUNTER" },
                 { "_button_applyAttributePoints", "TAB_MENU_CELL_STATS_BUTTON_APPLY_ATTRIBUTE_POINTS" },
             });
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()

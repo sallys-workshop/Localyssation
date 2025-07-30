@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Localyssation.Util;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Localyssation
@@ -14,6 +15,9 @@ namespace Localyssation
                 = Create("PAGER_FORMAT", "Page ( {0} / {1} )");
             public static readonly string PAGER_1_PAGE
                 = Create("PAGER_1_PAGE", "Page ( 1 / 1 )");
+
+            public static readonly TranslationKey POINTS_AVAILABLE
+                = Create("TAB_MENU_POINTS_AVAILABLE", "Points Available");
 
 
             public static readonly string CELL_STATS_HEADER

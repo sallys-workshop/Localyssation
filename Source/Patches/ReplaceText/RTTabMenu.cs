@@ -29,6 +29,20 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
+        [HarmonyPatch(typeof(TabMenu), nameof(TabMenu.Awake))]
+        [HarmonyPostfix]
+        public static void TabMenu__Awake__Postfix(TabMenu __instance)
+        {
+            RTUtil.RemapAllTextUnderObject(__instance._pointsAvailDolly_L, new Dictionary<string, string>
+            {
+                { "Text", I18nKeys.TabMenu.POINTS_AVAILABLE }
+            });
+            RTUtil.RemapAllTextUnderObject(__instance._pointsAvailDolly_R, new Dictionary<string, string>
+            {
+                { "Text", I18nKeys.TabMenu.POINTS_AVAILABLE }
+            });
+        }
+
         [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.Cell_OnAwake))]
         [HarmonyPostfix]
         public static void ItemsMenu_Cell_OnAwake_Postfix(ItemMenuCell __instance)
