@@ -503,34 +503,7 @@ namespace Localyssation.Patches.ReplaceText
             return typeof(PlayerQuesting).GetMethod(nameof(PlayerQuesting.Accept_Quest), BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         }
 
-        private static readonly ILCodeReplacement ChatMessage = new ILCodeReplacement ( 
-            matches : new CodeMatch[]
-            {
-                new CodeMatch(OpCodes.Ldstr, "Retrieved Quest Objective Item: "),
-                new CodeMatch(OpCodes.Ldarg_1),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableQuest), nameof(ScriptableQuest._questObjectiveItem))),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(QuestItemReward), nameof(QuestItemReward._scriptItem))),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
-                new CodeMatch(OpCodes.Ldstr, "."),
-                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(string), nameof(string.Concat), new[]{typeof(string), typeof(string), typeof(string)}))
-            },
-            replacement : new CodeInstruction[]
-            {
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(I18nKeys.Quest), nameof(I18nKeys.Quest.RETRIEVED_QUEST_OBJECTIVE_ITEM_FORMAT))),
-
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableQuest), nameof(ScriptableQuest._questObjectiveItem))),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(QuestItemReward), nameof(QuestItemReward._scriptItem))),
-                //new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(KeyUtil), nameof(KeyUtil.GetForAsset), new []{ typeof(ScriptableItem) })),
-                new CodeInstruction(OpCodes.Ldstr, ""),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(TranslationKey), nameof(TranslationKey.Localize))),
-
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(TranslationKey), nameof(TranslationKey.Format), new[]{typeof(object[])}))
-            }
-        );
-        private static readonly ILCodeReplacement GameLogicMessage = new ILCodeReplacement ();
-        private static readonly ILCodeReplacement AcceptQuestResponse = new ILCodeReplacement ();
+        
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
