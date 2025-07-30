@@ -276,6 +276,21 @@ namespace Localyssation.Patches.ReplaceText
             return this;
         }
 
+        public RTTransplierCodeInstructionsWrapper ReplaceInstructions(params ILCodeReplacement[] replacements)
+        {
+            foreach (var item in replacements)
+            {
+                if (item.matches != null && item.replacement != null && item.matches.Length > 0)
+                    ReplaceInstructions(item.matches, item.replacement);
+            }
+            return this;
+        }
+
+        public CodeMatcher Matcher()
+        {
+            return new CodeMatcher(__instructions);
+        }
+
         public IEnumerable<CodeInstruction> Unwrap()
         {
             return __instructions;

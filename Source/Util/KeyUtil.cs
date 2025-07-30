@@ -30,6 +30,11 @@ namespace Localyssation.Util
         {
             return Math.Abs(quantity) > 1 ? NamePlural : Name;
         }
+
+        public string Format(params object[] args)
+        {
+            return Localyssation.Format(this, args);
+        }
     }
 
     public class QuestTranslationKey : TranslationKey

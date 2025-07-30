@@ -182,7 +182,42 @@ namespace Localyssation.Patches
                 .Insert(replacement)
                 .Instructions();
         }
+
+        public static CodeMatch MatchMethodCall(MethodInfo method)
+        {
+            return
+                new CodeMatch(
+                    method.IsStatic ? OpCodes.Call : OpCodes.Callvirt,
+                    method
+                    );
+        }
+
+        public static CodeMatcher ReplaceParamsStack(CodeMatcher matcher, int length)
+        {
+            return matcher.Advance(-length).RemoveInstructions(length);
+        }
+
+        public static CodeMatcher ReplaceMethodCallParamsStackForward(
+            CodeMatcher matcher, MethodInfo method, int _ILCodeLength)
+        {
+            return ReplaceParamsStack(
+                matcher.MatchForward(true, MatchMethodCall(method)), _ILCodeLength);
+                
+        }
     }
 
+    struct ILCodeReplacement
+    {
+        public readonly CodeMatch[] matches;
+        public readonly CodeInstruction[] replacement;
+
+        public ILCodeReplacement(CodeMatch[] matches, CodeInstruction[] replacement)
+        {
+            this.matches = matches;
+            this.replacement = replacement;
+        }
+    }
+
+    
 
 }

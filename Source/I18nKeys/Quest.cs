@@ -1,4 +1,6 @@
 ﻿
+using Localyssation.Util;
+
 namespace Localyssation
 {
     internal static partial class I18nKeys
@@ -38,6 +40,11 @@ namespace Localyssation
                 = Create("FORMAT_QUEST_PROGRESS", "{0}: ({1} / {2})");
             public static readonly string FORMAT_PROGRESS_CREEPS_KILLED
                 = Create("FORMAT_QUEST_PROGRESS_CREEPS_KILLED", "{0} slain");
+
+            public static readonly TranslationKey RETRIEVED_QUEST_OBJECTIVE_ITEM_FORMAT
+                = Create("QUEST_RETRIEVED_QUEST_OBJECTIVE_ITEM_FORMAT", "Retrieved Quest Objective Item: {0}.");
+            public static readonly TranslationKey GAME_LOGIC_ACCEPT_QUEST_FORMAT
+                = Create("QUEST_GAME_LOGIC_ACCEPT_QUEST_FORMAT", "Accepted Quest: {0}.");
         }
 
     }

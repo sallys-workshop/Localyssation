@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
+using YamlDotNet.Core.Tokens;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -266,6 +267,15 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
+        [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.OnClick_QuestAcceptButton))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> QuestSelectionManager__OnClick_QuestAcceptButton__Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return RTUtil.Wrap(instructions)
+                .ReplaceStrings(new[] { I18nKeys.ErrorMessages.QUEST_LOG_FULL })
+                .Unwrap();
+        }
+
     }
 
 
@@ -448,7 +458,7 @@ namespace Localyssation.Patches.ReplaceText
     }
 
     [HarmonyPatch]
-    class PlayerQuesting__Client_CompleteQuest
+    class PlayerQuesting__Client_CompleteQuest__Transpiler
     {
         private static readonly TargetInnerMethod __TARGET = new TargetInnerMethod()
         {
@@ -461,63 +471,117 @@ namespace Localyssation.Patches.ReplaceText
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var matcher = new CodeMatcher(instructions);
-            var matches = new[]
-            {
-                new CodeMatch(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableDialogData), nameof(ScriptableDialogData._questCompleteResponses))),
-                new CodeMatch(OpCodes.Ldc_I4_0),
-                new CodeMatch(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableDialogData), nameof(ScriptableDialogData._questCompleteResponses))),
-                new CodeMatch(OpCodes.Ldlen),
-                new CodeMatch(OpCodes.Conv_I4),
-                new CodeMatch(OpCodes.Call, AccessTools.Method(
-                    typeof(UnityEngine.Random), nameof(UnityEngine.Random.Range), new []{typeof(int), typeof(int)}
-                    )),
-                new CodeMatch(OpCodes.Ldelem_Ref)
-            };
-            matcher.MatchForward(false, matches);
-            Localyssation.logger.LogDebug("成功匹配到完成任务文本替换点");
-            matcher.RemoveInstructions(matches.Length);
+
+            TranspilerHelper.ReplaceMethodCallParamsStackForward(
+                matcher,
+                MessageCallbacks.Start_QuickSentence, 
+                11
+            );
             matcher.Insert(new[]
             {
-                // key = KeyUtil.GetForAsset(ScriptableDialogData)
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(KeyUtil), nameof(KeyUtil.GetForAsset), new []{ typeof(ScriptableDialogData) })),
-                
-                // Format string
-                new CodeInstruction(OpCodes.Ldstr, "_QUEST_COMPLETE_RESPONSE_"),  
-                // Range(0, length)
-                // 0
-                new CodeInstruction(OpCodes.Ldc_I4_0),
-                // DialogManager._current._scriptableDialog._questCompleteResponses.Length
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._current))),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(DialogManager), nameof(DialogManager._scriptableDialog))),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableDialogData), nameof(ScriptableDialogData._questCompleteResponses))),
-                new CodeInstruction(OpCodes.Ldlen),
-                // (int)
-                new CodeInstruction(OpCodes.Conv_I4),
-                // call
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(
-                    typeof(UnityEngine.Random), nameof(UnityEngine.Random.Range), new []{ typeof(int), typeof(int)}
-                    )),
-                // to string
-                new CodeInstruction(OpCodes.Box, typeof(int)),
-
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(string), "Concat", new []{typeof(string), typeof(string), typeof(string)})),
-
-                // default params for Localyssation.GetString
-                new CodeInstruction(OpCodes.Ldstr, Localyssation.GET_STRING_DEFAULT_VALUE_ARG_UNSPECIFIED),
-                new CodeInstruction(OpCodes.Ldc_I4_M1),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Localyssation), nameof(Localyssation.GetString), new[]
+                Transpilers.EmitDelegate<Func<string>>(() =>
                 {
-                    typeof(string), typeof(string), typeof(int)
-                }))
+                    var key = KeyUtil.GetForAsset(DialogManager._current._scriptableDialog);
+                    int index = UnityEngine.Random.Range(0, DialogManager._current._scriptableDialog._questCompleteResponses.Length);
+                    return Localyssation.GetString(
+                        $"{key}_QUEST_COMPLETE_RESPONSE_{index}",
+                        DialogManager._current._scriptableDialog._questCompleteResponses[index]
+                    );
+                })
             });
 
             return matcher.Instructions();
+        }
+    }
+
+    [HarmonyPatch]
+    class PlayerQuesting__Accept_Quest__Transpiler
+    {
+        //private static readonly TargetInnerMethod
+        public static MethodBase TargetMethod()
+        {
+            return typeof(PlayerQuesting).GetMethod(nameof(PlayerQuesting.Accept_Quest), BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        }
+
+        private static readonly ILCodeReplacement ChatMessage = new ILCodeReplacement ( 
+            matches : new CodeMatch[]
+            {
+                new CodeMatch(OpCodes.Ldstr, "Retrieved Quest Objective Item: "),
+                new CodeMatch(OpCodes.Ldarg_1),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableQuest), nameof(ScriptableQuest._questObjectiveItem))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(QuestItemReward), nameof(QuestItemReward._scriptItem))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
+                new CodeMatch(OpCodes.Ldstr, "."),
+                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(string), nameof(string.Concat), new[]{typeof(string), typeof(string), typeof(string)}))
+            },
+            replacement : new CodeInstruction[]
+            {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(I18nKeys.Quest), nameof(I18nKeys.Quest.RETRIEVED_QUEST_OBJECTIVE_ITEM_FORMAT))),
+
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableQuest), nameof(ScriptableQuest._questObjectiveItem))),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(QuestItemReward), nameof(QuestItemReward._scriptItem))),
+                //new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(KeyUtil), nameof(KeyUtil.GetForAsset), new []{ typeof(ScriptableItem) })),
+                new CodeInstruction(OpCodes.Ldstr, ""),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(TranslationKey), nameof(TranslationKey.Localize))),
+
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(TranslationKey), nameof(TranslationKey.Format), new[]{typeof(object[])}))
+            }
+        );
+        private static readonly ILCodeReplacement GameLogicMessage = new ILCodeReplacement ();
+        private static readonly ILCodeReplacement AcceptQuestResponse = new ILCodeReplacement ();
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = RTUtil.Wrap(instructions)
+                .ReplaceStrings(new[]
+                {
+                    I18nKeys.ErrorMessages.QUEST_LOG_FULL,
+                    I18nKeys.ErrorMessages.QUEST_ALREADY_IN_LOG
+                })
+                .Matcher()
+                .MatchForward(false, new CodeMatch(OpCodes.Ldstr, "Retrieved Quest Objective Item: "));
+
+            TranspilerHelper
+                .ReplaceMethodCallParamsStackForward(matcher, MessageCallbacks.New_ChatMessage, 7)
+                .InsertAndAdvance(new[] {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    Transpilers.EmitDelegate<Func<ScriptableQuest, string>>( quest =>
+                        I18nKeys.Quest.RETRIEVED_QUEST_OBJECTIVE_ITEM_FORMAT
+                            .Format(
+                                KeyUtil.GetForAsset(quest._questObjectiveItem._scriptItem).Localize()
+                                )
+                    )
+                    });
+
+            TranspilerHelper
+                .ReplaceMethodCallParamsStackForward(matcher, MessageCallbacks.Init_GameLogicMessage, 5)
+                .InsertAndAdvance(new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    Transpilers.EmitDelegate<Func<ScriptableQuest, string>>( quest =>
+                        I18nKeys.Quest.RETRIEVED_QUEST_OBJECTIVE_ITEM_FORMAT
+                        .Format(
+                            KeyUtil.GetForAsset(quest).Name.Localize()
+                            )
+                        )
+                });
+            TranspilerHelper
+                .ReplaceMethodCallParamsStackForward(matcher, MessageCallbacks.Start_QuickSentence, 11)
+                .InsertAndAdvance(new[]
+                {
+                    Transpilers.EmitDelegate<Func<string>>(() =>
+                    {
+                        var key = KeyUtil.GetForAsset(DialogManager._current._scriptableDialog);
+                        int index = UnityEngine.Random.Range(0, DialogManager._current._scriptableDialog._questCompleteResponses.Length);
+                        return Localyssation.GetString(
+                            $"{key}_QUEST_ACCEPT_RESPONSE_{index}",
+                            DialogManager._current._scriptableDialog._questCompleteResponses[index]
+                        );
+                    })
+                });
+            return matcher.InstructionEnumeration();
         }
     }
 }

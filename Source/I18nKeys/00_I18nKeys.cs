@@ -20,6 +20,7 @@ namespace Localyssation
             CharacterSelect.Init();
             Enums.Init();
             Equipment.Init();
+            ErrorMessages.Init();
             Feedback.Init();
             Item.Init();
             Lore.Init();
