@@ -35,6 +35,8 @@ namespace Localyssation
                     = Create(ConfigDefinitions.ExportExtra);
                 public static readonly TranslationKey RELOAD_LANGUAGE_KEYBIND
                     = Create(ConfigDefinitions.ReloadLanguageKeybind);
+                public static readonly TranslationKey LOG_VANILLA_FONTS
+                    = Create(ConfigDefinitions.LogVanillaFonts);
 
                 public static readonly TranslationKey RELOAD_FONT_BUNDLES_KEYBIND
                     = Create(ConfigDefinitions.ReloadFontBundlesKeybind);

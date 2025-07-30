@@ -30,6 +30,8 @@ namespace Localyssation.Util
             = new ConfigDefinition("Translators", "Reload Font Bundles Keybind");
         public static readonly ConfigDefinition SwitchTranslationKeybind
             = new ConfigDefinition("Translators", "Switch Translation Keybind");
+        public static readonly ConfigDefinition LogVanillaFonts
+            = new ConfigDefinition("Translators", "Log Vanilla Fonts");
     }
 
     public static class LocalyssationConfig
@@ -55,6 +57,9 @@ namespace Localyssation.Util
 
         internal static ConfigEntry<KeyCode> configSwitchTranslationKeybind { get; private set; }
         public static KeyCode SwitchTranslationKeybind { get => configSwitchTranslationKeybind.Value; }
+
+        internal static ConfigEntry<bool> configLogVanillaFonts { get; private set; }
+        public static bool LogVanillaFonts { get => configLogVanillaFonts.Value; }
 
         public static void Init(ConfigFile _config)
         {
@@ -105,6 +110,11 @@ namespace Localyssation.Util
                 new ConfigDescription("When you press this button, the translation mode will be switched mid-game")
                 );
 
+            configLogVanillaFonts = config.Bind(
+                ConfigDefinitions.LogVanillaFonts,
+                false,
+                new ConfigDescription("Log vanilla fonts to console")
+                );
         }
     }
 
@@ -121,12 +131,17 @@ namespace Localyssation.Util
 
         private AtlyssToggle showTranslationKeyToggle;
         private AtlyssToggle createDefaultLanguageFilesToggle;
-        private AtlyssKeyButton reloadLanguageKeybind;
         private AtlyssToggle exportExtraToggle;
-        private AtlyssButton createMissingForCurrentLangButton;
-        private AtlyssButton logUntranslatedStringsButton;
+        private AtlyssToggle logVanillaFontsToggle;
+
+
+        private AtlyssKeyButton reloadLanguageKeybind;
         private AtlyssKeyButton reloadFontBundlesKeybind;
         private AtlyssKeyButton switchTranslationKeybind;
+
+
+        private AtlyssButton createMissingForCurrentLangButton;
+        private AtlyssButton logUntranslatedStringsButton;
 
         private readonly List<BaseAtlyssElement> translatorModeElements = new List<BaseAtlyssElement>();
 
@@ -166,51 +181,68 @@ namespace Localyssation.Util
                 }
             }
 
-
-            showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
-            showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
+            void SetupToggles()
             {
-                LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage, true);    // refresh all
-            });
-            //LangAdjustables.RegisterText(showTranslationKeyToggle.Label, SHOW_TRANSLATION_KEY);
-            RegisterTranslatorModeElement(showTranslationKeyToggle, SHOW_TRANSLATION_KEY);
+                showTranslationKeyToggle = tab.AddToggle(LocalyssationConfig.configShowTranslationKey);
+                showTranslationKeyToggle.OnValueChanged.AddListener((v) =>
+                {
+                    LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage, true);    // refresh all
+                });
+                //LangAdjustables.RegisterText(showTranslationKeyToggle.Label, SHOW_TRANSLATION_KEY);
+                RegisterTranslatorModeElement(showTranslationKeyToggle, SHOW_TRANSLATION_KEY);
 
-            createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles);
-            //LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, CREATE_DEFAULT_LANGUAGE_FILES);
-            RegisterTranslatorModeElement(createDefaultLanguageFilesToggle, CREATE_DEFAULT_LANGUAGE_FILES);
+                createDefaultLanguageFilesToggle = tab.AddToggle(LocalyssationConfig.configCreateDefaultLanguageFiles);
+                //LangAdjustables.RegisterText(createDefaultLanguageFilesToggle.Label, CREATE_DEFAULT_LANGUAGE_FILES);
+                RegisterTranslatorModeElement(createDefaultLanguageFilesToggle, CREATE_DEFAULT_LANGUAGE_FILES);
 
-            reloadLanguageKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadLanguageKeybind);
-            //LangAdjustables.RegisterText(reloadLanguageKeybind.Label, RELOAD_LANGUAGE_KEYBIND);
-            RegisterTranslatorModeElement(reloadLanguageKeybind, RELOAD_LANGUAGE_KEYBIND);
+                exportExtraToggle = tab.AddToggle(LocalyssationConfig.configExportExtra);
+                //LangAdjustables.RegisterText(exportExtraToggle.Label, EXPORT_EXTRA);
+                RegisterTranslatorModeElement(exportExtraToggle, EXPORT_EXTRA);
 
-            exportExtraToggle = tab.AddToggle(LocalyssationConfig.configExportExtra);
-            //LangAdjustables.RegisterText(exportExtraToggle.Label, EXPORT_EXTRA);
-            RegisterTranslatorModeElement(exportExtraToggle, EXPORT_EXTRA);
+                logVanillaFontsToggle = tab.AddToggle(LocalyssationConfig.configLogVanillaFonts);
+                RegisterTranslatorModeElement(logVanillaFontsToggle, LOG_VANILLA_FONTS);
+            }
 
-            reloadFontBundlesKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadFontBundlesKeybind);
-            //LangAdjustables.RegisterText(reloadFontBundlesKeybind.Label, RELOAD_FONT_BUNDLES_KEYBIND);
-            RegisterTranslatorModeElement(reloadFontBundlesKeybind, RELOAD_FONT_BUNDLES_KEYBIND);
+            void SetupKeybind()
+            {
 
-            switchTranslationKeybind = tab.AddKeyButton(LocalyssationConfig.configSwitchTranslationKeybind);
-            //LangAdjustables.RegisterText(switchTranslationKeybind.Label, SWITCH_TRANSLATION_KEYBIND);
-            RegisterTranslatorModeElement(switchTranslationKeybind, SWITCH_TRANSLATION_KEYBIND);
-
+                reloadLanguageKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadLanguageKeybind);
+                //LangAdjustables.RegisterText(reloadLanguageKeybind.Label, RELOAD_LANGUAGE_KEYBIND);
+                RegisterTranslatorModeElement(reloadLanguageKeybind, RELOAD_LANGUAGE_KEYBIND);
 
 
-            createMissingForCurrentLangButton = tab.AddButton(
+                reloadFontBundlesKeybind = tab.AddKeyButton(LocalyssationConfig.configReloadFontBundlesKeybind);
+                //LangAdjustables.RegisterText(reloadFontBundlesKeybind.Label, RELOAD_FONT_BUNDLES_KEYBIND);
+                RegisterTranslatorModeElement(reloadFontBundlesKeybind, RELOAD_FONT_BUNDLES_KEYBIND);
+
+                switchTranslationKeybind = tab.AddKeyButton(LocalyssationConfig.configSwitchTranslationKeybind);
+                //LangAdjustables.RegisterText(switchTranslationKeybind.Label, SWITCH_TRANSLATION_KEYBIND);
+                RegisterTranslatorModeElement(switchTranslationKeybind, SWITCH_TRANSLATION_KEYBIND);
+            }
+
+            void SetupButton()
+            {
+                createMissingForCurrentLangButton = tab.AddButton(
                 Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE),
                 OnAddMissingKeyButtonPressed
                 );
-            //LangAdjustables.RegisterText(createMissingForCurrentLangButton.ButtonLabel,
-            //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE));
+                //LangAdjustables.RegisterText(createMissingForCurrentLangButton.ButtonLabel,
+                //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE));
 
-            logUntranslatedStringsButton = tab.AddButton(
-                Localyssation.GetString(LOG_UNTRANSLATED_STRINGS),
-                OnLogUntranslated
-                );
-            //LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
-            //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
-            //    );
+                logUntranslatedStringsButton = tab.AddButton(
+                    Localyssation.GetString(LOG_UNTRANSLATED_STRINGS),
+                    OnLogUntranslated
+                    );
+
+                //LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
+                //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
+                //    );
+            }
+
+            SetupToggles();
+            SetupKeybind();
+            SetupButton();
+
         }
 
         private void SetupSettingsTab()

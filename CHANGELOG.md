@@ -1,3 +1,10 @@
+## 2.1.4
+- New translation keys
+	- Add new translation keys for chats
+- New feature
+	- New configuration `Log Vanilla Fonts` to control whether to log vanilla fonts, making loading faster.
+	- `TestMeshProUGUI` type of text components now are available to replace font in `componentSpecifiedFontReplacement`
+
 ## 2.1.3
 - Bug fixes
 	- Fixed a bug that enchantment on items are not properly displayed when dropping on ground

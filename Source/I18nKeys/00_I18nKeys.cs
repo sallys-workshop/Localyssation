@@ -18,6 +18,7 @@ namespace Localyssation
 
             CharacterCreation.Init();
             CharacterSelect.Init();
+            ChatBehaviour.Init();
             Enums.Init();
             Equipment.Init();
             ErrorMessages.Init();
