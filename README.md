@@ -5,7 +5,7 @@ A work-in-progress localization library mod for [ATLYSS](https://store.steampowe
 ## Requirements
 
 - BepInEx 5.4
-- EasySettings
+- EasySettings 1.1.8+
 
 ## :warning: Important note :warning:
 
@@ -45,6 +45,12 @@ Currently listed translation patch(es):
     * `ScriptableQuest.md`: givers, translation keys, types, subtypes, and names
   * Option to show KEY of empty translations in game.
   * Reload strings with hot key in game.
+
+
+## Report a bug / missing translation
+
+Use issue feature on GitHub please. [Create an Issue](https://github.com/sallys-workshop/Localyssation/issues/new/choose)
+
 
 ## For translators or mod creaters
 

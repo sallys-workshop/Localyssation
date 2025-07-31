@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
+using System.Linq;
 
 #pragma warning disable CS0618
 
@@ -255,7 +256,11 @@ namespace Localyssation
 
         public static string Format(TranslationKey formatKey, params object[] args)
         {
-            return string.Format(GetString(formatKey), args);
+            return string.Format(GetString(formatKey), args.Select(x =>
+            {
+                if (x is TranslationKey key) return key.Localize();
+                return x;
+            }).ToArray());
         }
 
         public static string GetDefaultString(string key)

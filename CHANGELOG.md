@@ -1,3 +1,6 @@
+## 2.2.1
+- Bug fix
+	- Fixed a bug that items in enchanter subtitles are not translated
 ## 2.2.0
 - New translation keys
 	- Add new translation keys for chats
