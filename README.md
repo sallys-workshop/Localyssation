@@ -1,5 +1,11 @@
 # Localyssation
 
+![Version](https://thunderstore-badges.foreverjlong.workers.dev/Sallys_Workshop/Localyssation/version)
+
+![Downloads](https://thunderstore-badges.foreverjlong.workers.dev/Sallys_Workshop/Localyssation/downloads)
+
+
+
 A work-in-progress localization library mod for [ATLYSS](https://store.steampowered.com/app/2768430/ATLYSS/). Check [Github page](https://github.com/sallys-workshop/Localyssation/) for newest update.
 
 ## Requirements
