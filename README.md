@@ -1,7 +1,7 @@
 # Localyssation
 
-![Version](https://thunderstore-badges.foreverjlong.workers.dev/Sallys_Workshop/Localyssation/version)
-![Downloads](https://thunderstore-badges.foreverjlong.workers.dev/Sallys_Workshop/Localyssation/downloads)
+[![Version](https://thunderstore-badges.foreverjlong.workers.dev/Sallys_Workshop/Localyssation/version)](thunderstore.io/c/atlyss/p/Sallys_Workshop/Localyssation/)
+[![Downloads](https://thunderstore-badges.foreverjlong.workers.dev/Sallys_Workshop/Localyssation/downloads)](thunderstore.io/c/atlyss/p/Sallys_Workshop/Localyssation/)
 
 
 
