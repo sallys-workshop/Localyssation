@@ -1,7 +1,7 @@
 {
     "name": "Localyssation",
     "author": "Sallys_workshop",
-    "version_number": "2.2.0",
+    "version_number": "2.2.1",
     "website_url": "https://github.com/sallys-workshop/Localyssation",
     "description": "**Originally by TheMysticSword** Localization mod for players and translators. Need language patch to work. Check main page for detail.",
     "dependencies": [

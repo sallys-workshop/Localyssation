@@ -195,17 +195,17 @@ namespace Localyssation.Patches.ReplaceText
 
         public static string GetTransmuteMessageStrength(ScriptableItem item)
         {
-            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_STRENGTH_FORMAT, KeyUtil.GetForAsset(item));
+            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_STRENGTH_FORMAT, KeyUtil.GetForAsset(item).Name);
         }
 
         public static string GetTransmuteMessageDexterity(ScriptableItem item)
         {
-            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_DEXTERITY_FORMAT, KeyUtil.GetForAsset(item));
+            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_DEXTERITY_FORMAT, KeyUtil.GetForAsset(item).Name);
         }
 
         public static string GetTransmuteMessageMind(ScriptableItem item)
         {
-            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_MIND_FORMAT, KeyUtil.GetForAsset(item));
+            return Localyssation.Format(I18nKeys.Enchanter.TRANSMUTE_TO_MIND_FORMAT, KeyUtil.GetForAsset(item).Name);
         }
     }
 }
