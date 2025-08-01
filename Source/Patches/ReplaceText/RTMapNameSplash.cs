@@ -72,4 +72,26 @@ namespace Localyssation.Patches.ReplaceText
 
     }
 
+
+    internal partial class RTReplacer
+    {
+        [HarmonyPatch(typeof(InGameUI), nameof(InGameUI.Handle_InGameUI))]
+        [HarmonyPostfix]
+        static void InGameUI__Handle_InGameUI__Postfix(InGameUI __instance)
+        {
+            if (!Player._mainPlayer._bufferingStatus)
+            {
+                if (!string.IsNullOrWhiteSpace(__instance._reigonTitle))
+                {
+                    __instance._text_sceneCardName.text = KeyUtil.GetForMapRegionTag(__instance._reigonTitle).Localize();
+                }
+                else
+                {
+                    __instance._text_sceneCardName.text = KeyUtil.GetForMapName(Player._mainPlayer.Network_playerMapInstance._mapName).Localize() ?? "";
+                }
+            }
+        }
+    }
+
+
 }
