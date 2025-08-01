@@ -3,6 +3,7 @@
 	- Fixed a bug that items in enchanter subtitles are not translated
 - New translation keys
 	- Added translation to map name on topleft corner
+	- Added translation for multiplayer room creating and searching
 
 
 ## 2.2.0
