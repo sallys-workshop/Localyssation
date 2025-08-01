@@ -2,6 +2,7 @@ using Localyssation.LanguageModule;
 using Localyssation.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 
 #pragma warning disable IDE0130
@@ -74,6 +75,13 @@ namespace Localyssation.LangAdjutable
                 adjustable = registeredDropdowns[dropdown] = dropdown.gameObject.AddComponent<LangAdjustableUIDropdown>();
 
             if (newTextFuncs != null) adjustable.newTextFuncs = newTextFuncs;
+        }
+
+        public static void RegisterDropdown(UnityEngine.UI.Dropdown dropdown, TranslationKey keyBase)
+        {
+            RegisterDropdown(dropdown, Enumerable.Range(0, dropdown.options.Count)
+                .Select(i => GetStringFunc(keyBase.Option[i]))
+                .ToList());
         }
 
         public static Dictionary<TMPro.TextMeshPro, LangAdjustableTextMeshPro> registeredTextMeshPro = new Dictionary<TMPro.TextMeshPro, LangAdjustableTextMeshPro>();

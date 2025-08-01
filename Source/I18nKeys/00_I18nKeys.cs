@@ -53,6 +53,11 @@ namespace Localyssation
             return new TranslationKey(key);
         }
 
+        private static TranslationKey[] CreateOptions(string key, string[] defaultStrings)
+        {
+            return Enumerable.Range(0, defaultStrings.Length).Select(i => Create(new TranslationKey(key).Option[i], defaultStrings[i])).ToArray();
+        }
+
         public static string GetDefaulted(string key)
         {
             bool success = TR_KEYS.TryGetValue(key, out string value);

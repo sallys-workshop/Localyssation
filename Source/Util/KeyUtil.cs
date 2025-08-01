@@ -13,6 +13,21 @@ namespace Localyssation.Util
         public TranslationKey NamePlural { get => new TranslationKey(key + "_NAME_PLURAL"); }
         public TranslationKey Description { get => new TranslationKey(key + "_DESCRIPTION"); }
 
+        public TranslationKeyOptionGenerator Option { get => new TranslationKeyOptionGenerator(this); }
+
+
+        public class TranslationKeyOptionGenerator
+        {
+            public readonly TranslationKey baseKey;
+
+            public TranslationKeyOptionGenerator(TranslationKey _baseKey) { baseKey = _baseKey; }
+
+            public TranslationKey this[int index]
+            {
+                get => new TranslationKey(baseKey.key + $"_OPTION_{index}");
+            }
+        }
+
         public static implicit operator string(TranslationKey key) => key.key;
         public override string ToString() => key;
 
