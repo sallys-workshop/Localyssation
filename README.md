@@ -21,7 +21,7 @@ Currently listed translation patch(es):
 | Language |                            Author                            |                          Patch Link                          |
 | :------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | 简体中文 |                莎莉工作室(Sallys's Workshop)                 | [Github](https://github.com/sallys-workshop/zh-CN-patch-for-Localyssation) [Thunder Store] |
-| 繁体中文 |  [jasonpepe](https://thunderstore.io/c/atlyss/p/jasonpepe/)  | [LocalyssationZHTW](https://thunderstore.io/c/atlyss/p/jasonpepe/LocalyssationZHTW) |
+| 繁體中文 |  [jasonpepe](https://thunderstore.io/c/atlyss/p/jasonpepe/)  | [LocalyssationZHTW](https://thunderstore.io/c/atlyss/p/jasonpepe/LocalyssationZHTW) |
 | Español  |    [Alhenix](https://thunderstore.io/c/atlyss/p/Alhenix/)    | [LocalyssationESLA](https://thunderstore.io/c/atlyss/p/Alhenix/localyssationESLA/) |
 |  한국어  | [KR_Kemonoz](https://thunderstore.io/c/atlyss/p/KR_Kemonoz/) | [AtlyssKr](https://thunderstore.io/c/atlyss/p/KR_Kemonoz/AtlyssKr/) |
 |Brasileiro|[Guachenim](https://thunderstore.io/c/atlyss/p/Guachenim/)|[Thunder Store](https://thunderstore.io/c/atlyss/p/Guachenim/Ordem_e_Atlyss_a_Braziliant_PTBR_Translation/)|
