@@ -1,6 +1,8 @@
 ## 2.2.2
 - Bug fix
-	- Issue #26, #27
+	- Issue #26 & #27
+- New translation keys
+	- Added death prompt for localisation
 
 ## 2.2.1
 - Bug fix
