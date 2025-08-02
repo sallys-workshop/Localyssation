@@ -1,3 +1,7 @@
+## 2.2.2
+- Bug fix
+	- Issue #26, #27
+
 ## 2.2.1
 - Bug fix
 	- Fixed a bug that items in enchanter subtitles are not translated
