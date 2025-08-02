@@ -259,8 +259,7 @@ namespace Localyssation.Patches.ReplaceText
                 for (var i = 0; i < __instance._scriptQuest._questObjective._questTriggerRequirements.Length; i++)
                 {
                     var questTriggerRequirement = __instance._scriptQuest._questObjective._questTriggerRequirements[i];
-                    var triggerKey = KeyUtil.GetForAsset(questTriggerRequirement);
-                    ReplaceTrackElementText($"{Localyssation.GetString(triggerKey + "_PREFIX", questTriggerRequirement._prefix, fontSize)} {Localyssation.GetString(triggerKey + "_SUFFIX", questTriggerRequirement._suffix, fontSize)}", questProgressData._triggerProgressValues[i], questTriggerRequirement._triggerEmitsNeeded);
+                    ReplaceTrackElementText($"{Localyssation.GetString("QUEST_TRIGGER_REQUIREMENT_PREFIX_" + KeyUtil.Normalize(questTriggerRequirement._prefix), questTriggerRequirement._prefix, fontSize)} {Localyssation.GetString("QUEST_TRIGGER_REQUIREMENT_SUFFIX_" + KeyUtil.Normalize(questTriggerRequirement._suffix), questTriggerRequirement._suffix, fontSize)}", questProgressData._triggerProgressValues[i], questTriggerRequirement._triggerEmitsNeeded);
                 }
 
                 __instance._trackElementText.text = string.Join("\n", trackElementText);
