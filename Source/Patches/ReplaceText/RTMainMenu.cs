@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -175,11 +176,11 @@ namespace Localyssation.Patches.ReplaceText
         {
             return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
                 { "Singleplayer", "CHARACTER_SELECT_HEADER_GAME_MODE_SINGLEPLAYER" },
-                //{ "Host Game (Public)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_PUBLIC" },
-                //{ "Host Game (Friends)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_FRIENDS" },
-                //{ "Host Game (Private)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_PRIVATE" },
+                { "Host Game (Public)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_PUBLIC" },
+                { "Host Game (Friends)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_FRIENDS" },
+                { "Host Game (Private)", "CHARACTER_SELECT_HEADER_GAME_MODE_HOST_MULTIPLAYER_PRIVATE" },
                 { "Join Game", "CHARACTER_SELECT_HEADER_GAME_MODE_JOIN_MULTIPLAYER" },
-                //{ "Lobby Query", "CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY" },
+                { "Lobby Connect", "CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY" },
             });
         }
         [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Update))]
@@ -190,31 +191,7 @@ namespace Localyssation.Patches.ReplaceText
                 I18nKeys.MainMenu.PAGER
             });
         }
-        //[HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_CharacterSelectControl))]
-        //[HarmonyTranspiler]
-        //public static IEnumerable<CodeInstruction> CharacterSelectManager_Handle_CharacterSelectControl_Transpiler(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>() {
-        //        I18nKeys.CharacterSelect.BUTTON_SELECT_CHARACTER, 
-        //        I18nKeys.CharacterSelect.BUTTON_CREATE_CHARACTER
-        //    });
-        //}
-        [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Handle_CharacterSelectControl))]
-        [HarmonyPostfix]
-        public static void CharacterSelectManager_Handle_CharacterSelectControl_Postfix(CharacterSelectManager __instance)
-        {
-            if (__instance._mainMenuManager._mainMenuCondition == MainMenuCondition.CharacterSelect && !__instance._isSendingCharacterFile)
-            {
-                if (!ProfileDataManager._current._characterFile._isEmptySlot)
-                {
-                    __instance._enterGameButtonText.text = Localyssation.GetString(I18nKeys.CharacterSelect.BUTTON_SELECT_CHARACTER);
-                }
-                else
-                {
-                    __instance._enterGameButtonText.text = Localyssation.GetString(I18nKeys.CharacterSelect.BUTTON_CREATE_CHARACTER);
-                }
-            }
-        }
+        
 
         [HarmonyPatch(typeof(CharacterSelectListDataEntry), nameof(CharacterSelectListDataEntry.Update))]
         [HarmonyPostfix]
@@ -226,24 +203,33 @@ namespace Localyssation.Patches.ReplaceText
             }
             else
             {
-                var fontSize = __instance._characterInfoText.fontSize;
 
-                var raceName = "";
-                var className = Localyssation.GetString("PLAYER_CLASS_EMPTY_NAME", GameManager._current._statLogics._emptyClassName, fontSize);
+                string raceName = "";
+                string className = Localyssation.GetString("PLAYER_CLASS_EMPTY_NAME", GameManager._current._statLogics._emptyClassName);
 
-                var race = GameManager._current.Locate_PlayerRace(__instance._characterFileData._appearanceProfile._setRaceTag);
-                if (race) raceName = Localyssation.GetString($"{KeyUtil.GetForAsset(race)}_NAME", race._raceName, fontSize);
+                ScriptablePlayerRace race = GameManager._current.Locate_PlayerRace(__instance._characterFileData._appearanceProfile._setRaceTag);
+                if (race) 
+                    raceName = KeyUtil.GetForAsset(race).Name.Localize();
 
+                
                 if (!string.IsNullOrEmpty(__instance._characterFileData._statsProfile._classID))
                 {
-                    var playerClass = GameManager._current.Locate_PlayerClass(__instance._characterFileData._statsProfile._classID);
-                    if (playerClass) className = Localyssation.GetString($"{KeyUtil.GetForAsset(playerClass)}_NAME", playerClass._className, fontSize);
+                    PlayerStats_Profile statsProfile = __instance._characterFileData._statsProfile;
+                    ScriptablePlayerBaseClass playerClass = GameManager._current.Locate_PlayerClass(statsProfile._classID);
+                    if (playerClass)
+                    {
+                        className = KeyUtil.GetForAsset(playerClass).Name.Localize();
+                        if (statsProfile._classTier > 0)
+                        {
+                            className = KeyUtil.GetForAsset(playerClass._playerClassTiers[statsProfile._classTier - 1]).Name.Localize();
+                        }
+                    }
+                        
                 }
 
                 __instance._characterInfoText.text = string.Format(Localyssation.GetString(
-                    "FORMAT_CHARACTER_SELECT_DATA_ENTRY_INFO",
-                    __instance._characterInfoText.text,
-                    __instance._characterInfoText.fontSize),
+                    I18nKeys.CharacterSelect.FORMAT_DATA_ENTRY_INFO,
+                    __instance._characterInfoText.text),
                     __instance._characterFileData._statsProfile._currentLevel,
                     raceName,
                     className);
@@ -272,5 +258,24 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
+    }
+
+    [HarmonyPatch]
+    class CharacterSelectManager__Handle_CharacterSelectControl__Transpiler
+    {
+        private static readonly TargetInnerMethod TARGET = new TargetInnerMethod() { 
+            Type = typeof(CharacterSelectManager), 
+            ParentMethodName = nameof(CharacterSelectManager.Handle_CharacterSelectControl) ,
+            InnerMethodName = "Handle_ButtonControl"
+        };
+        static MethodBase TargetMethod() => TranspilerHelper.GenerateTargetMethod(TARGET);
+
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return RTUtil.SimpleStringReplaceTranspiler(instructions, new List<string>() {
+                I18nKeys.CharacterSelect.BUTTON_SELECT_CHARACTER,
+                I18nKeys.CharacterSelect.BUTTON_CREATE_CHARACTER
+            });
+        }
     }
 }
