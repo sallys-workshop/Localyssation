@@ -99,5 +99,16 @@ namespace Localyssation.LanguageModule
                 return result;
             return key;
         }
+
+        public static string GetString(string key, string defaultString = "")
+        {
+            if (LocalyssationConfig.ShowTranslationKey)
+            {
+                return key;
+            }
+            if (CurrentLanguage.TryGetString(key, out var result)) return result;
+            if (DefaultLanguage.TryGetString(key, out result)) return result;
+            return defaultString;
+        }
     }
 }

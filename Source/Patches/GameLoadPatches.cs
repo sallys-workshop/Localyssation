@@ -284,7 +284,7 @@ namespace Localyssation.Patches
 
         private static Func<MonoBehaviour, bool> IsInSceneGenerator(string sceneName)
         {
-            return (MonoBehaviour o) => o.gameObject.scene.name == sceneName;
+            return o => o.gameObject.scene.name == sceneName;
         }
 
         private static void RegisterDialogTriggers(string sceneName)

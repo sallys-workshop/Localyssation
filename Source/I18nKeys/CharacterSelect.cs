@@ -20,7 +20,7 @@ namespace Localyssation
             public static readonly string HEADER_GAME_MODE_JOIN_MULTIPLAYER
                 = Create("CHARACTER_SELECT_HEADER_GAME_MODE_JOIN_MULTIPLAYER", "Join Game");
             public static readonly string HEADER_GAME_MODE_LOBBY_QUERY
-                = Create("CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY", "Lobby Query");
+                = Create("CHARACTER_SELECT_HEADER_GAME_MODE_LOBBY_QUERY", "Lobby Connect");
 
             public static readonly string BUTTON_CREATE_CHARACTER
                 = Create("CHARACTER_SELECT_BUTTON_CREATE_CHARACTER", "Create Character");

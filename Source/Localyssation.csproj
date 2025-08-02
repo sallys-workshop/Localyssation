@@ -1,13 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup Label="Project">
-        <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>
+  <PropertyGroup Label="Project">
+    
+    <!-- Edit here for building on your own -->
+
+    <!-- Atlyss game folder -->
+    <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED> 
+    
+    <!-- Only used here for changing profiles -->
 		<ATLYSS_PROFILE>test2</ATLYSS_PROFILE>
-        <ATLYSS_BEPINEX>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\core</ATLYSS_BEPINEX>
-        <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
+    <!-- BepInEx core folder -->
+    <ATLYSS_BEPINEX>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\core</ATLYSS_BEPINEX> 
+    <!-- BepInEx plugins folder, debug and release builds will be copied here for testing -->
+    <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
 		
 		
 		<TARGET_ATLYSS_VERSION>72025.a8</TARGET_ATLYSS_VERSION>
-		<VersionPrefix>2.2.1</VersionPrefix>
+		<VersionPrefix>2.2.2</VersionPrefix>
 		
 		
 		<VersionSuffix>$(TARGET_ATLYSS_VERSION)</VersionSuffix>
@@ -16,15 +24,15 @@
 	</PropertyGroup>
 	
 	<PropertyGroup Label="MSBuild">
-        <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release</Configurations>
 		<MSBuildFileVersion>2.1</MSBuildFileVersion>
-        <TargetFramework>net481</TargetFramework>
-        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <TargetFramework>net481</TargetFramework>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
 
-    </PropertyGroup>
+  </PropertyGroup>
 	
 	<ItemGroup>
-	    <Compile Remove="I18nKeys\Settings\模板.cs" />
+	  <Compile Remove="I18nKeys\Settings\模板.cs" />
 		<Compile Remove="I18nKeys\模板.cs" />
 	</ItemGroup>
 
@@ -51,86 +59,92 @@
 		</None>
 	</ItemGroup>
 	
-    <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
-    <ItemGroup>
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" ExcludeAssets="runtime" />
+  <!-- Publicizer for accessing private identifiers in ATLYSS's assembly. -->
+  <ItemGroup>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" ExcludeAssets="runtime" />
 		<PackageReference Include="YamlDotNet" Version="16.3.0" />
-    </ItemGroup>
+  </ItemGroup>
 
+  <!-- Import all custom targets -->
 	<Import Project="tasks.targets" />
 
     <!-- ATLYSS_Data/Managed assemblies. -->
-    <ItemGroup>
-        <!-- Atlyss assembly. We're also publicizing this with BepInEx.AssemblyPublicizer. -->
-        <Reference Include="Assembly-CSharp" Publicize="true">
-            <HintPath>$(ATLYSS_MANAGED)\Assembly-CSharp.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
+  <ItemGroup>
+    <!-- Atlyss assembly. We're also publicizing this with BepInEx.AssemblyPublicizer. -->
+    <Reference Include="Assembly-CSharp" Publicize="true">
+      <HintPath>$(ATLYSS_MANAGED)\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
 
-        <!-- Third party modules. -->
-        <Reference Include="com.rlabrecque.steamworks.net">
-            <HintPath>$(ATLYSS_MANAGED)\com.rlabrecque.steamworks.net.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="FizzySteamworks">
-            <HintPath>$(ATLYSS_MANAGED)\FizzySteamworks.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="Mirror">
-            <HintPath>$(ATLYSS_MANAGED)\Mirror.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
+    <!-- Third party modules. -->
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>$(ATLYSS_MANAGED)\com.rlabrecque.steamworks.net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FizzySteamworks">
+      <HintPath>$(ATLYSS_MANAGED)\FizzySteamworks.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mirror">
+      <HintPath>$(ATLYSS_MANAGED)\Mirror.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
 
-        <!-- Unity. Add any other assemblies as needed, not all of them were listed here. -->
-        <Reference Include="UnityEngine" Publicize="true">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.AssetBundleModule">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.AssetBundleModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.AudioModule">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.AudioModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.ImageConversionModule">
-          <HintPath>$(ATLYSS_MANAGED)\UnityEngine.ImageConversionModule.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.InputLegacyModule">
-          <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-		  <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.JSONSerializeModule">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.JSONSerializeModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.CoreModule" Publicize="true">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.PhysicsModule">
-          <HintPath>$(ATLYSS_MANAGED)\UnityEngine.PhysicsModule.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.TextRenderingModule">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.TextRenderingModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UI" Publicize="true">
-            <HintPath>$(ATLYSS_MANAGED)\UnityEngine.UI.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="Newtonsoft.Json">
-            <HintPath>$(ATLYSS_MANAGED)\Newtonsoft.Json.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="Unity.TextMeshPro">
-            <HintPath>$(ATLYSS_MANAGED)\Unity.TextMeshPro.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
+    <!-- Unity. Add any other assemblies as needed, not all of them were listed here. -->
+    <Reference Include="UnityEngine" Publicize="true">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+	    <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule" Publicize="true">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI" Publicize="true">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(ATLYSS_MANAGED)\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(ATLYSS_MANAGED)\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
 
     <!-- BepInEx/core assemblies. -->
     <ItemGroup>
@@ -197,10 +211,6 @@
         <Reference Include="EasySettings">
             <HintPath>$(ATLYSS_BEPINEX_PLUGINS)\Nessie-EasySettings\EasySettings.dll</HintPath>
             <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UIModule">
-          <HintPath>$(ATLYSS_MANAGED)\UnityEngine.UIModule.dll</HintPath>
-          <Private>False</Private>
         </Reference>
     </ItemGroup>
     

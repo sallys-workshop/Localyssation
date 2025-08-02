@@ -66,7 +66,7 @@ namespace Localyssation.Patches.ReplaceText
                     ToolTipManager._current.Apply_GenericToolTip(
                         string.Format(
                             Localyssation.GetString("TAB_MENU_CELL_SKILLS_CLASS_TAB_TOOLTIP"),
-                            KeyUtil.GetForAsset(pStats._class._playerClassTiers[pStats._syncClassTier - 1])
+                            KeyUtil.GetForAsset(pStats._class._playerClassTiers[pStats._syncClassTier - 1]).Name.Localize()
                         )
                     );
                     //pStats._class._playerClassTiers[pStats._syncClassTier - 1]._classTierName + " Skills");
@@ -111,12 +111,9 @@ namespace Localyssation.Patches.ReplaceText
                     {
                         return;
                     }
-                    ToolTipManager._current.Apply_GenericToolTip(
-                        string.Format(
-                            Localyssation.GetString("TAB_MENU_CELL_SKILLS_CLASS_CLASS_HEADER"),
-                            KeyUtil.GetForAsset(pStats._class._playerClassTiers[pStats._syncClassTier - 1])
-                        )
-                    );
+                    txt = I18nKeys.TabMenu.CELL_SKILLS_CLASS_HEADER_FORMAT.Format(
+                        KeyUtil.GetForAsset(pStats._class._playerClassTiers[pStats._syncClassTier - 1]).Name
+                        );
                     break;
             }
             __instance._skillsCell_classHeader.text = txt;
