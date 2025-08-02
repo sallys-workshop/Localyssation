@@ -192,6 +192,12 @@ namespace Localyssation
 
                 while (true)
                 {
+                    //temp fix: result null exception
+                    if (result == null)
+                    {
+                        return "";
+                    }
+                    
                     // find bounds of the tagged text
                     var openingTagBeginning = $"<{tag.Key}";
                     var openingTagIndex = result.IndexOf(openingTagBeginning);
