@@ -20,6 +20,7 @@ namespace Localyssation
             CharacterSelect.Init();
             ChatBehaviour.Init();
             ChatMessage.Init();
+            DeathPrompt.Init();
             Enchanter.Init();
             Enums.Init();
             Equipment.Init();
