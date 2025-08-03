@@ -281,16 +281,17 @@ namespace Localyssation.Patches
             "00_bootStrapper", "01_rootScene"
         };
         
+       
 
-        private static Func<MonoBehaviour, bool> IsInSceneGenerator(string sceneName)
+        private static IEnumerable<T> FindObjectsOfTypeInScene<T>(string sceneName) where T : MonoBehaviour
         {
-            return o => o.gameObject.scene.name == sceneName;
+            return GameObject.FindObjectsOfType<T>(true)
+                .Where(o => o.gameObject.scene.name == sceneName).Cast<T>();
         }
 
         private static void RegisterDialogTriggers(string sceneName)
         {
-            GameObject.FindObjectsOfType<DialogTrigger>(true)
-                .Where(IsInSceneGenerator(sceneName)).Cast<DialogTrigger>()
+            FindObjectsOfTypeInScene<DialogTrigger>(sceneName)
                 .Where(o => o._useLocalDialogBranch)
                 .Do(dialogTrigger =>
                 {
@@ -306,8 +307,7 @@ namespace Localyssation.Patches
 
         private static void RegisterMapVisualOverrideTrigger(string sceneName)
         {
-            GameObject.FindObjectsOfType<MapVisualOverrideTrigger>(true)
-                .Where(IsInSceneGenerator(sceneName)).Cast<MapVisualOverrideTrigger>()
+            FindObjectsOfTypeInScene<MapVisualOverrideTrigger>(sceneName)
                 .Do(mapVisualOverrideTrigger =>
                 {
                     string regionTag = mapVisualOverrideTrigger._reigonName;
@@ -320,8 +320,7 @@ namespace Localyssation.Patches
 
         private static void RegisterMapInstance(string sceneName)
         {
-            GameObject.FindObjectsOfType<MapInstance>(true)
-                .Where(IsInSceneGenerator(sceneName)).Cast<MapInstance>()
+            FindObjectsOfTypeInScene<MapInstance>(sceneName)
                 .Do(mapInstance =>
                 {
                     string mapName = mapInstance._mapName;
@@ -334,8 +333,7 @@ namespace Localyssation.Patches
 
         private static void RegisterNetTriggers(string sceneName)
         {
-            GameObject.FindObjectsOfType<NetTrigger>(true)
-                .Where(IsInSceneGenerator(sceneName)).Cast<NetTrigger>()
+            FindObjectsOfTypeInScene<NetTrigger>(sceneName)
                 .Where(netTrigger => netTrigger._triggerMessage != null)
                 .Do(netTrigger =>
                 {

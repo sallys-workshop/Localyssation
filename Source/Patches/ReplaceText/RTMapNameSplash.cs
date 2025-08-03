@@ -18,6 +18,7 @@ namespace Localyssation.Patches.ReplaceText
     {
         public static bool Prefix(InGameUI __instance, string _reigonTag, ref IEnumerator __result)
         {
+            __instance._reigonTitle = _reigonTag;
             _reigonTag = Localyssation.GetString(KeyUtil.GetForMapRegionTag(_reigonTag));
             __result = InGameUI_MapTitleDisplay_CustomIEnumerator(__instance, _reigonTag);
             return false;
@@ -25,7 +26,7 @@ namespace Localyssation.Patches.ReplaceText
 
         private static IEnumerator InGameUI_MapTitleDisplay_CustomIEnumerator(InGameUI __instance, string _reigonTag)
         {
-            __instance._reigonTitle = _reigonTag;
+            //__instance._reigonTitle = _reigonTag;
             do
             {
                 yield return null;
@@ -33,7 +34,7 @@ namespace Localyssation.Patches.ReplaceText
             while (Player._mainPlayer._currentGameCondition == GameCondition.LOADING_GAME || Player._mainPlayer._currentPlayerCondition != PlayerCondition.ACTIVE || Player._mainPlayer._bufferingStatus);
             if (!string.IsNullOrWhiteSpace(_reigonTag))
             {
-                __instance._mapNameText.text = _reigonTag ?? "";
+                __instance._mapNameText.text = Localyssation.GetString(_reigonTag) ?? "";
             }
             else
             {
@@ -83,7 +84,7 @@ namespace Localyssation.Patches.ReplaceText
             {
                 if (!string.IsNullOrWhiteSpace(__instance._reigonTitle))
                 {
-                    __instance._text_sceneCardName.text = KeyUtil.GetForMapRegionTag(__instance._reigonTitle).Localize();
+                    __instance._text_sceneCardName.text = KeyUtil.GetForMapRegionTag(__instance._reigonTitle).Localize(__instance._reigonTitle);
                 }
                 else
                 {
