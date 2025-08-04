@@ -11,6 +11,8 @@ A work-in-progress localization library mod for [ATLYSS](https://store.steampowe
 
 - BepInEx 5.4
 - EasySettings 1.1.8+
+- **UNINSTALL** BepInEx Fixer
+  - Outdated. May install via mod dependencies when using mod manager (r2modman) but is unnecessary for latest ATLYSS mods and can cause issues.
 
 ## :warning: Important note :warning:
 

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using UnityEngine.UI;
 using YamlDotNet.Core.Tokens;
 
 namespace Localyssation.Patches.ReplaceText
@@ -107,7 +109,7 @@ namespace Localyssation.Patches.ReplaceText
         public static void QuestMenuCell_Select_QuestSlot(QuestMenuCell __instance, ScriptableQuest _scriptQuest)
         {
             var key = KeyUtil.GetForAsset(_scriptQuest);
-
+ 
             __instance._questHeaderText.text = Localyssation.GetString($"{key}_NAME", __instance._questHeaderText.text, __instance._questHeaderText.fontSize)
                 + " " + string.Format(
                     Localyssation.GetString("FORMAT_QUEST_REQUIRED_LEVEL", fontSize: __instance._questHeaderText.fontSize),
@@ -128,18 +130,28 @@ namespace Localyssation.Patches.ReplaceText
                     Localyssation.GetString("FORMAT_QUEST_MENU_CELL_REWARD_CURRENCY", __instance._rewardsPanelText_currency.text, __instance._rewardsPanelText_currency.fontSize),
                     expReward);
             }
+
+            var rewardHeaderText = FindGameObjectTextChild(__instance._rewardsPanelObject, "_text_questRewardHeader"); 
+            rewardHeaderText.text = Localyssation.GetString("QUEST_MENU_CELL_REWARD_HEADER", rewardHeaderText.text, rewardHeaderText.fontSize);
+
+            var objectiveItemText = FindGameObjectTextChild(__instance._objectiveItemPanel, "_text_objectiveItemHeader");
+            objectiveItemText.text = Localyssation.GetString("QUEST_MENU_CELL_OBJECTIVE_ITEM_HEADER", objectiveItemText.text, objectiveItemText.fontSize);
         }
-
-        //[HarmonyPatch(typeof(QuestMenuCell), nameof(QuestMenuCell.Clear_DisplayQuestData))]
-        //[HarmonyTranspiler]
-        //public static IEnumerable<CodeInstruction> QuestMenuCell_Clear_DisplayQuestData_Transpiler(IEnumerable<CodeInstruction> instructions)
-        //{
-        //    return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-        //        { "No Quests in Quest Log.", "QUEST_MENU_SUMMARY_NO_QUESTS" },
-        //        { "Select a Quest.", "QUEST_MENU_HEADER_UNSELECTED" },
-        //    });
-        //}
-
+        
+        private static Text FindGameObjectTextChild(GameObject obj, String componentName)
+        { 
+            Transform t = obj.transform.Find(componentName);
+            if (t != null)
+            {
+                return t.GetComponent<Text>();
+            }
+            else
+            {
+                Debug.LogError("找不到对象: " + componentName);
+                return null;
+            }
+        }
+  
         [HarmonyPatch(typeof(QuestMenuCellSlot), nameof(QuestMenuCellSlot.Update))]
         [HarmonyPostfix]
         public static void QuestMenuCellSlot_Update(QuestMenuCellSlot __instance)
