@@ -9,7 +9,6 @@ using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using YamlDotNet.Core.Tokens;
 
 namespace Localyssation.Patches.ReplaceText
 {
