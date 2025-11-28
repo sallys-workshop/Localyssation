@@ -129,13 +129,10 @@ namespace Localyssation.Patches
             // uncached scriptables
             // weapon type
             foreach (var weaponType in Resources.LoadAll<ScriptableWeaponType>(""))
-            {
-                foreach (var animationSlot in weaponType._weaponAnimSlots)
-                {
-                    string key = KeyUtil.GetForAsset(animationSlot);
-                    LanguageManager.RegisterKey(key, animationSlot._weaponNameTag);
-                }
-            }
+			{
+				string key = KeyUtil.GetForAsset(weaponType);
+				LanguageManager.RegisterKey(key, weaponType._weaponTypeClassTag);
+			}
             // dialog data
             foreach (var dialogData in Resources.LoadAll<ScriptableDialogData>(""))
             {

@@ -1,9 +1,13 @@
 ﻿using HarmonyLib;
+using HarmonyLib.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Localyssation.Patches
 {
@@ -122,11 +126,11 @@ namespace Localyssation.Patches
             var results = FindAll(bindingFlags);
             if (results.Count() > 1)
             {
-                throw new ArgumentOutOfRangeException("More than 1 method is found.");
+                throw new ArgumentOutOfRangeException($"More than 1 method is found. Type={Type.Name}, InnerMethodName={InnerMethodName}, ParentMethodName={ParentMethodName}");
             }
             if (results.Count() == 0)
             {
-                throw new ArgumentOutOfRangeException("No method is found.");
+                throw new ArgumentOutOfRangeException($"No method is found. Type={Type.Name}, InnerMethodName={InnerMethodName}, ParentMethodName={ParentMethodName}");
             }
             return results.First();
         }
@@ -159,7 +163,10 @@ namespace Localyssation.Patches
 
     public static class TranspilerHelper
     {
-        public static readonly CodeMatch STRING_CONCAT = new CodeMatch(instr => instr.opcode == OpCodes.Call && instr.operand is MethodInfo method && method.DeclaringType == typeof(string) && method.Name == "Concat");
+        public static readonly CodeMatch STRING_CONCAT = new CodeMatch(instr => instr.opcode == OpCodes.Call
+				&& instr.operand is MethodInfo method
+				&& method.DeclaringType == typeof(string)
+				&& method.Name == "Concat");
         public static MethodInfo GenerateTargetMethod(TargetInnerMethod target)
         {
             try
@@ -176,7 +183,7 @@ namespace Localyssation.Patches
 
         public static IEnumerable<CodeInstruction> MatchAndReplace(IEnumerable<CodeInstruction> instructions, CodeMatch[] matches, CodeInstruction[] replacement)
         {
-            return new CodeMatcher(instructions)
+			return new CodeMatcher(instructions)
                 .MatchForward(false, matches)
                 .RemoveInstructions(matches.Length)
                 .Insert(replacement)

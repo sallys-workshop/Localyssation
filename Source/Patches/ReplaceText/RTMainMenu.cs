@@ -249,15 +249,12 @@ namespace Localyssation.Patches.ReplaceText
                 __instance._raceDescriptorField.text = Localyssation.GetString($"{key}_DESCRIPTION", __instance._raceDescriptorField.text, __instance._raceDescriptorField.fontSize) ?? "";
                 __instance._colorMiscTag.text = Localyssation.GetString($"{key}_MISC", __instance._colorMiscTag.text, __instance._colorMiscTag.fontSize) ?? "";
                 __instance._miscTag.text = Localyssation.GetString($"{key}_MISC", __instance._miscTag.text, __instance._miscTag.fontSize) ?? "";
-                if (race._racialSkills.Length >= 1)
-                {
-                    var skillKey = KeyUtil.GetForAsset(race._racialSkills[0]);
-                    __instance._raceInitialSkillTag.text = Localyssation.GetString($"{skillKey}_NAME", __instance._raceInitialSkillTag.text, __instance._raceInitialSkillTag.fontSize) ?? "";
-                    __instance._raceInitialSkillDescriptor.text = Localyssation.GetString($"{skillKey}_DESCRIPTION", __instance._raceInitialSkillDescriptor.text, __instance._raceInitialSkillDescriptor.fontSize) ?? "";
-                }
+
+                var skillKey = KeyUtil.GetForAsset(race._racialSkill);
+                __instance._raceInitialSkillTag.text = Localyssation.GetString($"{skillKey}_NAME", __instance._raceInitialSkillTag.text, __instance._raceInitialSkillTag.fontSize) ?? "";
+                __instance._raceInitialSkillDescriptor.text = Localyssation.GetString($"{skillKey}_DESCRIPTION", __instance._raceInitialSkillDescriptor.text, __instance._raceInitialSkillDescriptor.fontSize) ?? "";
             }
         }
-
     }
 
     [HarmonyPatch]

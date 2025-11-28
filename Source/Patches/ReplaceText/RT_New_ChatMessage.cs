@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using System.Reflection.Emit;
 using Localyssation.Util;
+using Mirror;
+using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -46,18 +48,6 @@ namespace Localyssation.Patches.ReplaceText
                 .Unwrap();
         }
 
-        [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.OnClick_RoomChannel))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> ChatBehaviour__OnClick_RoomChannel__Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return RTUtil.Wrap(instructions)
-                .ReplaceStrings(new[] {
-                    I18nKeys.ChatBehaviour.DISABLE_ROOM_CHANNEL_MESSAGE,
-                    I18nKeys.ChatBehaviour.ENABLE_ROOM_CHANNEL_MESSAGE
-                })
-                .Unwrap();
-        }
-
         [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.On_ChannelSwitch))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> ChatBehaviour__On_ChannelSwitch__Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -80,7 +70,7 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> ChatBehaviour__Send_ChatMessage__Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return RTUtil.Wrap(instructions)
+			return RTUtil.Wrap(instructions)
                 .ReplaceStrings(new[] {
                     I18nKeys.ChatBehaviour.GLOBAL_CHANNEL_DISABLED,
                     I18nKeys.ChatBehaviour.PARTY_CHANNEL_DISABLED,
@@ -89,8 +79,25 @@ namespace Localyssation.Patches.ReplaceText
                 }).Unwrap();
         }
 
+        [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.UserCode_Cmd_SendChatMessage__String__ChatChannel))]
+        [HarmonyTranspiler]
+		static IEnumerable<CodeInstruction> Cmd_SendChatMessage__String__ChatChannel_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = new CodeMatcher(instructions)
+                .MatchForward(false,
+                    new CodeMatch(OpCodes.Ldsfld, AccessTools.Field(typeof(GameManager), nameof(GameManager._current))),
+                    new CodeMatch(OpCodes.Ldarg_1),
+					new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(GameManager), nameof(GameManager.ContainsUnicodeCharacter))),
+                    new CodeMatch(OpCodes.Brfalse),
+                    new CodeMatch(OpCodes.Ldsfld, AccessTools.Field(typeof(string), nameof(string.Empty))),
+                    new CodeMatch(OpCodes.Starg_S))
+                .RemoveInstructions(6);
 
-        [HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.PromptCmd_DropItem))]
+			return matcher.InstructionEnumeration();
+		}
+
+
+		[HarmonyPatch(typeof(ItemMenuCell), nameof(ItemMenuCell.PromptCmd_DropItem))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ItemMenuCell__PromptCmd_DropItem__Transpiler(IEnumerable<CodeInstruction> instructions)
         {

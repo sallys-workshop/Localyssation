@@ -9,7 +9,6 @@ using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using YamlDotNet.Core.Tokens;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -186,18 +185,6 @@ namespace Localyssation.Patches.ReplaceText
             }
         }
 
-
-        [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.Handle_QuestSelectionConditions))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> QuestSelectionManager_Handle_QuestSelectionConditions_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return RTUtil.SimpleStringReplaceTranspiler(instructions, new Dictionary<string, string>() {
-                { "Quest Incomplete", "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_INCOMPLETE" },
-                { "Complete Quest", "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_TURN_IN" },
-                { "Select a Quest", "QUEST_SELECTION_MANAGER_QUEST_ACCEPT_BUTTON_UNSELECTED" },
-            });
-        }
-
         [HarmonyPatch(typeof(QuestSelectionManager), nameof(QuestSelectionManager.Select_QuestEntry))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> QuestSelectionManager_Select_QuestEntry_Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -321,8 +308,9 @@ namespace Localyssation.Patches.ReplaceText
 
             var questItemRequirement_pos = RTUtil.GetIntOperand(matcher);
 
-            matcher.MatchForward(true,
-                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(PlayerQuesting), nameof(PlayerQuesting.Apply_QuestProgressNote))));
+            matcher.MatchForward(false,
+				new CodeMatch(OpCodes.Ldarg_2),
+				new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(PlayerQuesting), nameof(PlayerQuesting.Apply_QuestProgressNote))));
 
             matcher.InsertAndAdvance(
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -372,8 +360,9 @@ namespace Localyssation.Patches.ReplaceText
 
             var questTriggerRequirement_pos = RTUtil.GetIntOperand(matcher);
 
-            matcher.MatchForward(true,
-                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(PlayerQuesting), nameof(PlayerQuesting.Apply_QuestProgressNote))));
+            matcher.MatchForward(false,
+				new CodeMatch(OpCodes.Ldarg_2),
+				new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(PlayerQuesting), nameof(PlayerQuesting.Apply_QuestProgressNote))));
 
             matcher.InsertAndAdvance(
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -421,8 +410,9 @@ namespace Localyssation.Patches.ReplaceText
 
             var questCreepRequirement_pos = RTUtil.GetIntOperand(matcher);
 
-            matcher.MatchForward(true,
-                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(PlayerQuesting), nameof(PlayerQuesting.Apply_QuestProgressNote))));
+            matcher.MatchForward(false,
+				new CodeMatch(OpCodes.Ldarg_2),
+				new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(PlayerQuesting), nameof(PlayerQuesting.Apply_QuestProgressNote))));
 
             matcher.InsertAndAdvance(
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -456,7 +446,7 @@ namespace Localyssation.Patches.ReplaceText
         private static readonly TargetInnerMethod __TARGET = new TargetInnerMethod()
         {
             Type = typeof(QuestSelectionManager),
-            ParentMethodName = nameof(QuestSelectionManager.Update),
+            ParentMethodName = nameof(QuestSelectionManager.Handle_QuestSelector),
             InnerMethodName = "Handle_Expbar"
         };
 

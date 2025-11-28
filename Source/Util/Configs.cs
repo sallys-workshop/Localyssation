@@ -226,18 +226,23 @@ namespace Localyssation.Util
                     Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE),
                     OnAddMissingKeyButtonPressed
                 );
-                translatorModeElements.Add(createMissingForCurrentLangButton);
+				translatorModeElements.Add(createMissingForCurrentLangButton);
 
                 logUntranslatedStringsButton = tab.AddButton(
                     Localyssation.GetString(LOG_UNTRANSLATED_STRINGS),
                     OnLogUntranslated
                     );
-                translatorModeElements.Add(logUntranslatedStringsButton);
+				translatorModeElements.Add(logUntranslatedStringsButton);
 
-                //LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
-                //    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
-                //    );
-            }
+				// AddButton provide clone of other buttons, causing affected by batch translation bug
+				// So I set their names here to avoid confusion in the hierarchy
+				createMissingForCurrentLangButton.Button.name = "CreateMissingForCurrentLangButton";
+				logUntranslatedStringsButton.Button.name = "LogUntranslatedStringsButton";
+
+				//LangAdjustables.RegisterText(logUntranslatedStringsButton.ButtonLabel,
+				//    LangAdjustables.GetStringFunc(I18nKeys.Settings.Mod.LOG_UNTRANSLATED_STRINGS)
+				//    );
+			}
 
             SetupToggles();
             SetupKeybind();
@@ -338,8 +343,7 @@ namespace Localyssation.Util
             /// That's why I replace buttons here
             createMissingForCurrentLangButton.ButtonLabel.text = Localyssation.GetString(ADD_MISSING_KEYS_TO_CURRENT_LANGUAGE);
             logUntranslatedStringsButton.ButtonLabel.text = Localyssation.GetString(LOG_UNTRANSLATED_STRINGS);
-
-        }
+		}
         public void OnLanguageChanged(Language newLanguage)
         {
             OnLanguageChange();

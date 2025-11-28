@@ -226,13 +226,13 @@ namespace Localyssation.Patches.ReplaceText
             switch (__instance._scriptSkill._skillDamageType)
             {
                 case DamageType.Strength:
-                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._attackPower * GameManager._current._statLogics._attackPowerPercent);
+                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._attackPower * GameManager._current._statLogics._powerStatPercent);
                     break;
                 case DamageType.Dexterity:
-                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._dexPower * GameManager._current._statLogics._rangePowerPercent);
+                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._dexPower * GameManager._current._statLogics._powerStatPercent);
                     break;
                 case DamageType.Mind:
-                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._magicPower * GameManager._current._statLogics._magicPowerPercent);
+                    _skillPower = __instance._scriptSkill._skillRankParams._baseSkillPower + (int)((float)_pStats._statStruct._magicPower * GameManager._current._statLogics._powerStatPercent);
                     break;
             }
 

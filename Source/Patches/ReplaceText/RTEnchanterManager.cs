@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceText
 {
@@ -162,7 +163,7 @@ namespace Localyssation.Patches.ReplaceText
                     new CodeMatch(OpCodes.Ldarg_0),
                     new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(EnchanterManager), nameof(EnchanterManager._scriptEquipment))),
                     new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
-                    new CodeMatch(OpCodes.Ldstr, $" now scales off {type}!"),
+                    new CodeMatch(OpCodes.Ldstr, $" now scale off {type}!"),
                     TranspilerHelper.STRING_CONCAT
                 };
         }
@@ -179,7 +180,6 @@ namespace Localyssation.Patches.ReplaceText
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-
             return RTUtil.Wrap(instructions)
                 .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Strength), GenerateCodeInstructionsForTransmuteMessage(DamageType.Strength))
                 .ReplaceInstructions(GenerateCodeMatchForTransmuteMessage(DamageType.Dexterity), GenerateCodeInstructionsForTransmuteMessage(DamageType.Dexterity))

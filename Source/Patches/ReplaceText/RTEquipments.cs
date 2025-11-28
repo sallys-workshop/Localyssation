@@ -117,7 +117,7 @@ namespace Localyssation.Patches.ReplaceText
                     //__instance._equipToolTipType.text = $"{weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]._weaponNameTag} (Weapon)";
                     __instance._equipToolTipType.text = string.Format(
                         Localyssation.GetString(I18nKeys.Equipment.FORMAT_TOOLTIP_TYPE_WEAPON),
-                        Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]))
+                        Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType))
                     );
 
 

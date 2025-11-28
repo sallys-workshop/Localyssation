@@ -109,10 +109,10 @@ namespace Localyssation.Util
             return new TranslationKey($"CONDITION_GROUP_{Normalize(asset._conditionGroupTag)}");
         }
 
-        public static TranslationKey GetForAsset(WeaponAnimationSlot asset)
+        public static TranslationKey GetForAsset(ScriptableWeaponType asset)
         {
-            return new TranslationKey($"WEAPON_TYPE_{Normalize(asset._weaponNameTag)}");
-        }
+			return new TranslationKey($"WEAPON_TYPE_{Normalize(asset._weaponTypeClassTag)}");
+		}
 
         public static TranslationKey GetForAsset(ScriptableCreep asset)
         {

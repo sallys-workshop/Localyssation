@@ -65,8 +65,6 @@ namespace Localyssation
 
             SettingsGUI.Init();
 
-
-
             var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
             harmony.PatchAll(typeof(Patches.GameLoadPatches));
