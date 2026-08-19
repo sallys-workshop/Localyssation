@@ -58,7 +58,8 @@ namespace Localyssation.Patches.ReplaceText
                     shownRarity += 1;
                     ScriptableStatModifier modifier = GameManager._current.Locate_StatModifier(_itemData._modifierID);
                     __instance._toolTipName.text = __instance._toolTipName.text.Replace(
-                        modifier._modifierTag, Localyssation.GetString(KeyUtil.GetForAsset(modifier))
+                        modifier._modifierTag,
+                        Localyssation.GetString(KeyUtil.GetForAsset(modifier), modifier._modifierTag)
                     );
                 }
 
@@ -80,21 +81,19 @@ namespace Localyssation.Patches.ReplaceText
                 {
                     var weapon = (ScriptableWeapon)_scriptEquip;
 
-                    if (weapon._weaponConditionSlot._scriptableCondition)
+                    if (_scriptEquip._equipConditionActivation != null && _scriptEquip._equipConditionActivation._equipConditionSlot != null
+                        && (bool)_scriptEquip._equipConditionActivation._equipConditionSlot._scriptableCondition)
                     {
+                        ConditionSlot equipConditionSlot = _scriptEquip._equipConditionActivation._equipConditionSlot;
                         __instance._toolTipDescription.text += string.Format(
                             Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_CONDITION, __instance._toolTipDescription.text, __instance._toolTipDescription.fontSize),
-                            weapon._weaponConditionSlot._chance * 100f,
+                            equipConditionSlot._chance * 100f,
                             Localyssation.GetString(
-                                $"{KeyUtil.GetForAsset(weapon._weaponConditionSlot._scriptableCondition)}_NAME",
-                                weapon._weaponConditionSlot._scriptableCondition._conditionName, __instance._toolTipDescription.fontSize)
+                                $"{KeyUtil.GetForAsset(equipConditionSlot._scriptableCondition)}_NAME",
+                                equipConditionSlot._scriptableCondition._conditionName, __instance._toolTipDescription.fontSize)
                             );
                     }
                     DamageType combatType = weapon.weaponType._combatType;
-                    __instance._weaponTypeText.text = string.Format(
-                        Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_DAMAGE_TYPE),
-                        Localyssation.GetString(KeyUtil.GetForAsset(combatType))
-                    );
 
                     //_weaponDamageTransmuteText.text = $"Damage Transmute: {_overrideType}"
                     DamageType _overrideType = weapon.weaponType._combatType;
@@ -110,14 +109,15 @@ namespace Localyssation.Patches.ReplaceText
                     }
                     __instance._weaponDamageTransmuteText.text = string.Format(
                         Localyssation.GetString(I18nKeys.Equipment.FORMAT_WEAPON_TRANSMUTE_TYPE),
-                        Localyssation.GetString(KeyUtil.GetForAsset(_overrideType))
+                        Localyssation.GetString(KeyUtil.GetForAsset(_overrideType), _overrideType.ToString())
                     );
 
 
                     //__instance._equipToolTipType.text = $"{weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]._weaponNameTag} (Weapon)";
                     __instance._equipToolTipType.text = string.Format(
                         Localyssation.GetString(I18nKeys.Equipment.FORMAT_TOOLTIP_TYPE_WEAPON),
-                        Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType._weaponAnimSlots[weapon._weaponHoldClipIndex]))
+                        Localyssation.GetString(KeyUtil.GetForAsset(weapon.weaponType), weapon.weaponType._weaponTypeClassTag),
+                        Localyssation.GetString(KeyUtil.GetForAsset(combatType), combatType.ToString())
                     );
 
 
@@ -160,7 +160,7 @@ namespace Localyssation.Patches.ReplaceText
                 if ((bool)__instance._specialCurrencyItem)
                 {
                     //__instance._vendorValueCounter.text = $"{__instance._vendorValue} {__instance._specialCurrencyItem._itemName}s";
-                    __instance._vendorValueCounter.text = $"{__instance._vendorValue} {Localyssation.GetString(KeyUtil.GetForAsset(__instance._specialCurrencyItem) + "_NAME")}";
+                    __instance._vendorValueCounter.text = $"{__instance._vendorValue} {Localyssation.GetString(KeyUtil.GetForAsset(__instance._specialCurrencyItem) + "_NAME", __instance._specialCurrencyItem._itemName)}";
                 }
                 else
                 {

@@ -71,13 +71,13 @@ namespace Localyssation
                 = Create("LOBBY_FULL", "Lobby Full");
 
             public readonly static TranslationKey LOBBY_PASSWORD_LOBBY
-                = Create("LOBBY_PASSWORD_LOBBY", "Password Lobby");
+                = Create("LOBBY_PASSWORD_LOBBY", "Passworded");
             public readonly static TranslationKey LOBBY_DIFFERENT_VERSION
                 = Create("LOBBY_DIFFERENT_VERSION", "Different Version");
             public readonly static TranslationKey LOBBY_INVALID
-                = Create("LOBBY_INVALID", "Invalid Lobby");
+                = Create("LOBBY_INVALID", "Invalid");
             public readonly static TranslationKey LOBBY_JOIN_FRIEND
-                = Create("LOBBY_JOIN_FRIEND", "Join Lobby (Friend)");
+                = Create("LOBBY_JOIN_FRIEND", "Join (Friend)");
 
             public readonly static TranslationKey LOBBY_PLAYER_COUNT
                 = Create("LOBBY_PLAYER_COUNT", "Players: ");

@@ -181,6 +181,10 @@ namespace Localyssation
                 = Create("TAB_MENU_CELL_WHO_BUTTON_MUTE_PEER", "Mute / Unmute");
             public static readonly TranslationKey CELL_WHO_BUTTON_REFRESH_LIST
                 = Create("TAB_MENU_CELL_WHO_BUTTON_REFRESH_LIST", "Refresh");
+            public static readonly TranslationKey CELL_WHO_BUTTON_GIVE_LEADERSHIP
+                = Create("TAB_MENU_CELL_WHO_BUTTON_GIVE_LEADERSHIP", "Give Leadership");
+            public static readonly TranslationKey CELL_WHO_BUTTON_TELEPORT_TO_LEADER
+                = Create("TAB_MENU_CELL_WHO_BUTTON_TELEPORT_TO_LEADER", "Teleport to Leader");
         }
 
     }

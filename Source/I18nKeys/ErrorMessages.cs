@@ -19,9 +19,9 @@ namespace Localyssation
             }
 
             public static readonly TranslationKey QUEST_LOG_FULL
-                = Create("QUEST_LOG_FULL", "Quest Log Full");
+                = Create("QUEST_LOG_FULL", "Quest log full");
             public static readonly TranslationKey QUEST_ALREADY_IN_LOG
-                = Create("ALREADY_ON_THIS_QUEST", "Already on this Quest");
+                = Create("ALREADY_ON_THIS_QUEST", "Already on this quest");
         }
     }
     

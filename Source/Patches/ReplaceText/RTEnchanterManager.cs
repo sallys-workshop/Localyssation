@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Localyssation.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,14 +14,9 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void EnchanterManager_Awake_Postfix(EnchanterManager __instance)
         {
-            string controllerButton(string name)
-            {
-                return $"Canvas_DialogSystem/_dolly_enchanterBox/_backdrop_enchantItem/_button_{name}/_button_{name}Text";
-            }
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
-                { "Canvas_DialogSystem/_dolly_enchanterBox/_backdrop_header/_text_header", I18nKeys.Enchanter.HEADER },
-                { controllerButton("clearEnchant"), I18nKeys.Enchanter.BUTTON_CLEAR_SELECTION }
+                { "Canvas_DialogSystem/_dolly_enchanterBox/_backdrop_header/_text_header", I18nKeys.Enchanter.HEADER }
             });
         }
 
@@ -71,14 +67,16 @@ namespace Localyssation.Patches.ReplaceText
                             .Aggregate(0, (sum, itemdata) => sum + itemdata._quantity);
 
                         __instance._tradeItemPriceText.text = $"{_foundTradeQuantity}/{_scriptEquipment._statModifierCost._scriptItemQuantity} "
-                            + Localyssation.GetString(KeyUtil.GetForAsset(_scriptEquipment._statModifierCost._scriptItem) + "_NAME");
+                            + Localyssation.GetString(
+                                KeyUtil.GetForAsset(_scriptEquipment._statModifierCost._scriptItem) + "_NAME",
+                                _scriptEquipment._statModifierCost._scriptItem._itemName);
                     }
                 }
                 if (__instance._setItemData._modifierID > 0)
                 {
                     ScriptableStatModifier scriptableStatModifier = GameManager._current.Locate_StatModifier(__instance._setItemData._modifierID);
                     __instance._currentEnchantmentText.text = Localyssation.GetString(I18nKeys.Enchanter.STATUS_CURRENT_ENCHANTMENT)
-                        + Localyssation.GetString(KeyUtil.GetForAsset(scriptableStatModifier));
+                        + Localyssation.GetString(KeyUtil.GetForAsset(scriptableStatModifier), scriptableStatModifier._modifierTag);
                 }
             }
         }
@@ -101,26 +99,23 @@ namespace Localyssation.Patches.ReplaceText
             // 查找目标序列
             matcher.MatchForward(false, // 从当前位置向前搜索
                 new CodeMatch(OpCodes.Ldstr, "You got the "),
-                new CodeMatch(OpCodes.Ldloc_2), // 匹配任意ldloc指令
+                new CodeMatch(instruction => instruction.IsLdloc()),
                 new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableStatModifier), nameof(ScriptableStatModifier._modifierTag))),
                 new CodeMatch(OpCodes.Ldstr, " enchantment!"),
                 TranspilerHelper.STRING_CONCAT
             //new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ChatBehaviour), "Client_RecieveTriggerMessage", new[] { typeof(string) } ))
             );
 
-            // 如果没找到匹配序列，返回原始指令
             if (matcher.IsInvalid)
-            {
-                Localyssation.logger.LogError("未找到目标IL序列，注入失败");
-                return instructions;
-            }
+                throw new InvalidOperationException("Cannot find the enchantment result message IL sequence.");
 
+            var loadModifier = new CodeInstruction(matcher.InstructionAt(1));
 
             // 创建新的指令列表来替换
             var newInstructions = new List<CodeInstruction>
             {
                 // 加载局部变量（ScriptableStatModifier实例）
-                new CodeInstruction(OpCodes.Ldloc_2),
+                loadModifier,
             
                 // 调用自定义函数
                 new CodeInstruction(OpCodes.Call,
@@ -134,7 +129,7 @@ namespace Localyssation.Patches.ReplaceText
                 .RemoveInstructions(5) // 移除5条旧指令
                 .Insert(newInstructions); // 插入新指令
 
-            Localyssation.logger.LogDebug("成功注入自定义装备消息转换");
+            Localyssation.logger?.LogDebug("成功注入自定义装备消息转换");
 
             return matcher.InstructionEnumeration();
         }
@@ -142,7 +137,9 @@ namespace Localyssation.Patches.ReplaceText
         // 自定义消息生成函数
         public static string GetCustomEnchantmentMessage(ScriptableStatModifier modifier)
         {
-            return Localyssation.Format(I18nKeys.Enchanter.GET_NEW_ENCHANTMENT_FORMAT, KeyUtil.GetForAsset(modifier).Localize());
+            return Localyssation.Format(
+                I18nKeys.Enchanter.GET_NEW_ENCHANTMENT_FORMAT,
+                KeyUtil.GetForAsset(modifier).Localize(modifier._modifierTag));
         }
     }
 
@@ -162,7 +159,7 @@ namespace Localyssation.Patches.ReplaceText
                     new CodeMatch(OpCodes.Ldarg_0),
                     new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(EnchanterManager), nameof(EnchanterManager._scriptEquipment))),
                     new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ScriptableItem), nameof(ScriptableItem._itemName))),
-                    new CodeMatch(OpCodes.Ldstr, $" now scales off {type}!"),
+                    new CodeMatch(OpCodes.Ldstr, $" now scale off {type}!"),
                     TranspilerHelper.STRING_CONCAT
                 };
         }

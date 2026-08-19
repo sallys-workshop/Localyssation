@@ -3,6 +3,7 @@ using Localyssation.LanguageModule;
 using Localyssation.Util;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Localyssation.Patches.ReplaceFont
 {
@@ -23,6 +24,30 @@ namespace Localyssation.Patches.ReplaceFont
                     text.lineSpacing = orig_lineSpacing * replacementFontLookupInfo.fontScale;
 
                 }
+            }
+        }
+
+        public static void ReplaceUiFont(UnityEngine.UI.Text text, Language.BundledFontLookupInfo replacementFontLookupInfo)
+        {
+            if (text == null || replacementFontLookupInfo == null)
+            {
+                return;
+            }
+
+            Font loadedFont = null;
+            if (!FontManager.Fonts.TryGetValue(replacementFontLookupInfo.fontName, out loadedFont)
+                && FontManager.TMPfonts.TryGetValue(replacementFontLookupInfo.fontName, out var loadedTmpFont))
+            {
+                // TMP assets in a font bundle normally reference the matching legacy Font.
+                // The chat history uses TMP, while ATLYSS's chat input still uses UI.Text.
+                loadedFont = loadedTmpFont.sourceFontFile;
+            }
+
+            if (loadedFont != null && text.font != loadedFont)
+            {
+                text.font = loadedFont;
+                text.fontSize = (int)(text.fontSize * replacementFontLookupInfo.fontScale);
+                text.lineSpacing *= replacementFontLookupInfo.fontScale;
             }
         }
 

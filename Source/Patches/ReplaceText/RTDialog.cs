@@ -1,16 +1,72 @@
 ﻿using HarmonyLib;
+using Localyssation.LangAdjutable;
 using Localyssation.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Localyssation.Patches.ReplaceText
 {
     internal static partial class RTReplacer
     {
+        [HarmonyPatch(typeof(DialogTrigger), "Start")]
+        [HarmonyPostfix]
+        public static void DialogTrigger_Start_Postfix(DialogTrigger __instance)
+        {
+            if (!__instance || !__instance._scriptDialogData)
+            {
+                return;
+            }
+
+            var dialogData = __instance._scriptDialogData;
+            var originalName = dialogData._nameTag;
+            if (string.IsNullOrEmpty(originalName))
+            {
+                return;
+            }
+
+            var key = $"{KeyUtil.GetForAsset(dialogData)}_NAME_TAG";
+            var getNameTagString = LangAdjustables.GetStringFunc(key, originalName);
+
+            RegisterNameTagRenderer(__instance._nameTagRenderer);
+            RegisterNameTagRenderer(__instance._subNameTagRenderer);
+
+            // Some NPC prefabs use the newer canvas-based nametag instead of a
+            // world-space TextMeshPro renderer. It is stored beside the dialog
+            // trigger under the NPC object.
+            var npcObject = __instance.transform.parent;
+            if (npcObject)
+            {
+                foreach (var nameTagElement in npcObject.GetComponentsInChildren<NameTagElement>(true))
+                {
+                    var nameText = nameTagElement._nicknameText;
+                    if (nameText && nameText.text == originalName)
+                    {
+                        LangAdjustables.RegisterText(nameText, getNameTagString);
+                    }
+                }
+            }
+
+            void RegisterNameTagRenderer(Renderer renderer)
+            {
+                if (!renderer)
+                {
+                    return;
+                }
+
+                var nameText = renderer.GetComponent<TextMeshPro>();
+                if (nameText && nameText.text == originalName)
+                {
+                    LangAdjustables.RegisterTextMeshPro(nameText, getNameTagString);
+                }
+            }
+        }
+
         // dialog
         [HarmonyPatch(typeof(DialogManager), nameof(DialogManager.Start_Dialog))]
         [HarmonyTranspiler]

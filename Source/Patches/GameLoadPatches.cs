@@ -54,8 +54,9 @@ namespace Localyssation.Patches
                 
                 foreach (var questTriggerRequirement in quest._questObjective._questTriggerRequirements)
                 {
-                    LanguageManager.RegisterKey($"{KeyUtil.GetForAsset(questTriggerRequirement)}_PREFIX", questTriggerRequirement._prefix);
-                    LanguageManager.RegisterKey($"{KeyUtil.GetForAsset(questTriggerRequirement)}_SUFFIX", questTriggerRequirement._suffix);
+                    LanguageManager.RegisterKey(
+                        RTReplacer.GetQuestTriggerRequirementKey(questTriggerRequirement),
+                        $"{questTriggerRequirement._prefix} {questTriggerRequirement._suffix}");
                 }
             }
             // conditions
@@ -130,11 +131,8 @@ namespace Localyssation.Patches
             // weapon type
             foreach (var weaponType in Resources.LoadAll<ScriptableWeaponType>(""))
             {
-                foreach (var animationSlot in weaponType._weaponAnimSlots)
-                {
-                    string key = KeyUtil.GetForAsset(animationSlot);
-                    LanguageManager.RegisterKey(key, animationSlot._weaponNameTag);
-                }
+                string key = KeyUtil.GetForAsset(weaponType);
+                LanguageManager.RegisterKey(key, weaponType._weaponTypeClassTag);
             }
             // dialog data
             foreach (var dialogData in Resources.LoadAll<ScriptableDialogData>(""))

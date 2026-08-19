@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Localyssation.Util;
 using System.Collections.Generic;
 
 namespace Localyssation.Patches.ReplaceText
@@ -9,17 +10,27 @@ namespace Localyssation.Patches.ReplaceText
         [HarmonyPostfix]
         public static void WhoMenu_Cell_OnAwake_Postfix(WhoMenuCell __instance)
         {
-            string actionPath(string action)
-            {
-                return $"_panel_actionList/_button_{action}/_text_{action}Button";
-            }
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>() {
-                { "_text_whoHeader", I18nKeys.TabMenu.CELL_WHO_HEADER },
-                { actionPath("inviteToParty"), I18nKeys.TabMenu.CELL_WHO_BUTTON_INVITE_TO_PARTY },
-                { actionPath("leaveParty"), I18nKeys.TabMenu.CELL_WHO_BUTTON_LEAVE_PARTY },
-                { actionPath("mutePeer"), I18nKeys.TabMenu.CELL_WHO_BUTTON_MUTE_PEER },
-                { actionPath("refreshList"), I18nKeys.TabMenu.CELL_WHO_BUTTON_REFRESH_LIST }
+                { "_text_whoHeader", I18nKeys.TabMenu.CELL_WHO_HEADER }
             });
+        }
+
+        [HarmonyPatch(typeof(WhoMenuCell), nameof(WhoMenuCell.Init_StringGenericToolTip))]
+        [HarmonyPrefix]
+        public static void WhoMenuCell_Init_StringGenericToolTip_Prefix(ref string _string)
+        {
+            var tooltipKeys = new Dictionary<string, TranslationKey>()
+            {
+                { "Refresh List", I18nKeys.TabMenu.CELL_WHO_BUTTON_REFRESH_LIST },
+                { "Mute / Unmute Player", I18nKeys.TabMenu.CELL_WHO_BUTTON_MUTE_PEER },
+                { "Party Invite", I18nKeys.TabMenu.CELL_WHO_BUTTON_INVITE_TO_PARTY },
+                { "Give Leadership", I18nKeys.TabMenu.CELL_WHO_BUTTON_GIVE_LEADERSHIP },
+                { "Teleport to Leader", I18nKeys.TabMenu.CELL_WHO_BUTTON_TELEPORT_TO_LEADER },
+                { "Leave Party", I18nKeys.TabMenu.CELL_WHO_BUTTON_LEAVE_PARTY }
+            };
+
+            if (_string != null && tooltipKeys.TryGetValue(_string, out var key))
+                _string = key.Localize(_string);
         }
     }
 }

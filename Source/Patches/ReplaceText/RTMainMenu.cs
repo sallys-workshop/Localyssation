@@ -157,7 +157,6 @@ namespace Localyssation.Patches.ReplaceText
                         {
                             { "_customizer_header", "CHARACTER_CREATION_CUSTOMIZER_HEADER_TRAIT" },
                             { "_header_equipment", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_EQUIPMENT" },
-                            { "_selector_weaponLoadout", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_WEAPON_LOADOUT" },
                             { "_selector_gearDye", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_GEAR_DYE" },
                             { "_header_attributes", "CHARACTER_CREATION_CUSTOMIZER_TRAIT_ATTRIBUTES" },
                             { "_text_strengthAttribute", "STAT_ATTRIBUTE_STRENGTH_NAME" },
@@ -199,7 +198,7 @@ namespace Localyssation.Patches.ReplaceText
         {
             if (__instance._characterFileData._isEmptySlot)
             {
-                __instance._characterNicknameText.text = Localyssation.GetString("CHARACTER_SELECT_DATA_ENTRY_EMPTY_SLOT", __instance._characterNicknameText.text, __instance._characterNicknameText.fontSize);
+                __instance._characterNicknameText.text = Localyssation.GetString("CHARACTER_SELECT_DATA_ENTRY_EMPTY_SLOT", __instance._characterNicknameText.text, (int)__instance._characterNicknameText.fontSize);
             }
             else
             {
@@ -209,7 +208,7 @@ namespace Localyssation.Patches.ReplaceText
 
                 ScriptablePlayerRace race = GameManager._current.Locate_PlayerRace(__instance._characterFileData._appearanceProfile._setRaceTag);
                 if (race) 
-                    raceName = KeyUtil.GetForAsset(race).Name.Localize();
+                    raceName = KeyUtil.GetForAsset(race).Name.Localize(race._raceName);
 
                 
                 if (!string.IsNullOrEmpty(__instance._characterFileData._statsProfile._classID))
@@ -218,10 +217,11 @@ namespace Localyssation.Patches.ReplaceText
                     ScriptablePlayerBaseClass playerClass = GameManager._current.Locate_PlayerClass(statsProfile._classID);
                     if (playerClass)
                     {
-                        className = KeyUtil.GetForAsset(playerClass).Name.Localize();
+                        className = KeyUtil.GetForAsset(playerClass).Name.Localize(playerClass._className);
                         if (statsProfile._classTier > 0)
                         {
-                            className = KeyUtil.GetForAsset(playerClass._playerClassTiers[statsProfile._classTier - 1]).Name.Localize();
+                            var classTier = playerClass._playerClassTiers[statsProfile._classTier - 1];
+                            className = KeyUtil.GetForAsset(classTier).Name.Localize(classTier._classTierName);
                         }
                     }
                         
@@ -245,13 +245,13 @@ namespace Localyssation.Patches.ReplaceText
             {
                 var key = KeyUtil.GetForAsset(race);
 
-                __instance._raceDescriptionHeader.text = Localyssation.GetString($"{key}_NAME", __instance._raceDescriptionHeader.text, __instance._raceDescriptionHeader.fontSize) ?? "";
+                __instance._raceDescriptionHeader.text = Localyssation.GetString($"{key}_NAME", __instance._raceDescriptionHeader.text, (int)__instance._raceDescriptionHeader.fontSize) ?? "";
                 __instance._raceDescriptorField.text = Localyssation.GetString($"{key}_DESCRIPTION", __instance._raceDescriptorField.text, __instance._raceDescriptorField.fontSize) ?? "";
                 __instance._colorMiscTag.text = Localyssation.GetString($"{key}_MISC", __instance._colorMiscTag.text, __instance._colorMiscTag.fontSize) ?? "";
                 __instance._miscTag.text = Localyssation.GetString($"{key}_MISC", __instance._miscTag.text, __instance._miscTag.fontSize) ?? "";
-                if (race._racialSkills.Length >= 1)
+                if (race._racialSkill)
                 {
-                    var skillKey = KeyUtil.GetForAsset(race._racialSkills[0]);
+                    var skillKey = KeyUtil.GetForAsset(race._racialSkill);
                     __instance._raceInitialSkillTag.text = Localyssation.GetString($"{skillKey}_NAME", __instance._raceInitialSkillTag.text, __instance._raceInitialSkillTag.fontSize) ?? "";
                     __instance._raceInitialSkillDescriptor.text = Localyssation.GetString($"{skillKey}_DESCRIPTION", __instance._raceInitialSkillDescriptor.text, __instance._raceInitialSkillDescriptor.fontSize) ?? "";
                 }

@@ -35,10 +35,10 @@ namespace Localyssation
             public static readonly string TOOLTIP_TYPE_CAPE
                 = Create("EQUIP_TOOLTIP_TYPE_CAPE", "Cape (Armor)");
             public static readonly string TOOLTIP_TYPE_RING
-                = Create("EQUIP_TOOLTIP_TYPE_RING", "Ring (Armor)");
+                = Create("EQUIP_TOOLTIP_TYPE_RING", "Trinket (Armor)");
 
             public static readonly string FORMAT_TOOLTIP_TYPE_WEAPON
-                = Create("FORMAT_EQUIP_TOOLTIP_TYPE_WEAPON", "{0} (Weapon)");
+                = Create("FORMAT_EQUIP_TOOLTIP_TYPE_WEAPON", "{0} ({1} Weapon)");
             public static readonly string TOOLTIP_TYPE_SHIELD
                 = Create("EQUIP_TOOLTIP_TYPE_SHIELD", "Shield (Off Hand)");
             public static readonly string STATS_DAMAGE

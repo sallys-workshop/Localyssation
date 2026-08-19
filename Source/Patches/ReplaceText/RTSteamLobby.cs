@@ -31,7 +31,7 @@ namespace Localyssation.Patches.ReplaceText
                 { "Canvas_SteamLobbyHost/_dolly_hostWindow/_dolly_serverSettings/_backdrop_hostLobbySettings/_dolly_hostLobbySettings/_input_lobbyPassword/Placeholder", PLACEHOLDER_LOBBY_PASSWORD},
                 { "Canvas_SteamLobbyHost/_dolly_hostWindow/_dolly_serverSettings/_backdrop_hostLobbySettings/_dolly_hostLobbySettings/_input_motd/Placeholder", PLACEHOLDER_MOTD },
 
-                { "Canvas_SteamLobbyFinder/_dolly_lobbyFinderWindow/_dolly_finderOptions/_cancelLobbyFinderButton", BUTTON_RETURN},
+                { "Canvas_SteamLobbyFinder/_dolly_lobbyFinderWindow/_dolly_finderOptions/_cancelLobbyFinderButton/Text (Legacy)", BUTTON_RETURN},
                 { "Canvas_SteamLobbyFinder/_dolly_lobbyFinderWindow/_hiddenLobbyPanel/_dolly_hiddenLobbyPanel/_clearHiddenLobbiesButton/Text (Legacy)", CLEAR_HIDDEN_LOBBY_BUTTON }
 
             });

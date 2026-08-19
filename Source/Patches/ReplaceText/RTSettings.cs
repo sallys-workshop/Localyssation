@@ -19,13 +19,13 @@ namespace Localyssation.Patches.ReplaceText
                 //{ "Button_videoTab", "SETTINGS_TAB_BUTTON_VIDEO" },
                 { "Button_videoTab", I18nKeys.Settings.BUTTON_VIDEO },
 
-                { "_header_GameEffectSettings", I18nKeys.Settings.Video.HEADER_GAME_EFFECT_SETTINGS },
+                { "_header_accessibilitySettings", I18nKeys.Settings.Video.HEADER_GAME_EFFECT_SETTINGS },
                 //{ "_cell_proportionsToggle", I18nKeys.Settings.Video.CELL_PROPORTIONS_TOGGLE },
                 { "_cell_jiggleBonesToggle", I18nKeys.Settings.Video.CELL_JIGGLE_BONES_TOGGLE },
                 { "_cell_clearUnderclothesToggle", I18nKeys.Settings.Video.CELL_CLEAR_UNDERCLOTHES_TOGGLE },
                 { "_cell_screenMode", I18nKeys.Settings.Video.CELL_SCREEN_MODE },
 
-                { "_header_videoSettings", I18nKeys.Settings.Video.HEADER_VIDEO_SETTINGS },
+                { "_header_displaySettings", I18nKeys.Settings.Video.HEADER_VIDEO_SETTINGS },
                 //{ "_cell_fullscreenToggle", I18nKeys.Settings.Video.CELL_FULLSCREEN_TOGGLE },
                 { "_cell_verticalSync", I18nKeys.Settings.Video.CELL_VERTICAL_SYNC },
                 { "_cell_anisotropicFiltering", I18nKeys.Settings.Video.CELL_ANISOTROPIC_FILTERING },
@@ -68,15 +68,14 @@ namespace Localyssation.Patches.ReplaceText
                 { "_cell_voiceVolume", I18nKeys.Settings.Audio.CELL_VOICE_VOLUME },
 
 
-                { "Button_inputTab", I18nKeys.Settings.BUTTON_INPUT },
+                { "Button_controlTab", I18nKeys.Settings.BUTTON_INPUT },
 
-                { "Image_05", I18nKeys.Settings.Input.HEADER_INPUT_SETTINGS },
+                { "_header_inputSettings", I18nKeys.Settings.Input.HEADER_INPUT_SETTINGS },
                 { "_cell_axisType", I18nKeys.Settings.Input.CELL_AXIS_TYPE },
-                { "Image_06", I18nKeys.Settings.Input.GAME_PAD_WIP },
-                { "Image_07", I18nKeys.Settings.Input.CELL_RESET_BINDINGS },
+                { "_header_resetBindings", I18nKeys.Settings.Input.CELL_RESET_BINDINGS },
                 { "InputDefaults_button", I18nKeys.Settings.Input.CELL_RESET_BINDINGS },
 
-                { "Image_08", I18nKeys.Settings.Input.HEADER_CAMERA_CONTROL },
+                { "_header_cameraControl", I18nKeys.Settings.Input.HEADER_CAMERA_CONTROL },
                 { "_cell_cameraSensitivity", I18nKeys.Settings.Input.CELL_CAMERA_SENSITIVITY },
                 { "_cell_invertXCameraAxis", I18nKeys.Settings.Input.CELL_INVERT_X_CAMERA_AXIS },
                 { "_cell_invertYCameraAxis", I18nKeys.Settings.Input.CELL_INVERT_Y_CAMERA_AXIS },
@@ -155,7 +154,6 @@ namespace Localyssation.Patches.ReplaceText
                 { "_cell_hideDamageIcons", I18nKeys.Settings.Network.CELL_HIDE_DAMAGE_VALUE_NUMBER_ICONS },
 
                 { "_header_chatboxSettings", I18nKeys.Settings.Network.HEADER_CHATBOX_SETTINGS },
-                { "_cell_defaultChatRoom", I18nKeys.Settings.Network.CELL_DEFAULT_CHANNEL},
                 { "_cell_fadeChatText", I18nKeys.Settings.Network.CELL_FADE_CHAT_TEXT },
                 { "_cell_fadeGameFeed", I18nKeys.Settings.Network.CELL_FADE_GAME_FEED_TEXT },
 
@@ -193,11 +191,11 @@ namespace Localyssation.Patches.ReplaceText
 
             RTUtil.RemapChildTextsByPath(__instance.transform, new Dictionary<string, string>()
             {
-                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_fieldOfView/Button/Text", "SETTINGS_BUTTON_RESET" },
-                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_cameraSmoothing/Button_01/Text", "SETTINGS_BUTTON_RESET" },
-                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_cameraHoriz/Button_01/Text", "SETTINGS_BUTTON_RESET" },
-                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoSettings/Scroll View/Viewport/Content/_cell_cameraVert/Button_01/Text", "SETTINGS_BUTTON_RESET" },
-                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_inputSettingsTab/_backdrop/Scroll View/Viewport/Content/_cell_cameraSensitivity/Button_01/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoTab/Scroll View_videoTab/Viewport_videoTab/Content_videoTab/_cell_fieldOfView/Button/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoTab/Scroll View_videoTab/Viewport_videoTab/Content_videoTab/_cell_cameraSmoothing/Button_01/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoTab/Scroll View_videoTab/Viewport_videoTab/Content_videoTab/_cell_cameraHoriz/_button_resetCameraHoriz/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_videoSettingsTab/_backdrop_videoTab/Scroll View_videoTab/Viewport_videoTab/Content_videoTab/_cell_cameraVert/_button_resetCameraVert/Text", "SETTINGS_BUTTON_RESET" },
+                { "Canvas_SettingsMenu/_dolly_settingsMenu/_dolly_inputSettingsTab/_backdrop/Scroll View_inputTab/Viewport_inputTab/Content_inputTab/_cell_cameraSensitivity/_button_resetCameraSensitivity/Text", "SETTINGS_BUTTON_RESET" },
             });
         }
 

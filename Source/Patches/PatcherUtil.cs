@@ -176,8 +176,9 @@ namespace Localyssation.Patches
 
         public static IEnumerable<CodeInstruction> MatchAndReplace(IEnumerable<CodeInstruction> instructions, CodeMatch[] matches, CodeInstruction[] replacement)
         {
-            return new CodeMatcher(instructions)
-                .MatchForward(false, matches)
+            var matcher = new CodeMatcher(instructions).MatchForward(false, matches);
+            if (matcher.IsInvalid) throw new InvalidOperationException();
+            return matcher
                 .RemoveInstructions(matches.Length)
                 .Insert(replacement)
                 .Instructions();
@@ -208,8 +209,9 @@ namespace Localyssation.Patches
         public static CodeMatcher RemoveMethodCallParamsStackForward(
             CodeMatcher matcher, MethodInfo method, int _ILCodeLength, OpCode? opcode = null)
         {
-            return ReplaceParamsStack(
-                matcher.MatchForward(true, MatchMethodCall(method, opcode)), _ILCodeLength);
+            matcher.MatchForward(true, MatchMethodCall(method, opcode));
+            if (matcher.IsInvalid) throw new InvalidOperationException();
+            return ReplaceParamsStack(matcher, _ILCodeLength);
                 
         }
     }

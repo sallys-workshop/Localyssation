@@ -4,7 +4,7 @@
     <!-- Edit here for building on your own -->
 
     <!-- Atlyss game folder -->
-    <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED> 
+    <ATLYSS_MANAGED>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed</ATLYSS_MANAGED>  
     
     <!-- Only used here for changing profiles -->
 		<ATLYSS_PROFILE>test2</ATLYSS_PROFILE>
@@ -14,7 +14,7 @@
     <ATLYSS_BEPINEX_PLUGINS>$(APPDATA)\r2modmanPlus-local\ATLYSS\profiles\$(ATLYSS_PROFILE)\BepInEx\plugins</ATLYSS_BEPINEX_PLUGINS>
 		
 		
-		<TARGET_ATLYSS_VERSION>72025.a8</TARGET_ATLYSS_VERSION>
+		<TARGET_ATLYSS_VERSION>12026.a3</TARGET_ATLYSS_VERSION>
 		<VersionPrefix>2.2.2</VersionPrefix>
 		
 		

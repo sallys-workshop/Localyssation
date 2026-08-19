@@ -114,13 +114,32 @@ namespace Localyssation.Patches.ReplaceText
                 }
                 return false;
             }
+            bool TryRemapSingleTMP(Transform lookupNameTransform, TMPro.TextMeshProUGUI text)
+            {
+                if (textRemaps.TryGetValue(lookupNameTransform.name, out var key))
+                {
+                    LangAdjustables.RegisterText(text, LangAdjustables.GetStringFunc(key, text.text));
+                    remappedString.Add(lookupNameTransform.name);
+                    onRemap?.Invoke(lookupNameTransform, key);
+                    return true;
+                }
+                return false;
+            }
 
-            foreach (var text in gameObject.GetComponentsInChildren<Text>())
+            foreach (var text in gameObject.GetComponentsInChildren<Text>(true))
             {
                 if (!TryRemapSingle(text.transform, text))
                 {
                     var textParent = text.transform.parent;
                     if (textParent) TryRemapSingle(textParent, text);
+                }
+            }
+            foreach (var text in gameObject.GetComponentsInChildren<TMPro.TextMeshProUGUI>(true))
+            {
+                if (!TryRemapSingleTMP(text.transform, text))
+                {
+                    var textParent = text.transform.parent;
+                    if (textParent) TryRemapSingleTMP(textParent, text);
                 }
             }
             var remain = textRemaps.Select(kv => kv.Key).ToHashSet();
@@ -158,8 +177,20 @@ namespace Localyssation.Patches.ReplaceText
                     }
                     else
                     {
-                        if (!supressNotfoundWarnings)
-                            Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap.Key}` but no Text component is found.");
+                        var tmproText = foundTransform.GetComponent<TMPro.TextMeshProUGUI>();
+                        if (tmproText)
+                        {
+                            if (!rawText)
+                                LangAdjustables.RegisterText(tmproText, LangAdjustables.GetStringFunc(textRemap.Value, tmproText.text));
+                            else
+                                tmproText.text = textRemap.Value;
+                            onRemap?.Invoke(foundTransform, textRemap.Value);
+                        }
+                        else
+                        {
+                            if (!supressNotfoundWarnings)
+                                Localyssation.logger.LogWarning($"[RemapChildTextsByPath] Found path `{textRemap.Key}` but no Text/TMP component is found.");
+                        }
                     }
                 }
                 else

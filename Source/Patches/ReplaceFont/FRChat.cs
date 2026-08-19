@@ -22,7 +22,14 @@ namespace Localyssation.Patches.ReplaceFont
         [HarmonyPostfix]
         public static void FixChatBehaviourAssets(ChatBehaviourAssets __instance)
         {
-            FRUtil.ReplaceTmpFont(__instance._chatText, LanguageManager.CurrentLanguage.info.chatFont);
+            var replacementFontLookupInfo = LanguageManager.CurrentLanguage.info.chatFont;
+
+            FRUtil.ReplaceTmpFont(__instance._chatText, replacementFontLookupInfo);
+            if (__instance._chatInput != null)
+            {
+                FRUtil.ReplaceUiFont(__instance._chatInput.textComponent, replacementFontLookupInfo);
+            }
+            FRUtil.ReplaceUiFont(__instance.inputPlaceHolderText, replacementFontLookupInfo);
         }
     }
 }
