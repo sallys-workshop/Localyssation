@@ -5,14 +5,33 @@
 
 
 
-A work-in-progress localization library mod for [ATLYSS](https://store.steampowered.com/app/2768430/ATLYSS/). Check [Github page](https://github.com/sallys-workshop/Localyssation/) for newest update.
+A work-in-progress localization library mod for [ATLYSS](https://store.steampowered.com/app/2768430/ATLYSS/). 
+
+Since one year gapping of this repo, other good minds had brought up their **latest updates**, like:
+- [numanicloud/Localyssation](https://github.com/numanicloud/Localyssation)
+- [Desperaski/Localyssation](https://github.com/Desperaski/Localyssation) (Latest as I know)
+
+The repo is now archived.
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+The following is past information.
 
 ## Requirements
 
 - BepInEx 5.4
 - EasySettings 1.1.8+
 - **UNINSTALL** BepInEx Fixer
-  - Outdated. May install via mod dependencies when using mod manager (r2modman) but is unnecessary for latest ATLYSS mods and can cause issues.
+  - Outdated. May be installed via mod dependencies by mod manager (r2modman) but is unnecessary for latest ATLYSS mods and can cause issues.
 
 ## :warning: Important note :warning:
 
@@ -28,6 +47,7 @@ Currently listed translation patch(es):
 |  한국어  | [KR_Kemonoz](https://thunderstore.io/c/atlyss/p/KR_Kemonoz/) | [AtlyssKr](https://thunderstore.io/c/atlyss/p/KR_Kemonoz/AtlyssKr/) |
 |Brasileiro|[Guachenim](https://thunderstore.io/c/atlyss/p/Guachenim/)|[Thunder Store](https://thunderstore.io/c/atlyss/p/Guachenim/Ordem_e_Atlyss_a_Braziliant_PTBR_Translation/)|
 
+
 ## How to use
 
 1. Install BepInEx.
@@ -36,7 +56,7 @@ Currently listed translation patch(es):
 
 ## Current features
 
-* Add Localyssation options in the mods tab of settings (Install EasySettings if missing).
+* Add Localyssation options in the mods tab of settings (Install EasySettings mod if missing).
   * Where you can change languages or fonts (unifont by default).
 * Show correct texts in chat box and chat bubbles, if the words can be found in font bundle you use.
 * Load translation patches found in the BepInEx plugins folder.
