@@ -1,0 +1,290 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  BEPINEX_PACK_VERSION: "5.4.2100"
+  EASYSETTINGS_VERSION: "1.1.8"
+  ATLYSS_DLL_URL_DEFAULT: "https://drive.google.com/file/d/1ZE-bc6hdfTlP5hWpyfz58ngmRhiNPIAh/view?usp=sharing"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Prepare Game DLLs
+        shell: pwsh
+        env:
+          ATLYSS_DLL_URL: ${{ vars.ATLYSS_DLL_URL }}
+        run: |
+          function Resolve-DownloadUrl([string]$url) {
+            if ($url -match 'drive\.google\.com/file/d/([^/?#]+)') {
+              return "https://drive.google.com/uc?export=download&confirm=t&id=$($Matches[1])"
+            }
+            return $url
+          }
+          function Invoke-Download([string]$url, [string]$outFile) {
+            Invoke-WebRequest -Uri $url -OutFile $outFile
+            if ((Get-Item $outFile).Length -lt 5MB) {
+              $html = Get-Content $outFile -Raw -ErrorAction SilentlyContinue
+              if ($html -match 'name="confirm"\s+value="([^"]+)"') {
+                $confirm = $Matches[1]
+                Write-Host "Google Drive requires a confirm token, retrying ..."
+                Invoke-WebRequest -Uri ($url + "&confirm=" + $confirm) -OutFile $outFile
+              }
+            }
+          }
+
+          $managedDir = Join-Path $env:GITHUB_WORKSPACE 'GameLibs\Managed'
+          if (Test-Path (Join-Path $managedDir 'Assembly-CSharp.dll')) {
+            Write-Host "Using extracted game DLLs from GameLibs/Managed"
+          } else {
+            $zip = $null
+            $repoZip = Get-ChildItem -Path $managedDir -Filter *.zip -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($repoZip) {
+              Write-Host "Using $($repoZip.Name) from repository ..."
+              $zip = $repoZip.FullName
+            } else {
+              $url = $env:ATLYSS_DLL_URL
+              if ([string]::IsNullOrWhiteSpace($url)) { $url = $env:ATLYSS_DLL_URL_DEFAULT }
+              if ([string]::IsNullOrWhiteSpace($url)) {
+                Write-Error "Game DLLs not found. Place a zip containing the DLLs under GameLibs/Managed/ (e.g. Libs.zip), or set the ATLYSS_DLL_URL repository variable to a zip download URL."
+                exit 1
+              }
+              $url = Resolve-DownloadUrl $url
+              Write-Host "Downloading game DLLs from $url ..."
+              New-Item -ItemType Directory -Force -Path $managedDir | Out-Null
+              $zip = Join-Path $env:RUNNER_TEMP 'atlyss-dlls.zip'
+              Invoke-Download $url $zip
+              if (-not (Test-Path $zip)) { Write-Error "Download failed: $url"; exit 1 }
+            }
+            Expand-Archive -Path $zip -DestinationPath $managedDir -Force
+            Get-ChildItem -Path $managedDir -Filter *.dll -Recurse |
+              Where-Object { $_.DirectoryName -ne $managedDir } |
+              Copy-Item -Destination $managedDir -Force
+          }
+          $required = @(
+            'Assembly-CSharp.dll', 'UnityEngine.dll', 'UnityEngine.CoreModule.dll',
+            'UnityEngine.InputLegacyModule.dll', 'UnityEngine.UI.dll',
+            'Unity.TextMeshPro.dll', 'Newtonsoft.Json.dll'
+          )
+          $missing = $required | Where-Object { -not (Test-Path (Join-Path $managedDir $_)) }
+          if ($missing) {
+            Write-Error "Missing files in GameLibs/Managed: $($missing -join ', ')"
+            exit 1
+          }
+          Write-Host "MANAGED_DIR=$managedDir"
+
+      - name: Prepare BepInEx Core
+        shell: pwsh
+        run: |
+          $bepinexDir = Join-Path $env:GITHUB_WORKSPACE 'GameLibs\BepInEx'
+          if (Test-Path (Join-Path $bepinexDir 'BepInEx.dll')) {
+            Write-Host "Using BepInEx core from GameLibs/BepInEx"
+          } else {
+            $zip = Join-Path $env:RUNNER_TEMP 'bepinexpack.zip'
+            $url = "https://thunderstore.io/package/download/BepInEx/BepInExPack/$env:BEPINEX_PACK_VERSION/"
+            Write-Host "Downloading BepInExPack $env:BEPINEX_PACK_VERSION ..."
+            Invoke-WebRequest -Uri $url -OutFile $zip
+            $extractDir = Join-Path $env:RUNNER_TEMP 'bepinexpack'
+            Expand-Archive -Path $zip -DestinationPath $extractDir -Force
+            $coreDir = Get-ChildItem -Path $extractDir -Recurse -Directory |
+              Where-Object { $_.Name -eq 'core' -and (Test-Path (Join-Path $_.FullName 'BepInEx.dll')) } |
+              Select-Object -First 1
+            if (-not $coreDir) {
+              Write-Error "BepInEx/core directory not found in BepInExPack"
+              exit 1
+            }
+            New-Item -ItemType Directory -Force -Path $bepinexDir | Out-Null
+            Copy-Item -Path (Join-Path $coreDir.FullName '*') -Destination $bepinexDir -Recurse -Force
+          }
+          Write-Host "BEPINEX_DIR=$bepinexDir"
+
+      - name: Prepare EasySettings
+        shell: pwsh
+        run: |
+          $pluginsDir = Join-Path $env:RUNNER_TEMP 'plugins'
+          $esDir = Join-Path $pluginsDir 'Nessie-EasySettings'
+          $esDll = Join-Path $esDir 'EasySettings.dll'
+          if (-not (Test-Path $esDll)) {
+            $zip = Join-Path $env:RUNNER_TEMP 'easysettings.zip'
+            $url = "https://thunderstore.io/package/download/Nessie/EasySettings/$env:EASYSETTINGS_VERSION/"
+            Write-Host "Downloading EasySettings $env:EASYSETTINGS_VERSION ..."
+            Invoke-WebRequest -Uri $url -OutFile $zip
+            $extractDir = Join-Path $env:RUNNER_TEMP 'easysettings'
+            Expand-Archive -Path $zip -DestinationPath $extractDir -Force
+            $dll = Get-ChildItem -Path $extractDir -Filter EasySettings.dll -Recurse | Select-Object -First 1
+            if (-not $dll) { Write-Error "EasySettings.dll not found in package"; exit 1 }
+            New-Item -ItemType Directory -Force -Path $esDir | Out-Null
+            Copy-Item $dll.FullName -Destination $esDll -Force
+          }
+          Write-Host "PLUGINS_DIR=$pluginsDir"
+
+      - name: Resolve Version
+        id: version
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF -like 'refs/tags/*') {
+            $tag = $env:GITHUB_REF.Substring('refs/tags/'.Length)
+            if ($tag -notmatch '^v(\d+)\.(\d+)\.(\d+)$') {
+              Write-Error "Tag '$tag' must use the vMAJOR.MINOR.PATCH format (for example, v2.3.0)."
+              exit 1
+            }
+            $version = "$($Matches[1]).$($Matches[2]).$($Matches[3])"
+            Write-Host "Using version from tag: $tag"
+          } else {
+            $candidates = @(
+              git tag --list | ForEach-Object {
+                if ($_ -match '^v?(\d+)\.(\d+)\.(\d+)$') {
+                  $major = [int]$Matches[1]
+                  $minor = [int]$Matches[2]
+                  $patch = [int]$Matches[3]
+                  [pscustomobject]@{
+                    Tag = $_
+                    Commit = git rev-list -n 1 $_
+                    Major = $major
+                    Minor = $minor
+                    Patch = $patch
+                  }
+                }
+              }
+            )
+            $base = $candidates | Sort-Object -Property @{ Expression = 'Major'; Descending = $true }, @{ Expression = 'Minor'; Descending = $true }, @{ Expression = 'Patch'; Descending = $true } | Select-Object -First 1
+
+            if ($base) {
+              $major = $base.Major
+              $minor = $base.Minor
+              $patch = $base.Patch
+              $reuseExistingVersion = $base.Commit -eq (git rev-parse HEAD) -and $base.Tag.StartsWith('v')
+              if ($reuseExistingVersion) {
+                Write-Host "Reusing $($base.Tag), which already points at this commit"
+              } else {
+                Write-Host "Incrementing from $($base.Tag)"
+              }
+            } else {
+              [xml]$project = Get-Content (Join-Path $env:GITHUB_WORKSPACE 'Source\Localyssation.csproj') -Raw
+              $baseVersion = [string]($project.Project.PropertyGroup | ForEach-Object { $_.VersionPrefix } | Where-Object { $_ } | Select-Object -First 1)
+              if ($baseVersion -notmatch '^(\d+)\.(\d+)\.(\d+)$') {
+                Write-Error "VersionPrefix '$baseVersion' must use the MAJOR.MINOR.PATCH format."
+                exit 1
+              }
+              $major = [int]$Matches[1]
+              $minor = [int]$Matches[2]
+              $patch = [int]$Matches[3]
+              Write-Host "No version tag found; incrementing from csproj version $baseVersion"
+            }
+
+            if (-not $reuseExistingVersion) {
+              $patch++
+              if ($patch -ge 10) {
+                $patch = 0
+                $minor++
+              }
+              if ($minor -ge 10) {
+                $minor = 0
+                $major++
+              }
+            }
+            $version = "$major.$minor.$patch"
+          }
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Build version: $version"
+
+      - name: Build Release
+        shell: pwsh
+        env:
+          MANAGED_DIR: ${{ github.workspace }}\GameLibs\Managed
+          BEPINEX_DIR: ${{ github.workspace }}\GameLibs\BepInEx
+          PLUGINS_DIR: ${{ runner.temp }}\plugins
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $dotnetArgs = @(
+            'build', 'Source/Localyssation.csproj',
+            '-c', 'Release', '--nologo',
+            "-p:ATLYSS_MANAGED=$env:MANAGED_DIR",
+            "-p:ATLYSS_BEPINEX=$env:BEPINEX_DIR",
+            "-p:ATLYSS_BEPINEX_PLUGINS=$env:PLUGINS_DIR"
+          )
+          if ($version) { $dotnetArgs += "-p:VersionPrefix=$version" }
+          dotnet @dotnetArgs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Inspect Artifacts
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path dist -Filter *.zip | Select-Object Name, Length
+          Get-ChildItem -Path bin\Release\net481 -Recurse -File |
+            Select-Object -ExpandProperty FullName
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Localyssation-${{ steps.version.outputs.version }}-${{ github.sha }}
+          path: |
+            dist/*.zip
+            bin/Release/net481/**
+          if-no-files-found: error
+
+      - name: Persist Automatic Version Tag
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+        shell: pwsh
+        run: |
+          $tag = "v${{ steps.version.outputs.version }}"
+          $existingCommit = git rev-list -n 1 $tag 2>$null
+          if ($existingCommit) {
+            if ($existingCommit -ne $env:GITHUB_SHA) {
+              Write-Error "Tag $tag already points to $existingCommit instead of $env:GITHUB_SHA"
+              exit 1
+            }
+            Write-Host "Reusing automatic version tag $tag"
+            exit 0
+          }
+          git tag $tag $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git push origin "refs/tags/$tag"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Host "Created automatic version tag $tag"
+
+      - name: Publish GitHub Release with Ready-to-Use Build
+        if: github.event_name == 'push'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+            $tag = $env:GITHUB_REF -replace '^refs/tags/', ''
+          } else {
+            $tag = "v$version"
+          }
+          $zip = Get-ChildItem -Path dist -Filter *.zip | Select-Object -First 1
+          if (-not $zip) { Write-Error "No zip found under dist"; exit 1 }
+          $notes = "Automated ready-to-use build from bin/Release/net481.`n`nCommit: $env:GITHUB_SHA`nSource: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/commit/$env:GITHUB_SHA"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $zip.FullName --clobber
+          } else {
+            gh release create $tag $zip.FullName --title "Localyssation $version" --notes $notes
+          }

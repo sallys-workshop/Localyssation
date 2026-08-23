@@ -108,7 +108,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>G:\SteamLibrary\steamapps\common\ATLYSS\ATLYSS_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>$(ATLYSS_MANAGED)\UnityEngine.InputLegacyModule.dll</HintPath>
 	    <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
